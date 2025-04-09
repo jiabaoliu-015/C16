@@ -3,21 +3,21 @@
 
 | UWA ID     | Name           | GitHub Username       |
 |------------|----------------|-----------------------|
-| 12345678   | Alice Johnson  | alicejohnson123       |
-| 87654321   | Bob Smith      | bobsmith876           |
-| 11223344   | Charlie Brown  | charliebrown112233    |
+| 23954936   | Jiabao Liu  | jiabaoliu-015       |
+| 23857377   | Marc Labouchardiere      |   marc-la         |
+| 23706774   | Joshua Chin  | Jaecheonz    |
 
 ## Purpose of the Application
 
-This web application, **Study Habit Tracker & Analysis Tool**, is designed to help students improve their study effectiveness by providing insights into their study habits. Users can log or upload study session data, analyze productivity trends, and share their progress with friends. The application aims to foster better study practices and encourage collaboration among peers.
+This web application, **Study Habit Tracker & Analysis Tool**, is designed to help students improve their study effectiveness by providing insights into their study habits. Users can log or upload study session data, analyse productivity trends, and share their progress with friends. The application aims to foster better study practices and encourage collaboration among peers.
 
 ### Key Features:
 - **Data Upload**: Manually log study sessions or upload .csv files containing study activity data.
 - **Automated Analysis**:
-    - Visualize daily/weekly trends using bar and line charts.
+    - Visualise daily/weekly trends using bar and line charts.
     - Track time spent per subject and study methods used most often.
-    - Analyze correlations between mood and productivity using scatterplots.
-- **Data Visualization**: View personalized insights or compare study patterns with friends.
+    - Analyse correlations between mood and productivity using scatterplots.
+- **Data Visualisation**: View personalised insights or compare study patterns with friends.
 - **Data Sharing**: Share session stats or “study streaks” with specific friends.
 - **Introductory View**: Explains the application's goal to improve study effectiveness and enable peer comparison.
 
