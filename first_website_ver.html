@@ -5,14 +5,42 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Study Habit Tracker</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        /* Full-screen gif styling */
+        .full-screen-gif {
+            width: 100vw;
+            height: 100vh;
+            object-fit: cover;
+        }
+
+        /* Header Animation */
+        @keyframes fadeInUp {
+            0% {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .header-text {
+            animation: fadeInUp 1s ease-out forwards;
+        }
+
+        .header-subtext {
+            animation: fadeInUp 1.2s ease-out forwards;
+        }
+    </style>
 </head>
 <body class="bg-gray-100 text-gray-800">
 
-    <!-- Hero Section -->
+    <!-- Hero Section with Animation -->
     <section class="bg-blue-600 text-white text-center py-16">
         <div class="container mx-auto px-6">
-            <h1 class="text-4xl font-bold leading-tight">Track Your Study Habits</h1>
-            <p class="mt-4 text-lg">Discover insights and improve your productivity, one study session at a time.</p>
+            <h1 class="text-4xl font-bold leading-tight header-text">Track Your Study Habits</h1>
+            <p class="mt-4 text-lg header-subtext">Discover insights and improve your productivity, one study session at a time.</p>
             <a href="/login" class="mt-8 inline-block bg-blue-800 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg text-lg transition">Get Started</a>
         </div>
     </section>
