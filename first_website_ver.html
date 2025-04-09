@@ -32,6 +32,29 @@
         .header-subtext {
             animation: fadeInUp 1.2s ease-out forwards;
         }
+
+        /* Pulsing effect for the button */
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        .pulse-btn {
+            animation: pulse 2s infinite; /* Pulses continuously */
+        }
+
+        /* Hover effect for button */
+        .pulse-btn:hover {
+            background-color: red; /* Changes color to red on hover */
+            transition: background-color 0.3s ease;
+        }
     </style>
 </head>
 <body class="bg-gray-100 text-gray-800">
@@ -41,7 +64,7 @@
         <div class="container mx-auto px-6">
             <h1 class="text-4xl font-bold leading-tight header-text">Track Your Study Habits</h1>
             <p class="mt-4 text-lg header-subtext">Discover insights and improve your productivity, one study session at a time.</p>
-            <a href="/login" class="mt-8 inline-block bg-blue-800 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg text-lg transition">Get Started</a>
+            <a href="/login" class="mt-8 inline-block bg-cyan-500 hover:bg-red-500 text-white font-semibold py-4 px-12 rounded-lg text-3xl transition pulse-btn">Get Started</a>
         </div>
     </section>
 
