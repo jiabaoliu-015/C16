@@ -1,0 +1,106 @@
+.custom-link {
+    color: #FFFFFF;
+    font-weight: 500;
+    transition: transform 0.3s ease; /* Smooth transition */
+    display: inline-block;
+}
+
+.custom-link:hover {
+    color: #ef4444;
+    transform: scale(1.4);
+}
+
+.scroll-container {
+    scroll-snap-type: y mandatory;
+    scroll-behavior: smooth;
+    overscroll-behavior-y: contain; /* Prevents scroll chaining */
+    scroll-padding-top: 60px; /* Account for the fixed header */
+}
+
+.snap-section {
+    height: 100vh;
+    scroll-snap-align: start;
+    scroll-snap-stop: always;
+    position: relative; /* Ensure proper positioning for content */
+    overflow: hidden; /* Prevent content from shifting scroll positions */
+}
+
+.down-arrow {
+    animation: bounce 2s infinite;
+    cursor: pointer;
+    padding: 15px;
+    border-radius: 50%;
+    transition: all 0.3s ease;
+    z-index: 50;
+    background-color: transparent; /* Transparent background by default */
+    border: 2px solid transparent; /* Transparent border by default */
+}
+
+.down-arrow:hover,
+.down-arrow:focus {
+    transform: scale(1.3);
+    background-color: rgba(255, 255, 255, 0.4); /* Show background on hover */
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+    border: 2px solid white; /* Show white border on hover */
+}
+
+.down-arrow:active {
+    transform: scale(0.95);
+    background-color: rgba(255, 255, 255, 0.5);
+}
+
+.down-arrow span {
+    pointer-events: none;
+}
+
+@keyframes bounce {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(10px);
+    }
+}
+
+.typing-text {
+    position: relative;
+    display: inline-block;
+    height: 1.2em; /* Fixed height to prevent shifts */
+    vertical-align: middle; /* Keep vertical alignment consistent */
+}
+
+.typing-text::after {
+    content: '|';
+    position: absolute;
+    right: -8px;
+    top: 0; /* Align from top instead of bottom */
+    height: 100%; /* Full height cursor */
+    animation: blink 0.7s infinite;
+}
+
+@keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+}
+
+/* Common section layout class */
+.section-layout {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+}
+
+@media (min-width: 768px) {
+    .section-layout {
+        flex-direction: row;
+    }
+}
+
+@media (max-width: 768px) {
+    .snap-section {
+        padding-top: 3rem;
+    }
+}
