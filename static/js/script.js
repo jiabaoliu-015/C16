@@ -96,3 +96,20 @@ document.addEventListener('DOMContentLoaded', () => {
 window.addEventListener('load', () => {
     console.log('Page fully loaded with all resources');
 });
+
+//(UPLOAD) provides the user with visual feedback when they select a file
+function updateFileName() {
+    const input = document.getElementById('file');
+    const fileNameDisplay = document.getElementById('file-name');
+    
+    if (input.files.length > 0) {
+        fileNameDisplay.textContent = input.files[0].name;
+    } else {
+        fileNameDisplay.textContent = 'No file selected';
+    }
+}
+
+//(UPLOAD) displays the current value fo the productivity rating slider
+function updateRatingValue(val) {
+    document.getElementById('rating-value').textContent = val;
+}
