@@ -22,5 +22,9 @@ def visualise():
 def share():
     return render_template('share.html')
 
+@app.route('/login')
+def share():
+    return render_template('login.html')
+
 if __name__ == '__main__':
     app.run(debug=True)
