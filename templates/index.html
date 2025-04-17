@@ -1,36 +1,10 @@
 <!--index.html (Intro page)-->
 
-<!DOCTYPE html>
-<html lang="en">
+{% extends "base.html" %}
 
-<head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Study Habit Tracker</title>
+{% block title %}Welcome | StudyTrackr{% endblock %}
 
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
-    <link rel="stylesheet" href="static/css/style.css">
-    <script src="static/js/script.js" defer></script>
-</head>
-
-<body class="bg-gradient-to-br from-gray-900 via-black to-gray-800 text-white">
-
-<div class="h-screen overflow-y-scroll scroll-container">
-
-<!-- Navigation Bar -->
-<nav class="bg-gray-800 shadow-lg p-4 fixed w-full top-0 z-50">
-    <div class="w-full px-4 sm:px-6 lg:px-8 flex justify-between items-center">
-    <div class="text-xl font-bold text-blue-600">StudyTrackr</div>
-    <div class="space-x-4 text-sm sm:space-x-6 sm:text-base">
-    <a href="/" class="custom-link">Home</a>
-    <a href="/upload" class="custom-link">Upload</a>
-    <a href="/visualise" class="custom-link">Visualise</a>
-    <a href="/share" class="custom-link">Share</a>
-    <a href="/login" class="custom-link">Login</a>
-    </div>
-</div>
-</nav>
+{% block content %}
 
 <!-- Section 1 -->
 <section id="section1" class="snap-section section-layout bg-blue-600 text-white">
@@ -202,7 +176,4 @@
     </div>
 </section>
 
-</div>
-
-</body>
-</html>
+{% endblock %}

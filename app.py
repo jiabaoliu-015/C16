@@ -23,7 +23,7 @@ def share():
     return render_template('share.html')
 
 @app.route('/login')
-def share():
+def login():
     return render_template('login.html')
 
 if __name__ == '__main__':
