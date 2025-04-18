@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from flask import Flask, render_template, redirect, url_for
+from flask import Flask, render_template, redirect, url_for, request
 
 # PLACEHOLDER CODE
 
@@ -22,8 +22,10 @@ def visualise():
 def share():
     return render_template('share.html')
 
-@app.route('/login')
+@app.route('/login', methods=['GET', 'POST'])
 def login():
+    if request.method == 'POST':
+        return redirect(url_for('visualise'))
     return render_template('login.html')
 
 if __name__ == '__main__':
