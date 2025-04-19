@@ -1,55 +1,25 @@
-
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Login</title>
-    <style>
-        body {
-            background-color: #007bff;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-            font-family: Arial, sans-serif;
-        }
-        .login-container {
-            background-color: white;
-            padding: 2rem;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            text-align: center;
-        }
-        .form-group {
-            margin-bottom: 1rem;
-        }
-        .form-control {
-            width: 100%;
-            padding: 0.5rem;
-            margin-top: 0.5rem;
-        }
-        .btn {
-            padding: 0.5rem 1rem;
-            background-color: #007bff;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-    </style>
-</head>
-<body>
-<div class="login-container">
-    <h2>Login</h2>
-    <form method="POST" action="/login">
-        <div class="form-group">
-            <label for="username">Username:</label>
-            <input type="text" id="username" name="username" class="form-control" required>
-        </div>
-        <div class="form-group">
-            <label for="password">Password:</label>
-            <input type="password" id="password" name="password" class="form-control" required>
-        </div>
-        <button type="submit" class="btn btn-primary">Login</button>
-    </form>
+{% extends "base.html" %}
+{% block title %}Login Page{% endblock %}
+{% block hero %}{% endblock %}
+{% block content %}
+<div class="container mx-auto pt-24 px-4 md:px-8">
+    <div class="max-w-md mx-auto bg-gray-800 rounded-lg shadow-xl p-6 animate__animated animate__fadeIn">
+        <h1 class="text-3xl font-bold text-blue-500 mb-6">Login</h1>
+        <form method="POST" action="/login" class="space-y-6">
+            <div class="space-y-2">
+                <label for="username" class="text-blue-400 font-medium block">Username</label>
+                <input type="text" id="username" name="username" class="w-full bg-gray-700 border border-gray-600 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+            </div>
+            <div class="space-y-2">
+                <label for="password" class="text-blue-400 font-medium block">Password</label>
+                <input type="password" id="password" name="password" class="w-full bg-gray-700 border border-gray-600 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+            </div>
+            <div class="mt-8">
+                <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-4 rounded-md transition duration-200">
+                    Login
+                </button>
+            </div>
+        </form>
+    </div>
 </div>
+{% endblock %}
