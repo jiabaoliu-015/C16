@@ -26,8 +26,8 @@
             <div class="space-y-2">
                 <label for="file" class="text-blue-400 font-medium block">Select CSV File</label>
                 <div class="flex items-center">
-                    <input type="file" name="data_file" id="file" accept=".csv" 
-                           class="hidden" onchange="updateFileName()">
+                    <input type="file" name="data_file" id="file" accept=".csv"
+                        class="hidden" onchange="updateFileName()">
                     <label for="file" class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md cursor-pointer transition duration-200">
                         Browse Files
                     </label>
@@ -38,7 +38,7 @@
             <div class="space-y-2">
                 <label for="subject" class="text-blue-400 font-medium block">Default Subject (optional)</label>
                 <input type="text" name="default_subject" id="subject" placeholder="For unlabeled data"
-                       class="w-full bg-gray-700 border border-gray-600 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    class="w-full bg-gray-700 border border-gray-600 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
             </div>
             
             <div>
@@ -71,31 +71,31 @@
                 <div class="space-y-2">
                     <label for="m_date" class="text-blue-400 font-medium block">Date</label>
                     <input type="date" name="date" id="m_date" required 
-                           class="w-full bg-gray-700 border border-gray-600 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        class="w-full bg-gray-700 border border-gray-600 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
                 </div>
                 
                 <div class="space-y-2">
                     <label for="m_subject" class="text-blue-400 font-medium block">Subject</label>
                     <input type="text" name="subject" id="m_subject" required placeholder="e.g., Mathematics"
-                           class="w-full bg-gray-700 border border-gray-600 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        class="w-full bg-gray-700 border border-gray-600 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
                 </div>
                 
                 <div class="space-y-2">
                     <label for="m_start_time" class="text-blue-400 font-medium block">Start Time</label>
                     <input type="time" name="start_time" id="m_start_time" required 
-                           class="w-full bg-gray-700 border border-gray-600 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        class="w-full bg-gray-700 border border-gray-600 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
                 </div>
                 
                 <div class="space-y-2">
                     <label for="m_duration" class="text-blue-400 font-medium block">Duration (minutes)</label>
                     <input type="number" name="duration" id="m_duration" required min="1" max="1440" 
-                           class="w-full bg-gray-700 border border-gray-600 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        class="w-full bg-gray-700 border border-gray-600 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
                 </div>
                 
                 <div class="space-y-2 md:col-span-2">
                     <label for="m_productivity" class="text-blue-400 font-medium block">Productivity Rating (1-10)</label>
                     <input type="range" name="productivity" id="m_productivity" min="1" max="10" value="7" 
-                           class="w-full" oninput="updateRatingValue(this.value)">
+                        class="w-full" oninput="updateRatingValue(this.value)">
                     <p class="text-center text-blue-300 font-medium" id="rating-value">7</p>
                 </div>
             </div>
