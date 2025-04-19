@@ -64,11 +64,13 @@
     </nav>
 
     <!-- Hero Section -->
+    {% block hero %}
     <section class="pt-24 px-6 text-center animate__animated animate__fadeIn">
       <h1 class="text-4xl sm:text-5xl font-extrabold mb-4">Track Your Progress, Crush Your Goals</h1>
       <p class="text-lg sm:text-xl text-gray-300 mb-6">Stay motivated. Stay consistent. Stay ahead.</p>
       <a href="/dashboard" class="inline-block bg-blue-600 hover:bg-blue-500 text-white px-6 py-3 rounded-xl font-semibold">Go to Dashboard</a>
     </section>
+    {% endblock %}
 
     <!-- Main Content -->
     <main class="px-4 sm:px-8 md:px-16 pt-12">
