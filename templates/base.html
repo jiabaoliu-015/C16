@@ -3,37 +3,117 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>{% block title %}Study Habit Tracker{% endblock %}</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{% block title %}Study Habit Tracker{% endblock %}</title>
 
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-    <script src="{{ url_for('static', filename='js/script.js') }}" defer></script>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          backdropBlur: {
+            sm: '4px',
+            DEFAULT: '8px',
+          },
+        }
+      }
+    }
+  </script>
+  <!-- Animate.css -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- Custom CSS/JS -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <script src="{{ url_for('static', filename='js/script.js') }}" defer></script>
 </head>
 
-<body class="bg-gradient-to-br from-gray-900 via-black to-gray-800 text-white">
-    <div class="h-screen overflow-y-scroll scroll-container">
+<body class="bg-gradient-to-br from-gray-900 via-black to-gray-800 text-white font-sans">
+  <div class="min-h-screen overflow-y-scroll scroll-container">
+    <!-- Navbar -->
+    <nav class="bg-gray-900 fixed w-full z-50 shadow-lg">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center h-16">
+        <div class="flex items-center space-x-2">
+          <div class="text-blue-500 text-2xl">📘</div>
+          <span class="text-xl font-bold text-blue-500">StudyTrackr</span>
+        </div>
+        <div class="hidden md:flex space-x-6 text-base font-medium">
+          <a href="/" class="nav-link flex items-center space-x-1"><i data-lucide="home"></i><span>Home</span></a>
+          <a href="/upload" class="nav-link flex items-center space-x-1"><i data-lucide="upload"></i><span>Upload</span></a>
+          <a href="/visualise" class="nav-link flex items-center space-x-1"><i data-lucide="bar-chart"></i><span>Visualise</span></a>
+          <a href="/share" class="nav-link flex items-center space-x-1"><i data-lucide="share"></i><span>Share</span></a>
+          <a href="/login" class="nav-link flex items-center space-x-1"><i data-lucide="log-in"></i><span>Login</span></a>
+        </div>
+        <!-- Mobile button -->
+        <button id="nav-toggle" class="md:hidden text-white">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+          </svg>
+        </button>
+      </div>
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden flex-col bg-gray-900/90 backdrop-blur-md rounded-b-xl shadow-xl text-white absolute top-full left-0 w-full transition-all duration-300 ease-in-out z-40">
+            <a href="/" class="block px-6 py-3 hover:bg-blue-600 transition-all">Home</a>
+            <a href="/upload" class="block px-6 py-3 hover:bg-blue-600 transition-all">Upload</a>
+            <a href="/visualise" class="block px-6 py-3 hover:bg-blue-600 transition-all">Visualise</a>
+            <a href="/share" class="block px-6 py-3 hover:bg-blue-600 transition-all">Share</a>
+            <a href="/login" class="block px-6 py-3 hover:bg-blue-600 transition-all">Login</a>
+        </div>
+    </nav>
 
-        <!-- Navigation Bar -->
-        <nav class="bg-gray-800 shadow-lg p-4 fixed w-full top-0 z-50">
-            <div class="w-full px-4 sm:px-6 lg:px-8 flex justify-between items-center">
-                <div class="text-xl font-bold text-blue-600">StudyTrackr</div>
-                <div class="space-x-4 text-sm sm:space-x-6 sm:text-base">
-                    <a href="/" class="custom-link">Home</a>
-                    <a href="/upload" class="custom-link">Upload</a>
-                    <a href="/visualise" class="custom-link">Visualise</a>
-                    <a href="/share" class="custom-link">Share</a>
-                    <a href="/login" class="custom-link">Login</a>
-                </div>
-            </div>
-        </nav>
+    <!-- Hero Section -->
+    <section class="pt-24 px-6 text-center animate__animated animate__fadeIn">
+      <h1 class="text-4xl sm:text-5xl font-extrabold mb-4">Track Your Progress, Crush Your Goals</h1>
+      <p class="text-lg sm:text-xl text-gray-300 mb-6">Stay motivated. Stay consistent. Stay ahead.</p>
+      <a href="/dashboard" class="inline-block bg-blue-600 hover:bg-blue-500 text-white px-6 py-3 rounded-xl font-semibold">Go to Dashboard</a>
+    </section>
 
-        {% block content %}
-        <!-- Page-specific content goes here -->
-        {% endblock %}
-        
-    </div>
+    <!-- Main Content -->
+    <main class="px-4 sm:px-8 md:px-16 pt-12">
+      {% block content %}
+      <!-- Page content -->
+      {% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-gray-400 text-center py-6 mt-16">
+      <p class="text-sm">Built with 💡 by StudyTrackr Team — 2025</p>
+    </footer>
+  </div>
+
+  <script>
+    // Toggle mobile nav
+    document.getElementById('nav-toggle').addEventListener('click', () => {
+      document.getElementById('mobile-menu').classList.toggle('hidden');
+    });
+
+    // Lucide icon rendering
+    lucide.createIcons();
+
+    document.addEventListener("DOMContentLoaded", () => {
+        const menuBtn = document.getElementById("menu-toggle");
+        const mobileMenu = document.getElementById("mobile-menu");
+
+        menuBtn.addEventListener("click", () => {
+            mobileMenu.classList.toggle("hidden");
+            mobileMenu.classList.toggle("flex");
+        });
+    });
+
+
+    // Scroll animations (basic version)
+    const elements = document.querySelectorAll('.animate-on-scroll');
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('animate__fadeInUp');
+          entry.target.classList.add('animate__animated');
+        }
+      });
+    });
+    elements.forEach(el => observer.observe(el));
+  </script>
 </body>
 </html>
