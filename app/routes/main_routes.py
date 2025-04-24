@@ -1,3 +1,5 @@
+# app/routes/main_routes.py: Routes for index and login
+
 from flask import Blueprint, render_template, redirect, url_for, request, flash
 
 bp = Blueprint('main', __name__)

@@ -1,3 +1,5 @@
+# .gitignore: Git ignore file
+
 # Ignore Python virtual environment
 venv/
 

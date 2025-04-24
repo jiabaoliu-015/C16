@@ -1,3 +1,6 @@
+#!/usr/bin/env python3
+# app/__init__.py: Application factory
+
 from flask import Flask
 from flask_wtf import CSRFProtect
 

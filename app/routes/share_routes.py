@@ -1,3 +1,5 @@
+# app/routes/share_routes.py: Routes for sharing data
+
 from flask import Blueprint, render_template
 
 bp = Blueprint('share', __name__, url_prefix='/share')
