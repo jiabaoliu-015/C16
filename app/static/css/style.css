@@ -1,0 +1,140 @@
+/*static/css/style.css*/
+
+.custom-link {
+    color: #FFFFFF;
+    font-weight: 500;
+    transition: transform 0.3s ease; /* Smooth transition */
+    display: inline-block;
+}
+
+.custom-link:hover {
+    color: #ef4444;
+    transform: scale(1.4);
+}
+
+/* typing styles */
+/* dynamic colours for typing effects */
+.typing-color-1 { color: #60a5fa; }
+.typing-color-2 { color: #34d399; }
+.typing-color-3 { color: #f87171; }
+.typing-color-4 { color: #a78bfa; }
+.typing-color-5 { color: #fbbf24; }
+
+.typing-text {
+    display: inline;
+}
+
+.typing-text::after {
+    content: '|';
+    animation: blink 0.7s infinite;
+}
+
+@keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+}
+/* typing styles */
+
+/* scrolling styles */
+/* fixed the overflow issue on each section in index.html by implementing dynamic height in .snap-section*/
+.scroll-container {
+    scroll-snap-type: y mandatory;
+    scroll-behavior: smooth;
+    overscroll-behavior-y: contain; /* Prevents scroll chaining */
+    scroll-padding-top: 60px; /* Account for the fixed header */
+    height: 100vh; /* Ensure the container is full viewport height */
+    overflow-y: auto; /* Allow scrolling */
+}
+
+.snap-section {
+    height: calc(100vh - 60px);
+    margin-top: 60px;
+    scroll-snap-align: start;
+    scroll-snap-stop: always;
+    position: relative; /* Ensure proper positioning for content */
+    overflow: hidden; /* Prevent content from shifting scroll positions */
+    box-sizing: border-box; /* Ensures padding is included in height calculation */
+}
+/* scrolling styles */
+
+/* Down arrow styles */
+.down-arrow {
+    animation: bounce 2s infinite;
+    cursor: pointer;
+    padding: 15px;
+    border-radius: 50%;
+    transition: all 0.3s ease;
+    z-index: 50;
+    background-color: transparent; /* Transparent background by default */
+    border: 2px solid transparent; /* Transparent border by default */
+}
+
+.down-arrow:hover,
+.down-arrow:focus {
+    transform: scale(1.3);
+    background-color: rgba(255, 255, 255, 0.4); /* Show background on hover */
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+    border: 2px solid white; /* Show white border on hover */
+}
+
+.down-arrow:active {
+    transform: scale(0.95);
+    background-color: rgba(255, 255, 255, 0.5);
+}
+
+.down-arrow span {
+    pointer-events: none;
+}
+
+@keyframes bounce {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(10px);
+    }
+}
+/* Down arrow styles */
+
+/* Dashboard slider styles */
+.slider-slide {
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out;
+}
+
+.slider-slide:first-child {
+    opacity: 1;
+}
+
+.slider-dot {
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.slider-dot-active {
+    transform: scale(1.2);
+}
+/* Dashboard slider styles */
+
+/* section styles */
+.section-layout {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+}
+
+@media (min-width: 768px) {
+    .section-layout {
+        flex-direction: row;
+    }
+}
+
+@media (max-width: 768px) {
+    .snap-section {
+        padding-top: 3rem;
+    }
+}
+/* section styles */
