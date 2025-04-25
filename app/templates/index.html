@@ -1,0 +1,295 @@
+<!--index.html (Intro page)-->
+
+{% extends "base.html" %}
+
+{% block title %}Welcome | StudyTrackr{% endblock %}
+
+{% block content %}
+
+<!-- Section 1 -->
+<section id="section1" class="snap-section section-layout bg-gradient-to-br from-cyan-300 via-blue-600 to-blue-900 text-white">
+    
+    <div class="absolute inset-0 z-0 overflow-hidden">
+        <img src="/static/images/book.png" alt="Book Image" class="absolute top-20 left-20 h-32 w-32 rounded-full animate-pulse" />
+        <div class="absolute bottom-20 right-20 w-32 h-32 rounded-full bg-indigo-400 animate-ping opacity-20"></div>
+        <div class="absolute top-1/4 right-1/4 w-12 h-12 rounded-full bg-green-300 animate-bounce opacity-20"></div>
+    </div>
+
+    <div class="md:w-1/2 flex justify-center items-center p-4 mb-8 md:mb-0">
+        <div class="sm:hidden md:flex mx-auto bg-gray-800/80 border-2 border-gray-600 rounded-lg h-auto sm:h-96 md:h-[50rem] lg:h-[56rem] w-11/12 max-w-5xl flex flex-col justify-center items-center shadow-2xl transform transition-all duration-300 hover:scale-105 relative overflow-hidden">
+            <!-- Slider container -->
+            <div class="slider-container w-full h-full">
+                <!-- Slide 1: Statistics Dashboard -->
+                <div class="slider-slide absolute inset-0 flex flex-col items-center justify-center transition-opacity duration-500 fade-slide">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-20 w-20 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                    </svg>
+                    <p class="mt-4 text-gray-300 text-center px-6">Track your progress with statistics</p>
+                    <div class="mt-6 flex justify-around w-full px-4">
+                        <div class="flex flex-col items-center">
+                            <span class="text-green-400 text-2xl font-bold">85%</span>
+                            <span class="text-xs text-gray-400">Completion</span>
+                        </div>
+                        <div class="flex flex-col items-center">
+                            <span class="text-blue-400 text-2xl font-bold">12h</span>
+                            <span class="text-xs text-gray-400">This Week</span>
+                        </div>
+                        <div class="flex flex-col items-center">
+                            <span class="text-purple-400 text-2xl font-bold">24</span>
+                            <span class="text-xs text-gray-400">Sessions</span>
+                        </div>
+                    </div>
+                </div>
+    
+                <!-- Slide 2: Calendar View -->
+                <div class="slider-slide absolute inset-0 flex flex-col items-center justify-center transition-opacity duration-500 opacity-0 fade-slide">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-20 w-20 text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    </svg>
+                    <p class="mt-4 text-gray-300 text-center px-6">Schedule your study sessions</p>
+                    <div class="mt-4 grid grid-cols-7 gap-1 w-3/4">
+                        <div class="h-8 w-8 flex items-center justify-center text-xs text-gray-500">M</div>
+                        <div class="h-8 w-8 flex items-center justify-center text-xs text-gray-500">T</div>
+                        <div class="h-8 w-8 flex items-center justify-center text-xs text-gray-500">W</div>
+                        <div class="h-8 w-8 flex items-center justify-center text-xs text-gray-500">T</div>
+                        <div class="h-8 w-8 flex items-center justify-center text-xs text-gray-500">F</div>
+                        <div class="h-8 w-8 flex items-center justify-center text-xs text-gray-500">S</div>
+                        <div class="h-8 w-8 flex items-center justify-center text-xs text-gray-500">S</div>
+                        
+                        <div class="h-8 w-8 rounded-full flex items-center justify-center text-xs bg-gray-700">1</div>
+                        <div class="h-8 w-8 rounded-full flex items-center justify-center text-xs bg-gray-700">2</div>
+                        <div class="h-8 w-8 rounded-full flex items-center justify-center text-xs bg-green-600">3</div>
+                        <div class="h-8 w-8 rounded-full flex items-center justify-center text-xs bg-gray-700">4</div>
+                        <div class="h-8 w-8 rounded-full flex items-center justify-center text-xs bg-blue-600">5</div>
+                        <div class="h-8 w-8 rounded-full flex items-center justify-center text-xs bg-gray-700">6</div>
+                        <div class="h-8 w-8 rounded-full flex items-center justify-center text-xs bg-gray-700">7</div>
+                    </div>
+                </div>
+    
+                <!-- Slide 3: Progress Charts -->
+                <div class="slider-slide absolute inset-0 flex flex-col items-center justify-center transition-opacity duration-500 opacity-0 fade-slide">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-20 w-20 text-yellow-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                    </svg>
+                    <p class="mt-4 text-gray-300 text-center px-6">Visualize your learning journey</p>
+                    
+                    <!-- Simple bar chart visualization -->
+                    <div class="mt-4 flex items-end justify-center space-x-2 h-32 w-3/4">
+                        <div class="w-6 bg-green-500 rounded-t" style="height: 30%"></div>
+                        <div class="w-6 bg-green-500 rounded-t" style="height: 50%"></div>
+                        <div class="w-6 bg-green-500 rounded-t" style="height: 45%"></div>
+                        <div class="w-6 bg-blue-500 rounded-t" style="height: 70%"></div>
+                        <div class="w-6 bg-blue-500 rounded-t" style="height: 65%"></div>
+                        <div class="w-6 bg-blue-500 rounded-t" style="height: 85%"></div>
+                        <div class="w-6 bg-yellow-500 rounded-t" style="height: 90%"></div>
+                    </div>
+                    <div class="flex justify-between w-3/4 mt-2">
+                        <span class="text-xs text-gray-400">Mon</span>
+                        <span class="text-xs text-gray-400">Sun</span>
+                    </div>
+                </div>
+                
+                <!-- Slider navigation dots -->
+                <div class="absolute bottom-4 left-0 right-0 flex justify-center space-x-2">
+                    <button class="w-2 h-2 rounded-full bg-white slider-dot slider-dot-active" data-slide="0"></button>
+                    <button class="w-2 h-2 rounded-full bg-white/50 slider-dot" data-slide="1"></button>
+                    <button class="w-2 h-2 rounded-full bg-white/50 slider-dot" data-slide="2"></button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="md:w-1/2 text-center flex flex-col justify-center items-center">
+        <div class="animate__animated animate__fadeInDown animate__delay-0.5s">
+            <h1 class="text-5xl font-bold mb-2">
+                <span id="typing-animation" class="typing-text"></span>
+            </h1>
+        </div>
+
+        <p class="text-lg mb-6 max-w-md animate__animated animate__fadeIn animate__delay-1s opacity-90">
+            Track your study habits, visualize your progress, and achieve your academic goals.
+        </p>
+        
+        <div class="flex flex-col sm:flex-row gap-4 animate__animated animate__fadeInUp animate__delay-1.5s">
+            <button class="bg-green-500 hover:bg-green-600 text-white font-semibold px-8 py-3 rounded-full shadow-lg transition-all duration-300 flex items-center justify-center group" type="button">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 group-hover:animate-pulse" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                </svg>
+                Get Started
+            </button>
+            <button class="bg-transparent hover:bg-white/20 text-white border-2 border-white/50 font-semibold px-8 py-3 rounded-full shadow-lg transition-all duration-300" type="button">
+                Learn More
+            </button>
+        </div>
+        
+        <!-- Add quick stats badges -->
+        <div class="flex justify-center gap-4 mt-8 animate__animated animate__fadeInUp animate__delay-2s">
+            <div class="px-4 py-2 bg-white/10 rounded-full flex items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2 text-blue-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <span class="text-sm">Save Time</span>
+            </div>
+            <div class="px-4 py-2 bg-white/10 rounded-full flex items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2 text-green-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <span class="text-sm">Stay Focused</span>
+            </div>
+            <div class="px-4 py-2 bg-white/10 rounded-full flex items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2 text-yellow-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                </svg>
+                <span class="text-sm">See Results</span>
+            </div>
+        </div>
+
+        <button class="mt-16 down-arrow w-16 h-16 flex items-center justify-center bg-transparent hover:bg-white/10 rounded-full" data-target="section2" type="button" aria-label="Go to Track Your Study section">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+            </svg>
+        </button>
+    </div>
+</section>
+
+<!-- Section 2 -->
+<section id="section2" class="snap-section bg-pink-300 text-gray-900">
+    <div class="w-full text-center pt-8 pb-4">
+        <h2 class="text-4xl font-bold mb-4">Track Your Study</h2>
+        <p class="text-lg mb-6">Log and review your daily study activities effortlessly.</p>
+    </div>
+    
+    <div class="w-full px-6 md:px-12 grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <div class="bg-pink-400 bg-opacity-50 rounded-lg p-6 shadow-lg transform transition-all duration-300 hover:scale-105">
+            <div class="flex flex-col items-center mb-4">
+                <h3 class="text-xl font-bold">Time Tracking</h3>
+            </div>
+            <p class="text-sm text-center">Track study sessions with precision. Set timers and monitor your focus periods.</p>
+        </div>
+        <div class="bg-pink-400 bg-opacity-50 rounded-lg p-6 shadow-lg transform transition-all duration-300 hover:scale-105">
+            <div class="flex flex-col items-center mb-4">
+                <h3 class="text-xl font-bold">Task Manager</h3>
+            </div>
+            <p class="text-sm text-center">Create and organize your study tasks. Set priorities and track completion.</p>
+        </div>
+        <div class="bg-pink-400 bg-opacity-50 rounded-lg p-6 shadow-lg transform transition-all duration-300 hover:scale-105">
+            <div class="flex flex-col items-center mb-4">
+                <h3 class="text-xl font-bold">Study Calendar</h3>
+            </div>
+            <p class="text-sm text-center">Plan your study schedule in advance. Never miss an important study session.</p>
+        </div>
+    </div>
+    
+    <div class="w-full flex justify-center mb-8">
+        <div class="bg-gray-800 border-2 border-gray-600 rounded-lg p-4 max-w-md">
+            <div class="mt-4 text-xs text-center text-gray-400">App Interface Preview</div>
+        </div>
+    </div>
+    
+    <div class="w-full flex justify-center pb-8">
+        <button class="down-arrow w-16 h-16 flex items-center justify-center bg-transparent hover:bg-black/10 rounded-full" data-target="section3" type="button" aria-label="Go to Visualise Your Progress section">
+            <span class="text-4xl">⬇️</span>
+        </button>
+    </div>
+</section>
+
+<!-- Section 3 -->
+<section id="section3" class="snap-section bg-blue-900 text-white">
+    <div class="w-full text-center pt-8 pb-4" style="margin-top: 30px;">
+        <h2 class="text-4xl font-bold mb-4">Visualise Your Progress</h2>
+        <p class="text-lg mb-6">Generate insights and see how your habits grow over time.</p>
+    </div>
+    
+    <div class="w-full flex justify-center mb-8" style="margin-top: 10px;">
+        <div class="bg-gray-800 border-2 border-gray-600 rounded-lg p-6 max-w-3xl w-full mx-6">
+            <div class="flex justify-between items-center mb-4">
+                <h4 class="text-lg font-semibold text-blue-300">Weekly Study Hours</h4>
+                <div class="flex space-x-2">
+                    <span class="px-2 py-1 bg-blue-700 text-xs rounded cursor-pointer">Week</span>
+                    <span class="px-2 py-1 bg-blue-900 text-xs rounded cursor-pointer">Month</span>
+                    <span class="px-2 py-1 bg-blue-900 text-xs rounded cursor-pointer">Year</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="w-full px-20 grid grid-cols-1 md:grid-cols-2 gap-6 mb-8" style="margin-top: 200px;">
+        <div class="bg-blue-800 bg-opacity-50 rounded-lg p-6 shadow-lg flex justify-center">
+            <div class="w-full max-w-md">
+                <h3 class="text-xl font-bold mb-4 flex items-center">
+                    Data Insights
+                </h3>
+            </div>
+        </div>
+        
+        <div class="bg-blue-800 bg-opacity-50 rounded-lg p-4 shadow-lg flex justify-center">
+            <div class="w-full max-w-md">
+                <h3 class="text-xl font-bold mb-4 flex items-center">
+                    Chart Types
+                </h3>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Navigation arrow at the bottom -->
+    <div class="w-full flex justify-center pb-8" style="margin-top: -30px;">
+        <button class="down-arrow w-16 h-16 flex items-center justify-center bg-transparent hover:bg-white/10 rounded-full" data-target="section4" type="button" aria-label="Go to Share and Motivate section">
+            <span class="text-4xl">⬇️</span>
+        </button>
+    </div>
+</section>
+
+<!-- Section 4 -->
+<section id="section4" class="snap-section bg-purple-500 text-white">
+    <div class="w-full text-center pt-8 pb-4">
+        <h2 class="text-4xl font-bold mb-4">Share and Motivate</h2>
+        <p class="text-lg mb-6">Compare results and encourage accountability with peers.</p>
+    </div>
+    
+    <div class="w-full px-6 md:px-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+        <div class="bg-purple-600 bg-opacity-50 rounded-lg p-6 shadow-lg transform transition-all duration-300 hover:scale-105">
+            <div class="flex items-center mb-4">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-purple-200" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                </svg>
+                <h3 class="text-xl font-bold ml-4">Study Groups</h3>
+            </div>
+            <p class="text-sm text-gray-100">Form study groups with friends or classmates to stay accountable and motivated together.</p>
+        </div>    
+        <div class="bg-purple-600 bg-opacity-50 rounded-lg p-6 shadow-lg transform transition-all duration-300 hover:scale-105">
+            <div class="flex items-center mb-4">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-purple-200" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" />
+                </svg>
+                <h3 class="text-xl font-bold ml-4">Achievements</h3>
+            </div>
+            <p class="text-sm text-gray-100">Earn badges and share accomplishments with friends as you reach study milestones.</p>
+        </div>       
+        <div class="bg-purple-600 bg-opacity-50 rounded-lg p-6 shadow-lg transform transition-all duration-300 hover:scale-105">
+            <div class="flex items-center mb-4">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-purple-200" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                </svg>
+                <h3 class="text-xl font-bold ml-4">Leaderboards</h3>
+            </div>
+            <p class="text-sm text-gray-100">Compare your progress with friends through friendly competition and motivating leaderboards.</p>
+        </div>
+    </div>
+    <div class="w-full px-6 flex flex-col items-center mb-12">
+        <div class="bg-gray-800 bg-opacity-50 rounded-lg p-6 max-w-2xl">
+            <div class="flex items-center mb-4">
+                <img src="https://via.placeholder.com/50" alt="Student avatar" class="h-12 w-12 rounded-full border-2 border-white">
+                <div class="ml-4">
+                    <p class="text-sm italic">"StudyTrackr helped me stay accountable and consistent with my study habits. The ability to share progress with friends keeps me motivated!"</p>
+                    <p class="text-xs mt-2 text-purple-200">- Computer Science Student</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="w-full bg-purple-800 py-4 px-6 text-center">
+        <p>&copy; 2025 StudyTrackr. All rights reserved.</p>
+    </div>
+</section>
+
+{% endblock %}

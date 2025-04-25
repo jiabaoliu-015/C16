@@ -36,13 +36,21 @@ function initNavigation() {
 // Typing animation functionality
 function initTypingAnimation() {
     const phrases = [
-        "Habit Tracker",
-        "Progress Manager",
-        "Time Organizer",
-        "Success Planner",
-        "Achievement Logger"
+        "Study Habit Tracker",
+        "Learning Progress Manager",
+        "Productivity Time Organiser",
+        "Academic Success Planner",
+        "Daily Achievement Logger"
     ];
     
+    const colors = [
+        "typing-color-1",
+        "typing-color-2",
+        "typing-color-3",
+        "typing-color-4",
+        "typing-color-5"
+    ];
+
     const typingElement = document.getElementById('typing-animation');
     if (!typingElement) return;
     
@@ -54,6 +62,9 @@ function initTypingAnimation() {
     function typeText() {
         const currentPhrase = phrases[phraseIndex];
         
+        // Apply the colour for this phrase
+        typingElement.className = "typing-text " + colors[phraseIndex];
+
         if (isDeleting) {
             typingElement.textContent = currentPhrase.substring(0, charIndex - 1);
             charIndex--;
@@ -85,14 +96,80 @@ function initTypingAnimation() {
     setTimeout(typeText, 500);
 }
 
+// Dashboard Slider functionality
+function initDashboardSlider() {
+    const slides = document.querySelectorAll('.slider-slide');
+    const dots = document.querySelectorAll('.slider-dot');
+    let currentSlide = 0;
+    const slideInterval = 3000; // 3 seconds
+    
+    function showSlide(index) {
+        // Hide all slides
+        slides.forEach(slide => {
+            slide.style.opacity = 0;
+        });
+        
+        // Show the current slide
+        slides[index].style.opacity = 1;
+        
+        // Update dots
+        dots.forEach(dot => {
+            dot.classList.remove('slider-dot-active');
+            dot.classList.remove('bg-white');
+            dot.classList.add('bg-white/50');
+        });
+        
+        dots[index].classList.add('slider-dot-active', 'bg-white');
+        dots[index].classList.remove('bg-white/50');
+    }
+    
+    function nextSlide() {
+        currentSlide = (currentSlide + 1) % slides.length;
+        showSlide(currentSlide);
+    }
+    
+    // Set up click handlers for dots
+    dots.forEach((dot, index) => {
+        dot.addEventListener('click', () => {
+            currentSlide = index;
+            showSlide(currentSlide);
+        });
+    });
+    
+    // Initialize slider
+    showSlide(0);
+    
+    // Start automatic sliding
+    setInterval(nextSlide, slideInterval);
+}
+
 // Start everything when the DOM is fully loaded
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', function() {
     console.log('DOM content loaded'); // Log when page is ready
     initNavigation();
     initTypingAnimation();
+    initDashboardSlider();
 });
 
 // Additional log when all resources are loaded
 window.addEventListener('load', () => {
     console.log('Page fully loaded with all resources');
 });
+
+//(UPLOAD) provides the user with visual feedback when they select a file
+function updateFileName() {
+    const input = document.getElementById('file');
+    const fileNameDisplay = document.getElementById('file-name');
+    
+    if (input.files.length > 0) {
+        fileNameDisplay.textContent = input.files[0].name;
+    } else {
+        fileNameDisplay.textContent = 'No file selected';
+    }
+}
+
+
+//(UPLOAD) displays the current value fo the productivity rating slider
+function updateRatingValue(val) {
+    document.getElementById('rating-value').textContent = val;
+}
