@@ -32,14 +32,16 @@
 </head>
 
 <body class="bg-gradient-to-br from-gray-900 via-black to-gray-800 text-white font-sans">
-  <div class="min-h-screen overflow-y-scroll scroll-container">
+  <div class="min-h-screen flex flex-col">
     <!-- Navbar -->
     <nav class="bg-gray-900 fixed w-full z-50 shadow-lg">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center h-16">
+        <!-- Left: StudyTrackr Logo -->
         <div class="flex items-center space-x-2">
           <div class="text-blue-500 text-2xl">📘</div>
           <span class="text-xl font-bold text-blue-500">StudyTrackr</span>
         </div>
+        <!-- Right: Navigation Links -->
         <div class="hidden md:flex space-x-6 text-base font-medium">
           <a href="/" class="nav-link flex items-center space-x-1"><i data-lucide="home"></i><span>Home</span></a>
           <a href="/upload" class="nav-link flex items-center space-x-1"><i data-lucide="upload"></i><span>Upload</span></a>
@@ -54,34 +56,36 @@
           </svg>
         </button>
       </div>
-        <!-- Mobile Menu -->
-        <div id="mobile-menu" class="hidden flex-col bg-gray-900/90 backdrop-blur-md rounded-b-xl shadow-xl text-white absolute top-full left-0 w-full transition-all duration-300 ease-in-out z-40">
-            <a href="/" class="block px-6 py-3 hover:bg-blue-600 transition-all">Home</a>
-            <a href="/upload" class="block px-6 py-3 hover:bg-blue-600 transition-all">Upload</a>
-            <a href="/visualise" class="block px-6 py-3 hover:bg-blue-600 transition-all">Visualise</a>
-            <a href="/share" class="block px-6 py-3 hover:bg-blue-600 transition-all">Share</a>
-            <a href="/login" class="block px-6 py-3 hover:bg-blue-600 transition-all">Login</a>
-        </div>
+      <!-- Mobile Menu -->
+      <div id="mobile-menu" class="hidden flex-col bg-gray-900/90 backdrop-blur-md rounded-b-xl shadow-xl text-white absolute top-full left-0 w-full transition-all duration-300 ease-in-out z-40">
+        <a href="/" class="block px-6 py-3 hover:bg-blue-600 transition-all">Home</a>
+        <a href="/upload" class="block px-6 py-3 hover:bg-blue-600 transition-all">Upload</a>
+        <a href="/visualise" class="block px-6 py-3 hover:bg-blue-600 transition-all">Visualise</a>
+        <a href="/share" class="block px-6 py-3 hover:bg-blue-600 transition-all">Share</a>
+        <a href="/login" class="block px-6 py-3 hover:bg-blue-600 transition-all">Login</a>
+      </div>
     </nav>
 
     <!-- Hero Section -->
     {% block hero %}
-    <section class="pt-24 px-6 text-center animate__animated animate__fadeIn">
+    <!--
+    <section class="text-center animate__animated animate__fadeIn">
       <h1 class="text-4xl sm:text-5xl font-extrabold mb-4">Track Your Progress, Crush Your Goals</h1>
       <p class="text-lg sm:text-xl text-gray-300 mb-6">Stay motivated. Stay consistent. Stay ahead.</p>
       <a href="/dashboard" class="inline-block bg-blue-600 hover:bg-blue-500 text-white px-6 py-3 rounded-xl font-semibold">Go to Dashboard</a>
     </section>
+    -->
     {% endblock %}
 
     <!-- Main Content -->
-    <main class="px-4 sm:px-8 md:px-16 pt-12">
+    <main class="flex-grow">
       {% block content %}
       <!-- Page content -->
       {% endblock %}
     </main>
 
     <!-- Footer -->
-    <footer class="bg-gray-900 text-gray-400 text-center py-6 mt-16">
+    <footer class="bg-gray-900 text-gray-400 text-center py-4">
       <p class="text-sm">Built with 💡 by StudyTrackr Team — 2025</p>
     </footer>
   </div>
