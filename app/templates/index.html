@@ -10,15 +10,15 @@
 <section id="section1" class="snap-section section-layout bg-gradient-to-br from-cyan-300 via-blue-600 to-blue-900 text-white">
     
     <div class="absolute inset-0 z-0 overflow-hidden">
-        <img src="/static/images/book.png" alt="Book Image" class="absolute top-20 left-20 h-32 w-32 rounded-full animate-pulse" />
+        <img src="/static/images/book.png" alt="Book Image" class="absolute top-10 left-20 h-32 w-32 rounded-full animate-pulse" />
         <div class="absolute bottom-20 right-20 w-32 h-32 rounded-full bg-indigo-400 animate-ping opacity-20"></div>
-        <div class="absolute top-1/4 right-1/4 w-12 h-12 rounded-full bg-green-300 animate-bounce opacity-20"></div>
-    </div>
+        <div class="absolute top-10 right-10 w-12 h-12 rounded-full bg-green-300 animate-bounce opacity-20"></div>
+    </div>         
 
     <div class="md:w-1/2 flex justify-center items-center p-4 mb-8 md:mb-0">
-        <div class="sm:hidden md:flex mx-auto bg-gray-800/80 border-2 border-gray-600 rounded-lg h-auto sm:h-96 md:h-[50rem] lg:h-[56rem] w-11/12 max-w-5xl flex flex-col justify-center items-center shadow-2xl transform transition-all duration-300 hover:scale-105 relative overflow-hidden">
+        <div class="sm:hidden md:flex mx-auto bg-gray-800/80 border-2 border-gray-600 rounded-lg h-auto sm:h-96 md:h-[20rem] lg:h-[22.4rem] w-11/12 max-w-5xl flex flex-col justify-center items-center shadow-2xl transform transition-all duration-300 hover:scale-105 relative overflow-hidden">
             <!-- Slider container -->
-            <div class="slider-container w-full h-full">
+            <div class="slider-container w-full h-[50%]">
                 <!-- Slide 1: Statistics Dashboard -->
                 <div class="slider-slide absolute inset-0 flex flex-col items-center justify-center transition-opacity duration-500 fade-slide">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-20 w-20 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -99,6 +99,7 @@
         </div>
     </div>
     
+    
     <div class="md:w-1/2 text-center flex flex-col justify-center items-center">
         <div class="animate__animated animate__fadeInDown animate__delay-0.5s">
             <h1 class="text-5xl font-bold mb-2">
@@ -153,45 +154,73 @@
 </section>
 
 <!-- Section 2 -->
-<section id="section2" class="snap-section bg-pink-300 text-gray-900">
-    <div class="w-full text-center pt-8 pb-4">
-        <h2 class="text-4xl font-bold mb-4">Track Your Study</h2>
-        <p class="text-lg mb-6">Log and review your daily study activities effortlessly.</p>
+<section id="section2" class="snap-section bg-gradient-to-r from-pink-400 via-pink-500 to-pink-600 text-gray-900 py-16">
+    <div class="w-full text-center mb-12 -mt-[45px]">
+        <h2 class="text-5xl font-extrabold text-white mb-6">Track Your Study</h2>
+        <p class="text-xl text-gray-100 mb-8">Log and review your daily study activities effortlessly.</p>
     </div>
     
-    <div class="w-full px-6 md:px-12 grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-        <div class="bg-pink-400 bg-opacity-50 rounded-lg p-6 shadow-lg transform transition-all duration-300 hover:scale-105">
-            <div class="flex flex-col items-center mb-4">
-                <h3 class="text-xl font-bold">Time Tracking</h3>
+    <div class="w-full px-6 md:px-12 grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+        <!-- Card 1: Time Tracking -->
+        <div class="bg-white rounded-lg p-6 shadow-xl transform transition-all duration-300 hover:scale-105 hover:shadow-2xl">
+            <div class="flex flex-col items-center mb-6">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 text-pink-500 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 0v4m-4-4h8" />
+                </svg>
+                <h3 class="text-2xl font-semibold text-gray-800">Time Tracking</h3>
             </div>
-            <p class="text-sm text-center">Track study sessions with precision. Set timers and monitor your focus periods.</p>
+            <p class="text-sm text-gray-600 text-center">Track study sessions with precision. Set timers and monitor your focus periods.</p>
         </div>
-        <div class="bg-pink-400 bg-opacity-50 rounded-lg p-6 shadow-lg transform transition-all duration-300 hover:scale-105">
-            <div class="flex flex-col items-center mb-4">
-                <h3 class="text-xl font-bold">Task Manager</h3>
+
+        <!-- Card 2: Task Manager -->
+        <div class="bg-white rounded-lg p-6 shadow-xl transform transition-all duration-300 hover:scale-105 hover:shadow-2xl">
+            <div class="flex flex-col items-center mb-6">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 text-pink-500 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16M4 12h16" />
+                </svg>
+                <h3 class="text-2xl font-semibold text-gray-800">Task Manager</h3>
             </div>
-            <p class="text-sm text-center">Create and organize your study tasks. Set priorities and track completion.</p>
+            <p class="text-sm text-gray-600 text-center">Create and organize your study tasks. Set priorities and track completion.</p>
         </div>
-        <div class="bg-pink-400 bg-opacity-50 rounded-lg p-6 shadow-lg transform transition-all duration-300 hover:scale-105">
-            <div class="flex flex-col items-center mb-4">
-                <h3 class="text-xl font-bold">Study Calendar</h3>
+
+        <!-- Card 3: Study Calendar -->
+        <div class="bg-white rounded-lg p-6 shadow-xl transform transition-all duration-300 hover:scale-105 hover:shadow-2xl">
+            <div class="flex flex-col items-center mb-6">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 text-pink-500 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                </svg>
+                <h3 class="text-2xl font-semibold text-gray-800">Study Calendar</h3>
             </div>
-            <p class="text-sm text-center">Plan your study schedule in advance. Never miss an important study session.</p>
+            <p class="text-sm text-gray-600 text-center">Plan your study schedule in advance. Never miss an important study session.</p>
         </div>
     </div>
     
-    <div class="w-full flex justify-center mb-8">
-        <div class="bg-gray-800 border-2 border-gray-600 rounded-lg p-4 max-w-md">
-            <div class="mt-4 text-xs text-center text-gray-400">App Interface Preview</div>
+    <div class="w-full flex justify-center mb-12">
+        <div class="bg-white border-2 border-gray-600 rounded-lg p-6 max-w-md shadow-lg">
+            <h3 class="text-xl text-center font-semibold text-gray-800 mb-4">Before and After</h3>
+            <div class="flex justify-between items-center">
+                <div class="w-1/2 pr-4">
+                    <img src="before.jpg" alt="Before" class="w-full h-auto rounded-lg shadow-lg">
+                    <p class="text-sm text-center text-gray-600 mt-4">Before using the app</p>
+                </div>
+                <div class="w-1/2 pl-4">
+                    <img src="after.jpg" alt="After" class="w-full h-auto rounded-lg shadow-lg">
+                    <p class="text-sm text-center text-gray-600 mt-4">After using the app</p>
+                </div>
+            </div>
         </div>
     </div>
     
-    <div class="w-full flex justify-center pb-8">
-        <button class="down-arrow w-16 h-16 flex items-center justify-center bg-transparent hover:bg-black/10 rounded-full" data-target="section3" type="button" aria-label="Go to Visualise Your Progress section">
-            <span class="text-4xl">⬇️</span>
+    <div class="w-full flex justify-center mt-[5px]">
+        <button class="down-arrow w-16 h-16 flex items-center justify-center bg-transparent hover:bg-black/10 rounded-full transition-all duration-300" data-target="section3" type="button" aria-label="Go to Visualise Your Progress section">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+            </svg>
         </button>
     </div>
+
 </section>
+
 
 <!-- Section 3 -->
 <section id="section3" class="snap-section bg-blue-900 text-white">
@@ -234,7 +263,9 @@
     <!-- Navigation arrow at the bottom -->
     <div class="w-full flex justify-center pb-8" style="margin-top: -30px;">
         <button class="down-arrow w-16 h-16 flex items-center justify-center bg-transparent hover:bg-white/10 rounded-full" data-target="section4" type="button" aria-label="Go to Share and Motivate section">
-            <span class="text-4xl">⬇️</span>
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+            </svg>
         </button>
     </div>
 </section>
