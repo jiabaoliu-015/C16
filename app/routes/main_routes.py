@@ -13,3 +13,7 @@ def login():
     if request.method == 'POST':
         return redirect(url_for('visualise.visualise'))
     return render_template('login.html')
+
+@bp.route('/register', methods=['GET', 'POST'])
+def register():
+    return render_template('register.html')
