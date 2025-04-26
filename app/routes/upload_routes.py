@@ -2,9 +2,9 @@
 
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 
-bp = Blueprint('upload', __name__, url_prefix='/upload')
+upload_bp = Blueprint('upload', __name__, url_prefix='/upload')
 
-@bp.route('/', methods=['GET', 'POST'])
+@upload_bp.route('/', methods=['GET', 'POST'])
 def upload_data():
     if request.method == 'POST':
         if 'form_type' in request.form and request.form['form_type'] == 'manual_entry':
