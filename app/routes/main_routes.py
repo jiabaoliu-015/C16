@@ -17,3 +17,7 @@ def login():
 @bp.route('/register', methods=['GET', 'POST'])
 def register():
     return render_template('register.html')
+
+@bp.route('/reset-password', methods=['GET', 'POST'])
+def reset_password():
+    return render_template('reset_password.html')
