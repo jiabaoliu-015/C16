@@ -28,22 +28,22 @@ def login():
     return render_template('auth/login.html', form=form)  # Pass form to the template
 
 # Signup Route
-@auth_bp.route('/signup', methods=['GET', 'POST'])
+@auth_bp.route('/register', methods=['GET', 'POST'])
 def signup():
     if request.method == 'POST':
         # Handle signup logic (save user to the database, etc.)
         flash('Signup successful! You can now log in.', 'success')
         return redirect(url_for('user.login'))  # Redirect to login after signup
-    return render_template('auth/signup.html')
+    return render_template('auth/register.html')
 
 # Forgot Password Route
-@auth_bp.route('/forgot-password', methods=['GET', 'POST'])
+@auth_bp.route('/reset-password', methods=['GET', 'POST'])
 def forgot_password():
     if request.method == 'POST':
         # Handle password reset logic (send email, etc.)
         flash('Password reset link sent!', 'info')
         return redirect(url_for('user.login'))  # Redirect to login after requesting password reset
-    return render_template('auth/forgot_password.html')
+    return render_template('auth/reset_password.html')
 
 # Logout Route
 @auth_bp.route('/logout', methods=['POST'])
