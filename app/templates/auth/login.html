@@ -50,7 +50,7 @@
             
                 <!-- Forgot password link -->
                 <div class="text-right">
-                    <a href="{{ url_for('auth.forgot_password') }}" class="text-blue-500 hover:text-blue-600 text-sm">Forgot password?</a>
+                    <a href="{{ url_for('auth.reset_password') }}" class="text-blue-500 hover:text-blue-600 text-sm">Forgot password?</a>
                 </div>
             
                 <!-- Submit login button -->
@@ -67,7 +67,7 @@
             
                 <!-- Create account link -->
                 <div class="text-center">
-                    <p class="text-gray-500 text-sm">You don't have an account yet? <a href="{{ url_for('auth.signup') }}" class="text-blue-500 hover:text-blue-600 font-medium">Create an account →</a></p>
+                    <p class="text-gray-500 text-sm">You don't have an account yet? <a href="{{ url_for('auth.register') }}" class="text-blue-500 hover:text-blue-600 font-medium">Create an account →</a></p>
                 </div>
             </form>
             <div class="mt-6 text-center text-gray-400 text-sm">
