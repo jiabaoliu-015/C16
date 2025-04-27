@@ -5,8 +5,32 @@
 {% block content %}
 <script src="{{ url_for('static', filename='js/script.js') }}"></script>
 
-<div class="container mx-auto pt-24 px-4 md:px-8">
-    <div class="max-w-2xl mx-auto bg-gray-800 rounded-lg shadow-xl p-6 mb-8 animate__animated animate__fadeIn">
+<div class="bg-gray-100 min-h-screen py-12 px-4 md:px-8">
+    <!-- Header Section -->
+    <div class="max-w-4xl mx-auto bg-white shadow-md rounded-lg p-6 mb-8 relative">
+        <div class="mt-16 text-gray-600 text-sm flex justify-left items-center space-x-2">
+            <p class="text-gray-800 font-medium">Sunday 27/4/2025</p>
+            <span class="text-gray-400">•</span>
+            <p class="text-gray-400">{username}</p>
+        </div>
+        <h1 class="text-4xl font-bold text-gray-900 flex items-center">
+            Upload Sessions
+            <span class="ml-3 relative group">
+                <span class="w-5 h-5 bg-white shadow-md rounded-full flex items-center justify-center text-gray-500 text-sm cursor-pointer">?</span>
+                <div class="absolute left-0 mt-2 w-64 bg-white text-gray-700 text-sm rounded-lg shadow-lg p-4 hidden group-hover:block">
+                    The <strong>Upload Sessions</strong> view allows you to track each individual study session you've tracked (with a timer or manually). You can quickly create, update and delete sessions as you please.
+                </div>
+            </span>
+        </h1>
+        <div class="mt-4 text-gray-600 text-sm flex items-center space-x-6">
+            <span>⏰ <strong>30m/1h</strong> • 50% studied today</span>
+            <span>⏱️ <strong>2</strong> sessions</span>
+            <span>⌛ <strong>48m</strong> avg. session</span>
+        </div>
+    </div>
+
+    <!-- Upload Section -->
+    <div class="max-w-2xl mx-auto bg-white rounded-lg shadow-xl p-6 mb-8">
         <h1 class="text-3xl font-bold text-blue-500 mb-6">Upload Study Data</h1>
         
         <div class="mb-8">
@@ -59,8 +83,9 @@
             <p>Need help formatting your data? <a href="#" class="text-blue-400 hover:text-blue-300">Download our template</a> to get started.</p>
         </div>
     </div>
-    
-    <div class="max-w-2xl mx-auto bg-gray-800 rounded-lg shadow-xl p-6 mb-8 animate__animated animate__fadeIn animate__delay-1s">
+
+    <!-- Manual Entry Section -->
+    <div class="max-w-2xl mx-auto bg-white rounded-lg shadow-xl p-6 mb-8">
         <h2 class="text-2xl font-bold text-blue-500 mb-4">Manual Entry</h2>
         <p class="text-gray-300 mb-6">Don't have a CSV file? You can manually enter your study session details below:</p>
         
