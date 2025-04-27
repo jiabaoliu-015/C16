@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div id="capture-area" style="padding: 20px; background: #362aa5;">
+    <h1>information</h1>
+    <p>information</p>
+  </div>
+<style id=screenshot-btn>  </style>
+<button id="screenshot-btn">ScreenShot</button>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+<script>
+    document.getElementById('screenshot-btn').addEventListener('click', async () => {
+      try {
+        const element = document.getElementById('capture-area');
+        const canvas = await html2canvas(element, {
+          useCORS: true, 
+          logging: false 
+        });
+
+    
+        canvas.toBlob(async (blob) => {
+          try {
+         
+            await navigator.clipboard.write([
+              new ClipboardItem({ 'image/png': blob })
+            ]);
+            
+            
+            alert('Success ScreenShot!');
+          } catch (err) {
+            console.error('error:', err);
+            alert('error');
+          }
+        }, 'image/png');
+        
+      } catch (err) {
+        console.error('error:', err);
+        alert('error');
+      }
+    });
+  </script>
+
+{% endblock %}
