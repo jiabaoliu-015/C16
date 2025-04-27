@@ -5,9 +5,11 @@
 {% block title %}Upload Study Data{% endblock %}
 
 {% block content %}
-<script src="{{ url_for('static', filename='js/script.js') }}"></script>
+<script src="{{ url_for('static', filename='js/time-dropdown.js') }}"></script>
+<script src="{{ url_for('static', filename='js/date-adjust.js') }}"></script>
+<script src="{{ url_for('static', filename='js/break-dropdown.js') }}"></script>
 
-<div class="bg-gray-100 min-h-screen py-12 px-4 md:px-8">
+<div class="bg-gray-100 min-h-screen py-12 px-4 md:px-8 float-left">
     <!-- Header Section -->
     <div class="max-w-4xl mx-auto p-6 mb-8 relative">
         <div class="mt-8 text-gray-600 text-sm flex justify-left items-center space-x-2">
@@ -32,216 +34,137 @@
     </div>
 
     <!-- Create New Session Section -->
-    <div class="max-w-2xl mx-auto bg-white rounded-lg shadow-xl p-6 mb-8">
-        <h2 class="text-3xl font-bold text-gray-900 mb-4 flex justify-between items-center">
-            Create New Session
-            <span class="text-blue-500 cursor-pointer hover:underline">Reset</span>
+    <div class="max-w-md float-left bg-white rounded-lg shadow-xl p-8 mb-8">
+        <h2 class="text-3xl font-bold text-gray-900 mb-6 flex justify-between items-center">
+            <span>Create New Session</span>
+            <button type="button" class="hover:blue-700 text-blue-400 py-2 px-4 text-sm rounded-md transition duration-200 flex font-medium items-center space-x-2" id="reset-form">
+                Reset
+            </button>
         </h2>
         
-        <form method="POST" action="#" class="space-y-6">
-            <div class="space-y-4">
+        <form method="POST" action="#" class="space-y-8">
+            <div class="space-y-6">
                 <!-- Date Field -->
-                <div class="space-y-2">
-                    <div class="relative">
-                        <input type="date" name="new_date" id="new_date" value="2025-04-27" min="2025-04-26" max="2025-04-30" 
-                            class="w-full bg-gray-100 border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                        <label for="new_date" class="absolute top-1 left-2 text-xs text-gray-500">Date *</label>
-                    </div>
-                    <div class="flex items-center space-x-2">
-                        <button type="button" class="text-gray-500 px-2 py-1 rounded-md disabled:text-gray-300" id="prev-day" disabled>&lt;</button>
-                        <button type="button" class="text-gray-500 px-2 py-1 rounded-md" id="next-day">&gt;</button>
+                <div>
+                    <label for="new_date" class="text-gray-700 font-semibold text-sm block mb-2">Date *</label>
+                    <div class="flex items-center space-x-3">
+                        <input type="date" name="new_date" id="new_date" min="2025-04-26" max="2025-04-30"
+                            class="w-full bg-gray-100 border border-gray-300 rounded-md px-4 py-2 text-gray-800 placeholder-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <button type="button" class="bg-gray-300 text-gray-500 px-3 py-2 rounded-md disabled:bg-gray-200 disabled:text-gray-400" id="prev-day">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                            </svg>
+                        </button>
+                        <button type="button" class="bg-gray-300 text-gray-500 px-3 py-2 rounded-md" id="next-day">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                            </svg>
+                        </button>
                     </div>
                 </div>
 
                 <!-- Start and End Time Fields -->
-                <div class="grid grid-cols-2 gap-4">
-                    <div class="space-y-2">
+                <div class="grid grid-cols-2 gap-6">
+                    <div class="relative">
+                        <label for="new_start" class="text-gray-700 font-semibold text-sm block mb-2">Start *</label>
                         <div class="relative">
                             <input type="time" name="new_start" id="new_start" value="14:00" 
-                                class="w-full bg-gray-100 border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                            <label for="new_start" class="absolute top-1 left-2 text-xs text-gray-500">Start *</label>
-                        </div>
-                        <div class="grid grid-cols-2 gap-2 mt-2">
-                            <button type="button" class="bg-red-500 text-gray-100 font-bold px-2 py-1 rounded-md">-5</button>
-                            <button type="button" class="bg-green-500 text-gray-100 font-bold px-2 py-1 rounded-md">+5</button>
-                            <button type="button" class="bg-red-500 text-gray-100 font-bold px-2 py-1 rounded-md">-15</button>
-                            <button type="button" class="bg-green-500 text-gray-100 font-bold px-2 py-1 rounded-md">+15</button>
-                            <button type="button" class="bg-red-500 text-gray-100 font-bold px-2 py-1 rounded-md">-30</button>
-                            <button type="button" class="bg-green-500 text-gray-100 font-bold px-2 py-1 rounded-md">+30</button>
-                            <button type="button" class="bg-red-500 text-gray-100 font-bold px-2 py-1 rounded-md">-60</button>
-                            <button type="button" class="bg-green-500 text-gray-100 font-bold px-2 py-1 rounded-md">+60</button>
+                                class="w-full bg-gray-100 border border-gray-300 rounded-md px-4 py-2 text-gray-800 placeholder-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer">
+                            <div id="start-dropdown" class="absolute bg-white border border-gray-300 rounded-lg shadow-lg p-4 mt-2 hidden z-50">
+                                <div class="grid grid-cols-2 gap-2">
+                                    <button type="button" class="bg-red-100 text-red-600 text-xs font-medium px-3 py-1 rounded-md text-center" data-adjust="-5">-5m</button>
+                                    <button type="button" class="bg-green-100 text-green-600 text-xs font-medium px-3 py-1 rounded-md text-center" data-adjust="5">+5m</button>
+                                    <button type="button" class="bg-red-100 text-red-600 text-xs font-medium px-3 py-1 rounded-md text-center" data-adjust="-25">-25m</button>
+                                    <button type="button" class="bg-green-100 text-green-600 text-xs font-medium px-3 py-1 rounded-md text-center" data-adjust="25">+25m</button>
+                                    <button type="button" class="bg-red-100 text-red-600 text-xs font-medium px-3 py-1 rounded-md text-center" data-adjust="-50">-50m</button>
+                                    <button type="button" class="bg-green-100 text-green-600 text-xs font-medium px-3 py-1 rounded-md text-center" data-adjust="50">+50m</button>
+                                    <button type="button" class="bg-red-100 text-red-600 text-xs font-medium px-3 py-1 rounded-md text-center" data-adjust="-75">-75m</button>
+                                    <button type="button" class="bg-green-100 text-green-600 text-xs font-medium px-3 py-1 rounded-md text-center" data-adjust="75">+75m</button>
+                                </div>
+                                <p class="text-sm text-gray-500 mt-3">Start time adjusted: <span id="start-duration"><strong>14:00</strong></span></p>
+                            </div>
                         </div>
                     </div>
-                    <div class="space-y-2">
+                    <div class="relative">
+                        <label for="new_end" class="text-gray-700 font-semibold text-sm block mb-2">End *</label>
                         <div class="relative">
                             <input type="time" name="new_end" id="new_end" value="16:20" 
-                                class="w-full bg-gray-100 border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                            <label for="new_end" class="absolute top-1 left-2 text-xs text-gray-500">End *</label>
+                                class="w-full bg-gray-100 border border-gray-300 rounded-md px-4 py-2 text-gray-800 placeholder-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer">
+                            <div id="end-dropdown" class="absolute bg-white border border-gray-300 rounded-lg shadow-lg p-4 mt-2 hidden z-50">
+                                <div class="grid grid-cols-2 gap-2">
+                                    <button type="button" class="bg-red-100 text-red-600 text-xs font-medium px-3 py-1 rounded-md text-center" data-adjust="-5">-5m</button>
+                                    <button type="button" class="bg-green-100 text-green-600 text-xs font-medium px-3 py-1 rounded-md text-center" data-adjust="5">+5m</button>
+                                    <button type="button" class="bg-red-100 text-red-600 text-xs font-medium px-3 py-1 rounded-md text-center" data-adjust="-25">-25m</button>
+                                    <button type="button" class="bg-green-100 text-green-600 text-xs font-medium px-3 py-1 rounded-md text-center" data-adjust="25">+25m</button>
+                                    <button type="button" class="bg-red-100 text-red-600 text-xs font-medium px-3 py-1 rounded-md text-center" data-adjust="-50">-50m</button>
+                                    <button type="button" class="bg-green-100 text-green-600 text-xs font-medium px-3 py-1 rounded-md text-center" data-adjust="50">+50m</button>
+                                    <button type="button" class="bg-red-100 text-red-600 text-xs font-medium px-3 py-1 rounded-md text-center" data-adjust="-75">-75m</button>
+                                    <button type="button" class="bg-green-100 text-green-600 text-xs font-medium px-3 py-1 rounded-md text-center" data-adjust="75">+75m</button>
+                                </div>
+                                <p class="text-sm text-gray-500 mt-3">End time adjusted: <span id="end-duration"><strong>16:20</strong></span></p>
+                            </div>
                         </div>
-                        <p class="text-sm text-gray-500 mt-2">Study session duration: <strong>2h 20m</strong></p>
+                    </div>
+                </div>
+
+                <!-- Session Duration Display -->
+                <div class="flex items-center justify-between mt-4">
+                    <p id="session-duration" class="text-gray-700 font-semibold text-sm">Duration: <strong>2h 20m</strong></p>
+                    <div class="w-1/2 bg-gray-200 rounded-full h-2">
+                        <div id="session-progress" class="bg-green-500 h-2 rounded-full" style="width: 0%;"></div>
                     </div>
                 </div>
 
                 <!-- Break Field -->
-                <div class="space-y-2">
+                <div class="relative">
+                    <label for="new_break" class="text-gray-700 font-semibold text-sm block mb-2">Break (minutes)</label>
                     <div class="relative">
-                        <input type="number" name="new_break" id="new_break" value="0" 
-                            class="w-full bg-gray-100 border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                        <label for="new_break" class="absolute top-1 left-2 text-xs text-gray-500">Break (minutes)</label>
-                    </div>
-                    <div class="grid grid-cols-2 gap-2 mt-2">
-                        <button type="button" class="bg-red-500 text-gray-100 font-bold px-2 py-1 rounded-md">-5</button>
-                        <button type="button" class="bg-green-500 text-gray-100 font-bold px-2 py-1 rounded-md">+5</button>
-                        <button type="button" class="bg-red-500 text-gray-100 font-bold px-2 py-1 rounded-md">-10</button>
-                        <button type="button" class="bg-green-500 text-gray-100 font-bold px-2 py-1 rounded-md">+10</button>
-                        <button type="button" class="bg-red-500 text-gray-100 font-bold px-2 py-1 rounded-md">-30</button>
-                        <button type="button" class="bg-green-500 text-gray-100 font-bold px-2 py-1 rounded-md">+30</button>
-                    </div>
-                </div>
-
-                <!-- Duration Output -->
-                <div class="flex items-center justify-between">
-                    <p class="text-gray-700 font-bold text-sm">Duration: <strong>2h 20m</strong></p>
-                    <div class="w-1/2 bg-gray-200 rounded-full h-2">
-                        <div class="bg-green-500 h-2 rounded-full" style="width: 50%;"></div>
+                        <input type="number" name="new_break" id="new_break" value="0" min="0" 
+                            class="w-full bg-gray-100 border border-gray-300 rounded-md px-4 py-2 text-gray-800 placeholder-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer">
+                        <div id="break-dropdown" class="absolute bg-white border border-gray-300 rounded-lg shadow-lg p-4 mt-2 hidden z-50">
+                            <div class="grid grid-cols-2 gap-2">
+                                <button type="button" class="bg-red-100 text-red-600 text-xs font-medium px-3 py-1 rounded-md text-center" data-adjust="-5">-5m</button>
+                                <button type="button" class="bg-green-100 text-green-600 text-xs font-medium px-3 py-1 rounded-md text-center" data-adjust="5">+5m</button>
+                                <button type="button" class="bg-red-100 text-red-600 text-xs font-medium px-3 py-1 rounded-md text-center" data-adjust="-10">-10m</button>
+                                <button type="button" class="bg-green-100 text-green-600 text-xs font-medium px-3 py-1 rounded-md text-center" data-adjust="10">+10m</button>
+                                <button type="button" class="bg-red-100 text-red-600 text-xs font-medium px-3 py-1 rounded-md text-center" data-adjust="-30">-30m</button>
+                                <button type="button" class="bg-green-100 text-green-600 text-xs font-medium px-3 py-1 rounded-md text-center" data-adjust="30">+30m</button>
+                            </div>
+                            <p class="text-sm text-gray-500 mt-3">Break duration adjusted: <span id="break-duration">0m</span></p>
+                        </div>
                     </div>
                 </div>
 
                 <!-- Course Field -->
-                <div class="relative">
-                    <input type="text" name="new_course" id="new_course" placeholder="e.g. CITS3403" 
-                        class="w-full bg-gray-100 border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                    <label for="new_course" class="absolute top-1 left-2 text-xs text-gray-500">Course *</label>
+                <div>
+                    <label for="new_course" class="text-gray-700 font-semibold text-sm block mb-2">Course *</label>
+                    <input type="text" name="new_course" id="new_course" placeholder="e.g., CITS3403" 
+                        class="w-full bg-gray-100 border border-gray-300 rounded-md px-4 py-2 text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500">
                 </div>
 
                 <!-- Activity Field -->
-                <div class="relative">
+                <div>
+                    <label for="new_activity" class="text-gray-700 font-semibold text-sm block mb-2">Activity</label>
                     <input type="text" name="new_activity" id="new_activity" placeholder="e.g., listening to Matthew Daggit" 
-                        class="w-full bg-gray-100 border border-gray-300 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                    <label for="new_activity" class="absolute top-1 left-2 text-xs text-gray-500">Activity</label>
+                        class="w-full bg-gray-100 border border-gray-300 rounded-md px-4 py-2 text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500">
                 </div>
 
                 <!-- Productivity Rating -->
-                <div class="space-y-2">
-                    <label for="new_productivity" class="text-gray-700 font-bold text-xs block">Productivity Rating</label>
+                <div>
+                    <label for="new_productivity" class="text-gray-700 font-semibold text-sm block mb-2">Productivity Rating (1-10) *</label>
                     <input type="range" name="new_productivity" id="new_productivity" min="1" max="10" value="7" 
-                        class="w-full">
-                    <p class="text-center text-gray-500 font-medium" id="productivity-value">7</p>
+                        class="w-full text-gray-800">
+                    <p class="text-center text-gray-500 font-medium mt-2" id="productivity-value">7</p>
                 </div>
             </div>
 
             <!-- Submit Button -->
-            <div class="mt-8">
-                <button type="submit" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-4 rounded-md transition duration-200 disabled:bg-gray-300 disabled:cursor-not-allowed" disabled>
+            <div class="mt-10">
+                <button type="submit" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-4 rounded-md transition duration-200 disabled:bg-green-300 disabled:cursor-not-allowed" disabled>
                     ✅ Create
                 </button>
             </div>
         </form>
-    </div>
-
-    <!-- Manual Entry Section -->
-    <div class="max-w-2xl mx-auto bg-white rounded-lg shadow-xl p-6 mb-8">
-        <h2 class="text-2xl font-bold text-blue-500 mb-4">Manual Entry</h2>
-        <p class="text-gray-300 mb-6">Don't have a CSV file? You can manually enter your study session details below:</p>
-        
-        <form method="POST" action="{{ url_for('upload.upload_data') }}" class="space-y-6">
-            {{ form.csrf_token if form }}
-            
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div class="space-y-2">
-                    <label for="m_date" class="text-blue-400 font-medium block">Date</label>
-                    <input type="date" name="date" id="m_date" required 
-                        class="w-full bg-gray-700 border border-gray-600 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                </div>
-                
-                <div class="space-y-2">
-                    <label for="m_subject" class="text-blue-400 font-medium block">Subject</label>
-                    <input type="text" name="subject" id="m_subject" required placeholder="e.g., Mathematics"
-                        class="w-full bg-gray-700 border border-gray-600 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                </div>
-                
-                <div class="space-y-2">
-                    <label for="m_start_time" class="text-blue-400 font-medium block">Start Time</label>
-                    <input type="time" name="start_time" id="m_start_time" required 
-                        class="w-full bg-gray-700 border border-gray-600 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                </div>
-                
-                <div class="space-y-2">
-                    <label for="m_duration" class="text-blue-400 font-medium block">Duration (minutes)</label>
-                    <input type="number" name="duration" id="m_duration" required min="1" max="1440" 
-                        class="w-full bg-gray-700 border border-gray-600 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                </div>
-                
-                <div class="space-y-2 md:col-span-2">
-                    <label for="m_productivity" class="text-blue-400 font-medium block">Productivity Rating (1-10)</label>
-                    <input type="range" name="productivity" id="m_productivity" min="1" max="10" value="7" 
-                        class="w-full" oninput="updateRatingValue(this.value)">
-                    <p class="text-center text-blue-300 font-medium" id="rating-value">7</p>
-                </div>
-            </div>
-            
-            <div class="mt-8">
-                <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-4 rounded-md transition duration-200">
-                    Add Study Session
-                </button>
-            </div>
-            <input type="hidden" name="form_type" value="manual_entry">
-        </form>
-    </div>
-
-    <!-- Upload Section -->
-    <div class="max-w-2xl mx-auto bg-white rounded-lg shadow-xl p-6 mb-8">
-        <h1 class="text-3xl font-bold text-blue-500 mb-6">Upload Study Data</h1>
-        
-        <div class="mb-8">
-            <p class="text-gray-300 mb-4">Upload your study sessions data to track your progress and visualize your habits. We accept CSV files with the following format:</p>
-            <div class="bg-gray-700 rounded-md p-4 text-sm">
-                <code class="text-green-400">date,subject,start_time,duration_minutes,productivity_rating</code>
-                <br>
-                <code class="text-gray-300">2025-04-15,Mathematics,14:30,120,8</code>
-                <br>
-                <code class="text-gray-300">2025-04-16,Programming,09:00,90,7</code>
-            </div>
-        </div>
-        
-        <form method="POST" action="{{ url_for('upload.upload_data') }}" class="space-y-6">
-            {{ form.csrf_token if form }}
-            
-            <div class="space-y-2">
-                <label for="file" class="text-blue-400 font-medium block">Select CSV File</label>
-                <div class="flex items-center">
-                    <input type="file" name="data_file" id="file" accept=".csv"
-                        class="hidden" onchange="updateFileName()">
-                    <label for="file" class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md cursor-pointer transition duration-200">
-                        Browse Files
-                    </label>
-                    <span id="file-name" class="ml-3 text-gray-300">No file selected</span>
-                </div>
-            </div>
-            
-            <div class="space-y-2">
-                <label for="subject" class="text-blue-400 font-medium block">Default Subject (optional)</label>
-                <input type="text" name="default_subject" id="subject" placeholder="For unlabeled data"
-                    class="w-full bg-gray-700 border border-gray-600 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
-            </div>
-            
-            <div>
-                <label class="inline-flex items-center text-gray-300 cursor-pointer">
-                    <input type="checkbox" name="overwrite" class="form-checkbox h-5 w-5 text-blue-500">
-                    <span class="ml-2">Overwrite existing data for these dates</span>
-                </label>
-            </div>
-            
-            <div class="mt-8">
-                <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-4 rounded-md transition duration-200 animate__animated animate__pulse animate__infinite animate__slow">
-                    Upload and Process Data
-                </button>
-            </div>
-        </form>
-        
-        <div class="mt-8 text-sm text-center text-gray-400">
-            <p>Need help formatting your data? <a href="#" class="text-blue-400 hover:text-blue-300">Download our template</a> to get started.</p>
-        </div>
     </div>
 </div>
 
