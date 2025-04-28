@@ -40,3 +40,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
     adjustDate('new_date', 'prev-day', 'next-day', '2025-04-26', '2025-04-30');
 });
+
+document.addEventListener("DOMContentLoaded", () => {
+    const currentDateElement = document.getElementById("current-date");
+    if (currentDateElement) {
+        const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+        const today = new Date();
+        const dayName = days[today.getDay()];
+        const formattedDate = `${dayName} ${today.getDate()}/${today.getMonth() + 1}/${today.getFullYear()}`;
+        currentDateElement.textContent = formattedDate;
+    }
+});

@@ -4,7 +4,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const dropdown = document.getElementById(dropdownId);
 
         // Toggle dropdown visibility on input click
-        input.addEventListener('click', () => {
+        input.addEventListener('click', (event) => {
+            event.stopPropagation(); // Prevent triggering document click listener
             dropdown.classList.toggle('hidden');
         });
 
@@ -47,9 +48,40 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     };
 
+    const adjustBreak = (inputId, dropdownId, durationId) => {
+        const input = document.getElementById(inputId);
+        const dropdown = document.getElementById(dropdownId);
+        const durationDisplay = document.getElementById(durationId);
+
+        dropdown.addEventListener('click', (event) => {
+            if (event.target.tagName === 'BUTTON') {
+                const adjustment = parseInt(event.target.getAttribute('data-adjust'), 10);
+                let currentBreak = parseInt(input.value, 10) || 0;
+
+                currentBreak += adjustment;
+                currentBreak = Math.max(0, currentBreak); // Ensure break duration is not negative
+
+                input.value = currentBreak; // Update the input field
+                durationDisplay.textContent = `${currentBreak}m`; // Update the duration display
+                updateSessionDuration(); // Update session duration dynamically
+            }
+        });
+
+        // Ensure input field value cannot be negative
+        input.addEventListener('input', () => {
+            let currentBreak = parseInt(input.value, 10) || 0;
+            if (currentBreak < 0) {
+                input.value = 0;
+            }
+            durationDisplay.textContent = `${input.value}m`; // Update the duration display
+            updateSessionDuration(); // Update session duration dynamically
+        });
+    };
+
     const updateSessionDuration = () => {
         const startInput = document.getElementById('new_start');
         const endInput = document.getElementById('new_end');
+        const breakInput = document.getElementById('new_break'); // Added break input
         const sessionDurationDisplay = document.getElementById('session-duration');
         const sessionProgress = document.getElementById('session-progress');
 
@@ -62,6 +94,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 durationMinutes += 24 * 60; // Handle overnight sessions
             }
 
+            const breakMinutes = parseInt(breakInput.value, 10) || 0; // Get break value
+            durationMinutes = Math.max(0, durationMinutes - breakMinutes); // Subtract break and ensure non-negative
+
             const hours = Math.floor(durationMinutes / 60);
             const minutes = durationMinutes % 60;
             sessionDurationDisplay.innerHTML = `Duration: <strong>${hours}h ${minutes}m</strong>`;
@@ -72,11 +107,13 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    // Initialize dropdowns and time adjustment functionality
+    // Initialize dropdowns and time/break adjustment functionality
     toggleDropdown('new_start', 'start-dropdown');
     toggleDropdown('new_end', 'end-dropdown');
+    toggleDropdown('new_break', 'break-dropdown');
     adjustTime('new_start', 'start-dropdown', 'start-duration');
     adjustTime('new_end', 'end-dropdown', 'end-duration');
+    adjustBreak('new_break', 'break-dropdown', 'break-duration');
 
     // Update session duration on input changes
     document.getElementById('new_start').addEventListener('change', updateSessionDuration);

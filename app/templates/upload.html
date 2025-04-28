@@ -5,17 +5,18 @@
 {% block title %}Upload Study Data{% endblock %}
 
 {% block content %}
-<script src="{{ url_for('static', filename='js/time-dropdown.js') }}"></script>
+<script src="{{ url_for('static', filename='js/time-and-break-dropdown.js') }}"></script>
 <script src="{{ url_for('static', filename='js/date-adjust.js') }}"></script>
-<script src="{{ url_for('static', filename='js/break-dropdown.js') }}"></script>
+<script src="{{ url_for('static', filename='js/productivity-rating.js') }}"></script>
+<script src="{{ url_for('static', filename='js/enable-submit.js') }}"></script>
 
 <div class="bg-gray-100 min-h-screen py-12 px-4 md:px-8 float-left">
     <!-- Header Section -->
     <div class="max-w-4xl mx-auto p-6 mb-8 relative">
         <div class="mt-8 text-gray-600 text-sm flex justify-left items-center space-x-2">
-            <p class="text-gray-800 font-medium">Sunday 27/4/2025</p>
+            <p id="current-date" class="text-gray-800 font-medium"></p>
             <span class="text-gray-400">•</span>
-            <p class="text-gray-400">{username}</p>
+            <p class="text-gray-400">{{ session['user_id'] }}</p>
         </div>
         <h1 class="text-4xl font-bold text-gray-900 flex items-center">
             Upload Sessions
@@ -35,9 +36,9 @@
 
     <!-- Create New Session Section -->
     <div class="max-w-md float-left bg-white rounded-lg shadow-xl p-8 mb-8">
-        <h2 class="text-3xl font-bold text-gray-900 mb-6 flex justify-between items-center">
+        <h2 class="text-2xl font-bold text-gray-900 mb-6 flex justify-between items-center">
             <span>Create New Session</span>
-            <button type="button" class="hover:blue-700 text-blue-400 py-2 px-4 text-sm rounded-md transition duration-200 flex font-medium items-center space-x-2" id="reset-form">
+            <button type="button" class="text-blue-500 hover:text-blue-700 bg-transparent text-sm transition duration-200 flex font-medium items-right space-x-2" id="reset-form" onclick="resetForm()">
                 Reset
             </button>
         </h2>
@@ -145,22 +146,24 @@
                 <!-- Activity Field -->
                 <div>
                     <label for="new_activity" class="text-gray-700 font-semibold text-sm block mb-2">Activity</label>
-                    <input type="text" name="new_activity" id="new_activity" placeholder="e.g., listening to Matthew Daggit" 
+                    <input type="text" name="new_activity" id="new_activity" placeholder="e.g., listening to Matthew Daggitt" 
                         class="w-full bg-gray-100 border border-gray-300 rounded-md px-4 py-2 text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500">
                 </div>
 
                 <!-- Productivity Rating -->
                 <div>
-                    <label for="new_productivity" class="text-gray-700 font-semibold text-sm block mb-2">Productivity Rating (1-10) *</label>
-                    <input type="range" name="new_productivity" id="new_productivity" min="1" max="10" value="7" 
-                        class="w-full text-gray-800">
-                    <p class="text-center text-gray-500 font-medium mt-2" id="productivity-value">7</p>
+                    <label for="new_productivity" class="text-gray-700 font-semibold text-sm block mb-2">Productivity Rating (0-10) *</label>
+                    <input type="range" name="new_productivity" id="new_productivity" min="0" max="10" value="7" 
+                        class="w-full appearance-none bg-gray-300 rounded-lg overflow-hidden h-4 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <p class="text-center text-gray-500 font-medium mt-2">
+                        <span id="productivity-value">7</span> - <span id="productivity-descriptor">Good</span>
+                    </p>
                 </div>
             </div>
 
             <!-- Submit Button -->
             <div class="mt-10">
-                <button type="submit" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-4 rounded-md transition duration-200 disabled:bg-green-300 disabled:cursor-not-allowed" disabled>
+                <button type="submit" id="create-session-btn" class="w-full bg-gradient-to-r from-green-400 to-green-600 hover:from-green-500 hover:to-green-700 text-white font-bold py-3 px-4 rounded-lg shadow-lg transition duration-300 disabled:opacity-50 disabled:cursor-not-allowed" disabled>
                     ✅ Create
                 </button>
             </div>
@@ -168,4 +171,20 @@
     </div>
 </div>
 
+<script>
+    function resetForm() {
+        const today = new Date().toISOString().split('T')[0];
+        document.getElementById('new_date').value = today;
+        document.getElementById('new_start').value = '14:00';
+        document.getElementById('new_end').value = '16:20';
+        document.getElementById('new_break').value = '0';
+        document.getElementById('new_course').value = '';
+        document.getElementById('new_activity').value = '';
+        document.getElementById('new_productivity').value = '7';
+        document.getElementById('productivity-value').textContent = '7';
+        document.getElementById('productivity-descriptor').textContent = 'Good';
+        document.getElementById('session-duration').innerHTML = 'Duration: <strong>0h 0m</strong>';
+        document.getElementById('session-progress').style.width = '0%';
+    }
+</script>
 {% endblock %}
