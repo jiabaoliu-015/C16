@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block title %}About StudyTrackr{% endblock %}
+
+{% block content %}
+    <section class="p-8">
+        <h1 class="text-4xl font-bold mb-4">Welcome to StudyTrackr!</h1>
+        <p class="text-lg mb-6">StudyTrackr is your personal study assistant, designed to help you track your study habits, visualize your progress, and stay on top of your academic goals.</p>
+
+        <h2 class="text-2xl font-semibold mb-2">Key Features</h2>
+        <ul class="list-disc ml-6">
+            <li>Track study time and sessions</li>
+            <li>Visualize your progress with charts and graphs</li>
+            <li>Set reminders and goals for your study sessions</li>
+        </ul>
+
+        <p class="mt-4">Ready to get started? <a href="{{ url_for('auth.login') }}" class="text-blue-500">Log in</a> and begin your journey!</p>
+    </section>
+{% endblock %}
