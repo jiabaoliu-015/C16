@@ -1,50 +1,193 @@
 {% extends "base.html" %}
 
-{% block title %}Share Information{% endblock %}
+{% block title %}Share Data{% endblock %}
 
 {% block content %}
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-
 <div class="container mx-auto pt-24 px-4 md:px-8">
     <div class="max-w-2xl mx-auto bg-gray-800 rounded-lg shadow-xl p-6 mb-8 animate__animated animate__fadeIn">
-        <div id="capture-area" class="p-6 mb-6 bg-blue-900 rounded-lg">
-            <h1 class="text-2xl font-bold text-blue-300 mb-4">Information</h1>
-            <p class="text-gray-300">This is the content that will be captured in the screenshot.</p>
+        <h1 class="text-2xl font-bold text-blue-300 mb-6">Share Your Data</h1>
+        
+        <!-- User Selection -->
+        <div class="mb-6">
+            <label class="block text-gray-400 mb-2">Share with:</label>
+            <div class="relative">
+                <input type="text" id="user-search" placeholder="Search users..." 
+                    class="w-full bg-gray-700 text-white rounded-md py-2 px-4 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <div id="user-results" class="hidden absolute z-10 mt-1 w-full bg-gray-700 rounded-md shadow-lg max-h-60 overflow-auto"></div>
+            </div>
+            <div id="selected-users" class="flex flex-wrap gap-2 mt-2"></div>
         </div>
 
+        <!-- Data Selection -->
+        <div class="mb-6">
+            <label class="block text-gray-400 mb-2">Select data to share:</label>
+            <div class="space-y-2">
+                <label class="flex items-center space-x-2">
+                    <input type="checkbox" name="data-type" value="visualise" class="form-checkbox text-blue-500">
+                    <span class="text-gray-300">Visualization Data</span>
+                </label>
+                <label class="flex items-center space-x-2">
+                    <input type="checkbox" name="data-type" value="profile" class="form-checkbox text-blue-500">
+                    <span class="text-gray-300">Profile Information</span>
+                </label>
+                <label class="flex items-center space-x-2">
+                    <input type="checkbox" name="data-type" value="leaderboard" class="form-checkbox text-blue-500">
+                    <span class="text-gray-300">Leaderboard Stats</span>
+                </label>
+            </div>
+        </div>
+
+        <!-- Permission Settings -->
+        <div class="mb-6">
+            <label class="block text-gray-400 mb-2">Permissions:</label>
+            <div class="space-y-2">
+                <label class="flex items-center space-x-2">
+                    <input type="radio" name="permission" value="view" checked class="form-radio text-blue-500">
+                    <span class="text-gray-300">View Only</span>
+                </label>
+                <label class="flex items-center space-x-2">
+                    <input type="radio" name="permission" value="edit" class="form-radio text-blue-500">
+                    <span class="text-gray-300">Can Edit</span>
+                </label>
+            </div>
+        </div>
+
+        <!-- Share Button -->
         <div class="text-center">
-            <button id="screenshot-btn" class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-6 rounded-md transition duration-200 animate__animated animate__pulse animate__infinite animate__slow">
-                Take Screenshot
+            <button id="share-btn" class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-6 rounded-md transition duration-200 animate__animated animate__pulse animate__infinite animate__slow">
+                Share Data
             </button>
         </div>
     </div>
 </div>
 
 <script>
-    document.getElementById('screenshot-btn').addEventListener('click', async () => {
-      try {
-        const element = document.getElementById('capture-area');
-        const canvas = await html2canvas(element, {
-          useCORS: true, 
-          logging: false 
-        });
+    // Mock user data - in real app this would come from an API
+    const users = [
+        { id: 1, name: "John Doe", email: "john@example.com" },
+        { id: 2, name: "Jane Smith", email: "jane@example.com" },
+        { id: 3, name: "Bob Johnson", email: "bob@example.com" }
+    ];
 
-        canvas.toBlob(async (blob) => {
-          try {
-            await navigator.clipboard.write([
-              new ClipboardItem({ 'image/png': blob })
-            ]);
-            alert('Screenshot copied to clipboard!');
-          } catch (err) {
-            console.error('error:', err);
-            alert('Failed to copy screenshot');
-          }
-        }, 'image/png');
+    const selectedUsers = new Set();
+    
+    // User search functionality
+    document.getElementById('user-search').addEventListener('input', (e) => {
+        const query = e.target.value.toLowerCase();
+        const resultsContainer = document.getElementById('user-results');
         
-      } catch (err) {
-        console.error('error:', err);
-        alert('Failed to take screenshot');
-      }
+        if (query.length < 2) {
+            resultsContainer.classList.add('hidden');
+            return;
+        }
+        
+        const filteredUsers = users.filter(user => 
+            user.name.toLowerCase().includes(query) || 
+            user.email.toLowerCase().includes(query)
+        );
+        
+        if (filteredUsers.length === 0) {
+            resultsContainer.innerHTML = '<div class="p-2 text-gray-400">No users found</div>';
+        } else {
+            resultsContainer.innerHTML = filteredUsers.map(user => `
+                <div class="p-2 hover:bg-gray-600 cursor-pointer flex justify-between items-center" 
+                     data-id="${user.id}" data-name="${user.name}">
+                    <span>${user.name}</span>
+                    <span class="text-gray-400 text-sm">${user.email}</span>
+                </div>
+            `).join('');
+        }
+        
+        resultsContainer.classList.remove('hidden');
+    });
+    
+    // Handle user selection
+    document.getElementById('user-results').addEventListener('click', (e) => {
+        const userElement = e.target.closest('[data-id]');
+        if (userElement) {
+            const userId = userElement.dataset.id;
+            const userName = userElement.dataset.name;
+            
+            if (!selectedUsers.has(userId)) {
+                selectedUsers.add(userId);
+                updateSelectedUsers();
+            }
+            
+            document.getElementById('user-search').value = '';
+            document.getElementById('user-results').classList.add('hidden');
+        }
+    });
+    
+    // Update selected users display
+    function updateSelectedUsers() {
+        const container = document.getElementById('selected-users');
+        container.innerHTML = '';
+        
+        selectedUsers.forEach(userId => {
+            const user = users.find(u => u.id == userId);
+            if (user) {
+                const userPill = document.createElement('div');
+                userPill.className = 'bg-blue-900 text-blue-300 rounded-full px-3 py-1 flex items-center';
+                userPill.innerHTML = `
+                    ${user.name}
+                    <button class="ml-2 text-blue-400 hover:text-blue-200" data-id="${user.id}">
+                        &times;
+                    </button>
+                `;
+                container.appendChild(userPill);
+            }
+        });
+    }
+    
+    // Remove selected user
+    document.getElementById('selected-users').addEventListener('click', (e) => {
+        if (e.target.tagName === 'BUTTON') {
+            const userId = e.target.dataset.id;
+            selectedUsers.delete(userId);
+            updateSelectedUsers();
+        }
+    });
+    
+    // Handle share button click
+    document.getElementById('share-btn').addEventListener('click', async () => {
+        if (selectedUsers.size === 0) {
+            alert('Please select at least one user to share with');
+            return;
+        }
+        
+        const dataTypes = Array.from(document.querySelectorAll('input[name="data-type"]:checked'))
+            .map(el => el.value);
+            
+        if (dataTypes.length === 0) {
+            alert('Please select at least one data type to share');
+            return;
+        }
+        
+        const permission = document.querySelector('input[name="permission"]:checked').value;
+        
+        // In a real app, this would make an API call to share the data
+        try {
+            // Simulate API call delay
+            document.getElementById('share-btn').disabled = true;
+            document.getElementById('share-btn').textContent = 'Sharing...';
+            
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            
+            alert(`Successfully shared ${dataTypes.join(', ')} data with ${selectedUsers.size} user(s) (${permission} permission)`);
+            
+            // Reset form
+            selectedUsers.clear();
+            updateSelectedUsers();
+            document.querySelectorAll('input[name="data-type"]').forEach(el => el.checked = false);
+            document.getElementById('share-btn').disabled = false;
+            document.getElementById('share-btn').textContent = 'Share Data';
+            
+        } catch (error) {
+            console.error('Sharing failed:', error);
+            alert('Failed to share data. Please try again.');
+            document.getElementById('share-btn').disabled = false;
+            document.getElementById('share-btn').textContent = 'Share Data';
+        }
     });
 </script>
 
