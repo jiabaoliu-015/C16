@@ -2,7 +2,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const sessionList = document.getElementById("session-list");
     const sessionCount = document.getElementById("session-count"); // Reference to session count element
     const dateToggle = document.getElementById("date-toggle");
-    const showNotesToggle = document.getElementById("show-notes");
     const selectAllCheckbox = document.getElementById("select-all");
     let sortOrder = "desc";
     let currentPage = 1;
@@ -11,7 +10,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // Fetch sessions from the server
     async function fetchSessions() {
         try {
-            const response = await fetch("/api/sessions");
+            const response = await fetch("/upload/api/sessions");
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
@@ -74,7 +73,6 @@ document.addEventListener("DOMContentLoaded", () => {
                                 ${session.productivity || 0}
                             </span>
                         </div>
-                        ${showNotesToggle.checked ? `
                         <div class="flex items-center justify-between notes-column w-64 pl-4">
                             <span>${session.notes || "No notes available"}</span>
                             <button class="relative text-gray-500 hover:text-gray-700">
@@ -87,13 +85,15 @@ document.addEventListener("DOMContentLoaded", () => {
                                     Edit session
                                 </span>
                             </button>
-                        </div>` : ""}
+                        </div>
                     </div>
                 `;
             })
             .join("");
 
         updatePaginationInfo();
+        attachCheckboxListeners(); // Add this line
+        updateDeleteButtonVisibility(); // Add this line
     }
 
     // Update pagination info and button states
@@ -189,25 +189,50 @@ document.addEventListener("DOMContentLoaded", () => {
         renderSessions();
     }
 
-    // Toggle notes visibility
-    function toggleNotesVisibility() {
-        renderSessions(); // Re-render sessions to dynamically include or exclude the notes column
-    }
-
     // Select all checkboxes
     function toggleSelectAll() {
         const entryCheckboxes = document.querySelectorAll(".entry-checkbox");
         entryCheckboxes.forEach(checkbox => {
             checkbox.checked = selectAllCheckbox.checked;
         });
+        updateDeleteButtonVisibility(); // Add this line
+    }
+
+    // Show or hide the delete button based on selected checkboxes
+    function updateDeleteButtonVisibility() {
+        const deleteButton = document.getElementById("delete-selected");
+        const selectedCheckboxes = document.querySelectorAll(".entry-checkbox:checked");
+        deleteButton.classList.toggle("hidden", selectedCheckboxes.length === 0);
+    }
+
+    // Handle delete confirmation
+    function handleDeleteSelected() {
+        const selectedCheckboxes = document.querySelectorAll(".entry-checkbox:checked");
+        const count = selectedCheckboxes.length;
+
+        if (count > 0) {
+            const confirmation = confirm(`Are you sure you want to delete ${count} session(s)?`);
+            if (confirmation) {
+                // Logic to delete sessions (e.g., send a request to the server)
+                console.log(`${count} session(s) deleted.`);
+            }
+        }
+    }
+
+    // Attach event listeners to checkboxes
+    function attachCheckboxListeners() {
+        const entryCheckboxes = document.querySelectorAll(".entry-checkbox");
+        entryCheckboxes.forEach(checkbox => {
+            checkbox.addEventListener("change", updateDeleteButtonVisibility);
+        });
     }
 
     // Initialize event listeners
     dateToggle.addEventListener("click", sortSessionsByDate);
-    showNotesToggle.addEventListener("change", toggleNotesVisibility);
     selectAllCheckbox.addEventListener("change", toggleSelectAll);
     document.getElementById("prev-page").addEventListener("click", () => goToPage(currentPage - 1));
     document.getElementById("next-page").addEventListener("click", () => goToPage(currentPage + 1));
+    document.getElementById("delete-selected").addEventListener("click", handleDeleteSelected); // Add this line
 
     // Fetch and render sessions on page load
     fetchSessions();

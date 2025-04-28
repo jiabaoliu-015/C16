@@ -36,14 +36,13 @@
             <h2 class="text-2xl font-bold text-gray-900">
                 Sessions <span id="session-count" class="text-gray-500 font-medium">• 0</span>
             </h2>
-            <div class="flex items-center space-x-2">
-                <label for="show-notes" class="text-gray-700 font-medium">Show notes</label>
-                <div class="relative">
-                    <input type="checkbox" id="show-notes" class="sr-only" checked>
-                    <div id="toggle-bg" class="w-10 h-6 bg-gray-800 rounded-full shadow-inner toggle-active"></div>
-                    <div id="toggle-knob" class="absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform transform translate-x-4"></div>
-                </div>
-            </div>
+            <!-- Red bin icon -->
+            <button id="delete-selected" class="hidden bg-red-500 text-white px-4 py-1.5 rounded-full flex items-center space-x-2 hover:bg-red-600 transition">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-1 14H6L5 7m5-4h4m-4 0a2 2 0 00-2 2h8a2 2 0 00-2-2m-4 0V3m4 0V3" />
+                </svg>
+                <span>Delete</span>
+            </button>
         </div>
 
         <!-- Table Header -->
