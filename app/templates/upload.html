@@ -9,10 +9,11 @@
 <script src="{{ url_for('static', filename='js/date-adjust.js') }}"></script>
 <script src="{{ url_for('static', filename='js/productivity-rating.js') }}"></script>
 <script src="{{ url_for('static', filename='js/enable-submit.js') }}"></script>
+<script src="{{ url_for('static', filename='js/validate-upload.js') }}"></script>
 
 <div class="bg-gray-100 min-h-screen py-12 px-4 md:px-8">
     <!-- Header Section -->
-    <div class="max-w-4xl mx-auto p-6 mb-8 relative clearfix">
+    <div class="max-w-4xl p-6 mb-8 relative clearfix">
         <div class="mt-8 text-gray-600 text-sm flex justify-left items-center space-x-2">
             <p id="current-date" class="text-gray-800 font-medium"></p>
             <span class="text-gray-400">•</span>
@@ -22,7 +23,7 @@
             Upload Sessions
             <span class="ml-3 relative group">
                 <span class="w-5 h-5 bg-white shadow-md rounded-full flex items-center justify-center text-gray-500 text-sm cursor-pointer">?</span>
-                <div class="absolute left-0 mt-2 w-64 bg-white text-gray-700 text-sm rounded-lg shadow-lg p-4 hidden group-hover:block">
+                <div class="absolute left-0 mt-2 w-64 bg-white text-gray-800 font-light text-sm rounded-lg shadow-lg p-4 hidden group-hover:block z-50">
                     The <strong>Upload Sessions</strong> view allows you to track each individual study session you've tracked (with a timer or manually). You can quickly create, update and delete sessions as you please.
                 </div>
             </span>
@@ -35,7 +36,7 @@
     </div>
 
     <!-- Create New Session Section -->
-    <div class="max-w-md  relative bg-white rounded-lg shadow-xl p-8 mb-8">
+    <div class="max-w-md  relative bg-white rounded-lg shadow-xl  p-8 mb-8">
         <h2 class="text-2xl font-bold text-gray-900 mb-6 flex justify-between items-center">
             <span>Create New Session</span>
             <button type="button" class="text-blue-500 hover:text-blue-700 bg-transparent text-sm transition duration-200 flex font-medium items-right space-x-2" id="reset-form" onclick="resetForm()">
@@ -170,60 +171,66 @@
         </form>
     </div>
 
-        <!-- Upload Section -->
-        <div class="max-w-2xl mx-auto bg-white rounded-lg shadow-xl p-6 mb-8">
-            <h1 class="text-3xl font-bold text-blue-500 mb-6">Upload Study Data</h1>
-            
-            <div class="mb-8">
-                <p class="text-gray-300 mb-4">Upload your study sessions data to track your progress and visualize your habits. We accept CSV files with the following format:</p>
-                <div class="bg-gray-700 rounded-md p-4 text-sm">
-                    <code class="text-green-400">date,subject,start_time,duration_minutes,productivity_rating</code>
-                    <br>
-                    <code class="text-gray-300">2025-04-15,Mathematics,14:30,120,8</code>
-                    <br>
-                    <code class="text-gray-300">2025-04-16,Programming,09:00,90,7</code>
+    <!-- Break Divider -->
+    <div class="max-w-md relative my-8">
+        <div class="flex items-center">
+            <div class="border-t border-gray-300 flex-grow"></div>
+            <span class="mx-4 text-gray-500 font-semibold">OR</span>
+            <div class="border-t border-gray-300 flex-grow"></div>
+        </div>
+    </div>
+
+    <!-- Upload Section -->
+    <div class="max-w-md relative bg-white rounded-lg shadow-xl p-8 mb-8">
+        <h2 class="text-2xl font-bold text-gray-900 mb-6 flex justify-between items-center">
+            <span>Upload Session CSV</span>
+            <span class="ml-3 relative group">
+                <span class="w-5 h-5 bg-white shadow-md rounded-full flex items-center justify-center text-gray-500 text-sm cursor-pointer">?</span>
+                <div class="absolute left-0 mt-2 w-64 bg-white text-gray-800 font-light text-sm rounded-lg shadow-lg p-4 hidden group-hover:block z-50">
+                    Upload your study sessions data to track your progress and visualise your habits.
                 </div>
-            </div>
-            
-            <form method="POST" action="{{ url_for('upload.upload_data') }}" class="space-y-6">
-                {{ form.csrf_token if form }}
-                
-                <div class="space-y-2">
-                    <label for="file" class="text-blue-400 font-medium block">Select CSV File</label>
+            </span>
+        </h2>
+
+        <h3 class="text-gray-700 font-semibold text-sm mb-2">Sample CSV file:</h3>
+        <div class="bg-gray-100 rounded-md p-4 text-sm mb-6">
+            <code>
+            <span class="text-blue-500">date</span>,<span class="text-green-500">subject</span>,<span class="text-purple-500">start</span>,<span class="text-orange-500">end</span>,<span class="text-red-500">break</span>,<span class="text-teal-500">activity</span>,<span class="text-yellow-500">rating</span>
+            </code>
+            <br>
+            <code>
+            <span class="text-blue-500">2025-04-27</span>,<span class="text-green-500">CITS3403</span>,<span class="text-purple-500">14:00</span>,<span class="text-orange-500">15:30</span>,<span class="text-red-500">30</span>,<span class="text-teal-500">Studying</span>,<span class="text-yellow-500">7</span>
+            </code>
+            <br>
+            <code>
+            <span class="text-blue-500">2025-04-28</span>,<span class="text-green-500">CITS3002</span>,<span class="text-purple-500">06:45</span>,<span class="text-orange-500">08:30</span>,<span class="text-red-500">0</span>,<span class="text-teal-500">Yeet</span>,<span class="text-yellow-500">0</span>
+            </code>
+        </div>
+
+        <form method="POST" action="{{ url_for('upload.upload_data') }}" class="space-y-6">
+            {{ form.csrf_token if form }}
+
+            <div class="space-y-6">
+                <div>
+                    <label for="file" class="text-gray-700 font-semibold text-sm block mb-2">Select CSV File *</label>
                     <div class="flex items-center">
-                        <input type="file" name="data_file" id="file" accept=".csv"
-                            class="hidden" onchange="updateFileName()">
+                        <input type="file" name="data_file" id="file" accept=".csv" class="hidden" onchange="validateCSVFile(); resetUploadState();">
                         <label for="file" class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md cursor-pointer transition duration-200">
                             Browse Files
                         </label>
-                        <span id="file-name" class="ml-3 text-gray-300">No file selected</span>
+                        <span id="file-name" class="ml-3 text-gray-500">No file selected</span>
                     </div>
+                    <p id="file-error" class="text-red-500 text-sm mt-2 hidden"></p>
                 </div>
-                
-                <div class="space-y-2">
-                    <label for="subject" class="text-blue-400 font-medium block">Default Subject (optional)</label>
-                    <input type="text" name="default_subject" id="subject" placeholder="For unlabeled data"
-                        class="w-full bg-gray-700 border border-gray-600 rounded-md px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                </div>
-                
-                <div>
-                    <label class="inline-flex items-center text-gray-300 cursor-pointer">
-                        <input type="checkbox" name="overwrite" class="form-checkbox h-5 w-5 text-blue-500">
-                        <span class="ml-2">Overwrite existing data for these dates</span>
-                    </label>
-                </div>
-                
-                <div class="mt-8">
-                    <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-4 rounded-md transition duration-200 animate__animated animate__pulse animate__infinite animate__slow">
-                        Upload and Process Data
-                    </button>
-                </div>
-            </form>
-            
-            <div class="mt-8 text-sm text-center text-gray-400">
-                <p>Need help formatting your data? <a href="#" class="text-blue-400 hover:text-blue-300">Download our template</a> to get started.</p>
             </div>
-        </div>    
+
+            <div class="mt-10">
+                <button type="submit" id="upload-btn" class="w-full bg-gray-400 text-gray-200 font-bold py-3 px-4 rounded-lg shadow-lg transition duration-300 cursor-not-allowed" disabled>
+                    📂 Upload Data
+                </button>
+            </div>
+        </form>
+    </div>
 </div>
 
 <script>
@@ -240,6 +247,15 @@
         document.getElementById('productivity-descriptor').textContent = 'Good';
         document.getElementById('session-duration').innerHTML = 'Duration: <strong>0h 0m</strong>';
         document.getElementById('session-progress').style.width = '0%';
+    }
+
+    function resetUploadState() {
+        document.getElementById('file-error').classList.add('hidden');
+        document.getElementById('file-name').textContent = 'No file selected';
+        const uploadButton = document.getElementById('upload-btn');
+        uploadButton.disabled = true;
+        uploadButton.classList.add('bg-gray-400', 'text-gray-200', 'cursor-not-allowed');
+        uploadButton.classList.remove('bg-gradient-to-r', 'from-blue-400', 'to-blue-600', 'hover:from-blue-500', 'hover:to-blue-700', 'text-white', 'cursor-pointer');
     }
 </script>
 {% endblock %}
