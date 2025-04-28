@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Sessions</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css">
+    <script src="/static/js/show_notes_toggle.js" defer></script>
+    <script src="/static/js/select_all_toggle.js" defer></script>
+    <script src="/static/js/productivity_color.js" defer></script>
+    <script src="/static/js/sort_sessions.js" defer></script>
+    <script src="/static/js/fetch_sessions.js" defer></script>
+    <style>
+        /* Add styles for the toggle when active */
+        .toggle-active {
+            background-color: #4a5568; /* Dark gray */
+        }
+        /* Add styles for scrollable session list */
+        #session-list {
+            max-height: 60vh;
+            overflow-y: auto;
+        }
+        /* Highlight active sort button */
+        .sort-active {
+            color: #1a202c; /* Darker gray */
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen py-12 px-4 md:px-8">
+    <div class="max-w-6xl bg-white rounded-lg shadow-xl p-6 mb-16"> <!-- Increased bottom margin -->
+        <!-- Header -->
+        <div class="flex justify-between items-center mb-4">
+            <h2 class="text-2xl font-bold text-gray-900">
+                Sessions <span id="session-count" class="text-gray-500 font-medium">• 0</span>
+            </h2>
+            <div class="flex items-center space-x-2">
+                <label for="show-notes" class="text-gray-700 font-medium">Show notes</label>
+                <div class="relative">
+                    <input type="checkbox" id="show-notes" class="sr-only" checked>
+                    <div id="toggle-bg" class="w-10 h-6 bg-gray-800 rounded-full shadow-inner toggle-active"></div>
+                    <div id="toggle-knob" class="absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform transform translate-x-4"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Table Header -->
+        <div class="grid grid-cols-6 md:grid-cols-7 items-center text-gray-700 font-bold text-sm border-b border-gray-300 pb-2">
+            <div class="flex items-center">
+                <input type="checkbox" id="select-all" class="form-checkbox h-4 w-4 text-blue-600">
+            </div>
+            <div class="flex items-center space-x-1">
+                <span class="font-extrabold">Date</span>
+                <button class="text-gray-500 sort-active" id="date-toggle" data-sort="desc" aria-label="Sort by date">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                    </svg>
+                </button>
+            </div>
+            <span>Time</span>
+            <span>Duration</span>
+            <span>Course</span>
+            <span>Productivity</span>
+            <span class="notes-column col-span-2 md:col-span-1">Notes</span>
+        </div>
+
+        <!-- Dynamic Session Entries Placeholder -->
+        <div id="session-list" class="mt-4">
+            <!-- Sessions will be dynamically loaded here -->
+        </div>
+
+        <!-- Pagination -->
+        <div class="flex justify-between items-center mt-4">
+            <button class="bg-gray-300 text-gray-500 px-4 py-2 rounded-full cursor-not-allowed" aria-label="Previous page">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                </svg>
+            </button>
+            <div class="text-gray-700 font-medium">Page 1 of 2</div>
+            <button class="bg-gray-300 text-gray-500 px-4 py-2 rounded-full cursor-not-allowed" aria-label="Next page">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                </svg>
+            </button>
+        </div>
+    </div>
+</body>
+</html>
