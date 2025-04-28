@@ -1,13 +1,16 @@
-from werkzeug.security import generate_password_hash
+# app/models/user.py
 
-# Mock user for testing
-mock_user = {
-    'id': 1,
-    'email': 'test@example.com',
-    'password': generate_password_hash('password123')  # Store hashed passwords
-}
+from app import db
+from flask_login import UserMixin
 
-def get_user_by_email(email):
-    if email == mock_user['email']:
-        return mock_user
-    return None
+class User(db.Model, UserMixin):
+    id = db.Column(db.Integer, primary_key=True)
+    email = db.Column(db.String(150), unique=True, nullable=False)
+    password = db.Column(db.String(150), nullable=False)
+
+    def __repr__(self):
+        return f'<User {self.email}>'
+
+    @staticmethod
+    def get_user_by_email(email):
+        return User.query.filter_by(email=email).first()
