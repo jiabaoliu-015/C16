@@ -47,14 +47,14 @@ document.addEventListener("DOMContentLoaded", () => {
             .map(session => {
                 const productivityClass = getProductivityClass(session.productivity || 0); // Fallback for missing productivity
                 return `
-                    <div class="flex items-center text-gray-700 text-sm py-2 border-b border-gray-300 notes-row hover:bg-blue-100">
-                        <div class="flex items-center w-24">
+                    <div class="flex items-center text-gray-700 text-sm py-2 border-b border-gray-300 notes-row hover:bg-blue-100 justify-between">
+                        <div class="flex items-center w-20 justify-center">
                             <input type="checkbox" class="entry-checkbox form-checkbox h-4 w-4 text-blue-600">
                         </div>
-                        <div class="flex items-center w-24">
+                        <div class="flex items-center w-24 justify-center">
                             <span class="bg-gray-200 text-black font-bold rounded-full px-2 py-1">${session.date || "N/A"}</span>
                         </div>
-                        <div class="flex items-center w-48">
+                        <div class="flex items-center w-48 justify-center">
                             <span class="relative group">
                                 🍵 ${session.time || "N/A"}
                                 <span class="absolute left-1/2 transform -translate-x-1/2 -translate-y-full bg-black text-white text-xs rounded px-2 py-1 opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
@@ -62,29 +62,19 @@ document.addEventListener("DOMContentLoaded", () => {
                                 </span>
                             </span>
                         </div>
-                        <div class="flex items-center font-bold w-24">
+                        <div class="flex items-center font-bold w-20 justify-center">
                             <span>${session.duration || "N/A"}</span>
                         </div>
-                        <div class="flex items-center w-32">
+                        <div class="flex items-center w-28 justify-center">
                             <span class="bg-black text-white font-bold rounded-full px-2 py-1">${session.course || "N/A"}</span>
                         </div>
-                        <div class="flex items-center w-20">
+                        <div class="flex items-center w-20 justify-center">
                             <span class="w-8 h-8 flex items-center justify-center rounded-full font-bold ${productivityClass}">
                                 ${session.productivity || 0}
                             </span>
                         </div>
-                        <div class="flex items-center justify-between notes-column w-64 pl-4">
+                        <div class="flex items-center w-48 justify-center">
                             <span>${session.notes || "No notes available"}</span>
-                            <button class="relative text-gray-500 hover:text-gray-700">
-                                <div class="w-8 h-8 flex items-center justify-center bg-gray-200 rounded-full hover:bg-gray-300 transition-all">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 12h.01M12 12h.01M18 12h.01" />
-                                    </svg>
-                                </div>
-                                <span class="absolute left-1/2 transform -translate-x-1/2 -translate-y-full bg-black text-white text-xs rounded px-2 py-1 opacity-0 hover:opacity-100 transition-opacity whitespace-nowrap">
-                                    Edit session
-                                </span>
-                            </button>
                         </div>
                     </div>
                 `;
