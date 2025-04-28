@@ -31,7 +31,7 @@ sessions = [
         "time": "3:00 PM - 4:00 PM",
         "duration": "1h",
         "course": "CITS3001",
-        "productivity": 8,
+        "productivity": 4,
         "notes": "Practised writing proofs. Realised I can't prove why I chose computer science.",
         "break_minutes": 5
     },
@@ -49,7 +49,7 @@ sessions = [
         "time": "2:00 PM - 3:30 PM",
         "duration": "1h 30m",
         "course": "CITS3002",
-        "productivity": 7,
+        "productivity": 0,
         "notes": "Watched Maira Alvi's lecture on algorithms. Got inspired to sort my life.",
         "break_minutes": 15
     },
