@@ -3,17 +3,64 @@
 {% block title %}About StudyTrackr{% endblock %}
 
 {% block content %}
-    <section class="p-8">
-        <h1 class="text-4xl font-bold mb-4">Welcome to StudyTrackr!</h1>
-        <p class="text-lg mb-6">StudyTrackr is your personal study assistant, designed to help you track your study habits, visualize your progress, and stay on top of your academic goals.</p>
+<section class="pt-24 pb-16 px-6 md:px-12 lg:px-32 text-white">
+    <div class="text-center mb-12">
+        <h1 class="text-5xl font-extrabold text-blue-400 mb-4 animate__animated animate__fadeInDown">Welcome to StudyTrackr</h1>
+        <p class="text-lg text-gray-300 max-w-2xl mx-auto">Your ultimate personal study assistant, built to track your habits, boost your productivity, and help you reach your academic goals efficiently.</p>
+    </div>
 
-        <h2 class="text-2xl font-semibold mb-2">Key Features</h2>
-        <ul class="list-disc ml-6">
-            <li>Track study time and sessions</li>
-            <li>Visualize your progress with charts and graphs</li>
-            <li>Set reminders and goals for your study sessions</li>
-        </ul>
+    <!-- Key Features -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
+        <div class="bg-gray-800 p-6 rounded-xl shadow-lg hover:shadow-xl transition">
+            <div class="text-blue-300 text-3xl mb-4"><i class="fas fa-clock"></i></div>
+            <h3 class="text-xl font-semibold mb-2">Track Study Sessions</h3>
+            <p class="text-gray-400">Log your study time with precision, including subjects, breaks, and session ratings — all in one intuitive interface.</p>
+        </div>
+        <div class="bg-gray-800 p-6 rounded-xl shadow-lg hover:shadow-xl transition">
+            <div class="text-green-300 text-3xl mb-4"><i class="fas fa-chart-line"></i></div>
+            <h3 class="text-xl font-semibold mb-2">Visual Progress</h3>
+            <p class="text-gray-400">Understand your performance over time using rich, interactive visualizations and data breakdowns.</p>
+        </div>
+        <div class="bg-gray-800 p-6 rounded-xl shadow-lg hover:shadow-xl transition">
+            <div class="text-yellow-300 text-3xl mb-4"><i class="fas fa-bullseye"></i></div>
+            <h3 class="text-xl font-semibold mb-2">Set Goals & Reminders</h3>
+            <p class="text-gray-400">Define your study objectives and get timely reminders to stay consistent and motivated.</p>
+        </div>
+    </div>
 
-        <p class="mt-4">Ready to get started? <a href="{{ url_for('auth.login') }}" class="text-blue-500">Log in</a> and begin your journey!</p>
-    </section>
+    <!-- How It Works -->
+    <div class="mb-16">
+        <h2 class="text-3xl font-bold mb-6 text-blue-300 text-center">How StudyTrackr Works</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
+            <div class="bg-gray-700 p-6 rounded-lg">
+                <h4 class="text-xl font-semibold mb-2 text-blue-200">1. Upload Study Data</h4>
+                <p class="text-gray-300">Use our upload form to log your study sessions — just enter the subject, time, and any breaks.</p>
+            </div>
+            <div class="bg-gray-700 p-6 rounded-lg">
+                <h4 class="text-xl font-semibold mb-2 text-blue-200">2. View Insights</h4>
+                <p class="text-gray-300">Track your productivity, identify trends, and adjust your habits with meaningful analytics.</p>
+            </div>
+            <div class="bg-gray-700 p-6 rounded-lg">
+                <h4 class="text-xl font-semibold mb-2 text-blue-200">3. Share with Friends</h4>
+                <p class="text-gray-300">Compare progress, share stats, and learn together. Collaboration fuels motivation.</p>
+            </div>
+            <div class="bg-gray-700 p-6 rounded-lg">
+                <h4 class="text-xl font-semibold mb-2 text-blue-200">4. Stay Consistent</h4>
+                <p class="text-gray-300">Use reminders and milestone goals to build long-term, sustainable study habits.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Call to Action -->
+    <div class="text-center">
+        <p class="text-xl text-gray-200 mb-4">Ready to take control of your learning journey?</p>
+        <a href="{{ url_for('auth.login') }}"
+           class="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-3 rounded-lg shadow-lg transition duration-300">
+            Log in & Get Started
+        </a>
+    </div>
+</section>
+
+<!-- Optional: Font Awesome for icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 {% endblock %}
