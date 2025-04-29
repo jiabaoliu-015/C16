@@ -16,20 +16,6 @@ def home_not_logged_in():
         return redirect(url_for('main.home_logged_in'))  # Redirect to dashboard if logged in
     return render_template('home.html')  # Regular home page for non-logged-in users
 
-# @bp.route('/login', methods=['GET', 'POST'])
-# def login():
-#     if request.method == 'POST':
-#         return redirect(url_for('visualise.visualise'))
-#     return render_template('login.html')
-
-# @bp.route('/register', methods=['GET', 'POST'])
-# def register():
-#     return render_template('register.html')
-
-# @bp.route('/reset-password', methods=['GET', 'POST'])
-# def reset_password():
-#     return render_template('reset_password.html')
-
 @main_bp.route('/dashboard', methods=['GET', 'POST'])
 def home_logged_in():
     if not current_user.is_authenticated:
