@@ -159,3 +159,14 @@ button:disabled {
     color: #a0aec0; /* Lighter text grey */
     cursor: not-allowed;
 }
+
+/* Style for the flash message */
+.flash-message {
+    opacity: 1;
+    transition: opacity 1s ease-out;
+}
+
+/* Fade out effect after 3 seconds */
+.flash-message.fade-out {
+    opacity: 0;
+}
