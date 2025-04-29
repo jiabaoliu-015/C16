@@ -1,8 +1,8 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="max-w-3xl mx-auto mt-10 p-6 bg-white rounded-xl shadow-lg">
-  <h2 class="text-3xl font-bold text-center mb-6 text-gray-800">🏆 Leaderboard</h2>
+<div class="max-w-4xl mx-auto mt-10 p-6 bg-white rounded-xl shadow-lg">
+  <h2 class="text-4xl font-extrabold text-center mb-8 text-gray-800">🏆 Leaderboard</h2>
   
   <table class="w-full text-left border-collapse">
     <thead>
@@ -14,8 +14,8 @@
     </thead>
     <tbody class="text-gray-700">
       {% for user in leaderboard %}
-      <tr class="border-b hover:bg-gray-50 {% if loop.index == 1 %}bg-yellow-100{% elif loop.index == 2 %}bg-gray-200{% elif loop.index == 3 %}bg-orange-100{% endif %}">
-        <td class="py-3 px-4 font-bold {% if loop.index == 1 %}text-yellow-500{% elif loop.index == 2 %}text-gray-500{% elif loop.index == 3 %}text-orange-500{% endif %}">{{ loop.index }}</td>
+      <tr class="border-b hover:bg-gray-50 transition duration-300 {% if loop.index == 1 %}bg-yellow-100{% elif loop.index == 2 %}bg-gray-200{% elif loop.index == 3 %}bg-orange-100{% endif %}">
+        <td class="py-3 px-4 font-bold text-lg {% if loop.index == 1 %}text-yellow-500{% elif loop.index == 2 %}text-gray-500{% elif loop.index == 3 %}text-orange-500{% endif %}">{{ loop.index }}</td>
         <td class="py-3 px-4">{{ user.username }}</td>
         <td class="py-3 px-4">{{ user.points }}</td>
       </tr>
@@ -24,7 +24,10 @@
   </table>
 
   {% if not leaderboard %}
-    <p class="text-center text-gray-500 mt-6">No scores yet. Be the first!</p>
+    <div class="flex flex-col items-center mt-8">
+      <img src="{{ url_for('static', filename='images/empty-leaderboard.png') }}" alt="No Data" class="w-32 h-32 mb-4">
+      <p class="text-center text-gray-500 text-lg">No scores yet. Be the first to climb the leaderboard!</p>
+    </div>
   {% endif %}
 </div>
 
@@ -35,6 +38,16 @@
       if (index === 0) row.classList.add('animate-bounce');
       if (index === 1) row.classList.add('animate-pulse');
       if (index === 2) row.classList.add('animate-flash');
+    });
+
+    // Add hover effect for rows
+    rows.forEach(row => {
+      row.addEventListener('mouseover', () => {
+        row.classList.add('bg-blue-50');
+      });
+      row.addEventListener('mouseout', () => {
+        row.classList.remove('bg-blue-50');
+      });
     });
   });
 </script>
