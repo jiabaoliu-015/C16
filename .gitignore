@@ -2,6 +2,7 @@
 
 # Ignore Python virtual environment
 venv/
+flask_env/
 
 # Ignore Python cache files
 __pycache__/
@@ -10,3 +11,13 @@ __pycache__/
 
 # Ignore environment configuration
 *.env
+
+# Ignore SQLite database file
+*.db
+*.sqlite3
+
+# Ignore Flask instance folder if it exists (where the database might be stored)
+instance/
+
+# Ignore any other files related to Flask or your app
+*.log

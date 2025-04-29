@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+{% block title %}Login Page{% endblock %}
+{% block content %}
+<div class="flex flex-col md:flex-row h-screen">
+    <!-- Left Side -->
+    <div class="flex-1 bg-cover bg-center relative" style="background-image: url('{{ url_for('static', filename='images/background.jpg') }}');">
+        <div class="absolute inset-0 bg-black bg-opacity-50"></div>
+        <div class="absolute inset-0 flex flex-col items-center justify-center text-center text-white">
+            <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo" class="w-32 h-32 mb-4 transition-transform transform hover:scale-110 hover:shadow-[0_0_20px_rgba(255,255,255,0.8)]">
+            <h1 class="text-4xl font-bold">StudyTrackr</h1>
+            <p class="text-lg mt-2">Study smarter, not harder.</p>
+        </div>
+    </div>
+
+    <!-- Right Side -->
+    <div class="flex-1 flex items-center justify-center bg-gray-100">
+        <div class="w-full max-w-md bg-white rounded-lg shadow-lg p-8">
+            <div class="flex flex-col items-center mb-6">
+                <img src="{{ url_for('static', filename='images/study_cap.png') }}" alt="Study Cap" class="w-16 h-16 mb-4 transition-transform transform hover:scale-110 hover:shadow-[0_0_20px_rgba(0,0,255,0.6)]">
+                <h1 class="text-2xl font-bold text-gray-800">Log In</h1>
+                <p class="text-gray-500">Welcome back!</p>
+            </div>
+            <form method="POST" action="{{ url_for('auth.login') }}" class="space-y-4">
+                <!-- CSRF token -->
+                {{ form.hidden_tag() }}  <!-- CSRF token is included here -->
+            
+                <!-- Google login button -->
+                <button type="button" class="w-full bg-blue-500 hover:bg-blue-600 text-white font-medium py-2 px-4 rounded-md transition duration-200">
+                    Continue with Google
+                </button>
+                
+                <!-- OR separator -->
+                <div class="flex items-center justify-center space-x-2">
+                    <hr class="flex-1 border-gray-300">
+                    <span class="text-gray-500 text-sm">OR</span>
+                    <hr class="flex-1 border-gray-300">
+                </div>
+            
+                <!-- Email input field -->
+                <div class="space-y-2">
+                    <label for="email" class="text-gray-700 font-medium block">Email</label>
+                    {{ form.email(class="w-full bg-gray-100 border border-gray-300 rounded-md px-4 py-2 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500") }}
+                </div>
+            
+                <!-- Password input field -->
+                <div class="space-y-2">
+                    <label for="password" class="text-gray-700 font-medium block">Password</label>
+                    {{ form.password(class="w-full bg-gray-100 border border-gray-300 rounded-md px-4 py-2 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500") }}
+                </div>
+            
+                <!-- Forgot password link -->
+                <div class="text-right">
+                    <a href="{{ url_for('auth.forgot_password') }}" class="text-blue-500 hover:text-blue-600 text-sm">Forgot password?</a>
+                </div>
+                
+                <!-- Submit login button -->
+                <button type="submit" class="w-full bg-gray-800 hover:bg-gray-900 text-white font-medium py-2 px-4 rounded-md transition duration-200">
+                    Log In →
+                </button>
+            
+                <!-- OR separator for creating an account -->
+                <div class="flex items-center justify-center space-x-2 mt-4">
+                    <hr class="flex-1 border-gray-300">
+                    <span class="text-gray-500 text-sm">OR</span>
+                    <hr class="flex-1 border-gray-300">
+                </div>
+            
+                <!-- Create account link -->
+                <div class="text-center">
+                    <p class="text-gray-500 text-sm">You don't have an account yet? <a href="{{ url_for('auth.signup') }}" class="text-blue-500 hover:text-blue-600 font-medium">Create an account →</a></p>
+                </div>
+            </form>
+            <div class="mt-6 text-center text-gray-400 text-sm">
+                <p><strong>StudyTrackr</strong> · The Study Tracking App</p>
+                <p>©2025 StudyTrackr</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

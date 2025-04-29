@@ -138,3 +138,35 @@
     }
 }
 /* section styles */
+
+/* Add styles for the toggle when active */
+.toggle-active {
+    background-color: #4a5568; /* Dark gray */
+}
+/* Add styles for scrollable session list */
+#session-list {
+    max-height: 60vh;
+    min-height: 60vh; /* Ensure constant height */
+    overflow-y: auto;
+}
+/* Highlight active sort button */
+.sort-active {
+    color: #1a202c; /* Darker gray */
+    font-weight: bold;
+}
+button:disabled {
+    background-color: #e2e8f0; /* Light grey */
+    color: #a0aec0; /* Lighter text grey */
+    cursor: not-allowed;
+}
+
+/* Style for the flash message */
+.flash-message {
+    opacity: 1;
+    transition: opacity 1s ease-out;
+}
+
+/* Fade out effect after 3 seconds */
+.flash-message.fade-out {
+    opacity: 0;
+}
