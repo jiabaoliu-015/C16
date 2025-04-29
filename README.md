@@ -38,15 +38,16 @@ This tool leverages a simple schema (user, study_sessions) and technologies like
     ```bash
     cd agile-web-group-85
     ```
-3. Set up a virtual environment and install dependencies:
+3. Set up a virtual environment and install dependencies from requirements.txt:
     ```bash
+    python pip install (plugin name from requirements.txt)
     python -m venv venv
     source venv/bin/activate  # On Windows: venv\Scripts\activate
-    pip install -r requirements.txt
+    pip -- version # check if the required pip files have been downloaded
     ```
 4. Run the application:
     ```bash
-    flask run
+    flask run # python run.py to launch the website
     ```
 5. Open your browser and navigate to `http://127.0.0.1:5000`.
 
@@ -58,3 +59,5 @@ This tool leverages a simple schema (user, study_sessions) and technologies like
     pytest
     ```
 3. View the test results in the terminal.
+4. Make any changes if required
+5. Consult team if any issues persist
