@@ -13,7 +13,7 @@ def login():
         user = get_user_by_email(email)
 
         if user and check_password_hash(user['password'], password):
-            session['user_id'] = user['id']  # 🔑 Set user ID in session
+            session['user_id'] = user['id']
             flash('Login successful!', 'success')
             return redirect(url_for('main.home_logged_in'))
         else:
