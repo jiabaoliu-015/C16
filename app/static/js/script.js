@@ -168,8 +168,7 @@ function updateFileName() {
     }
 }
 
-
-//(UPLOAD) displays the current value fo the productivity rating slider
+//(UPLOAD) displays the current value of the productivity rating slider
 function updateRatingValue(val) {
     document.getElementById('rating-value').textContent = val;
 }
