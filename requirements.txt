@@ -2,3 +2,11 @@
 # This file is used to specify the dependencies for the project.
 
 flask=2.0.1
+flask_sqlalchemy
+flask_login
+email_validator
+pytest
+chart.js
+plotly
+tailwindcss
+flask_wtf
