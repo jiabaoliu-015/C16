@@ -1,0 +1,189 @@
+{% extends "base.html" %}
+
+{% block title %}Share Data{% endblock %}
+
+{% block content %}
+<div class="container mx-auto pt-24 px-4 md:px-8">
+    <form id="share-form" class="max-w-2xl mx-auto bg-gray-800 rounded-lg shadow-xl p-6 mb-8 animate__animated animate__fadeIn">
+        <h1 class="text-2xl font-bold text-blue-300 mb-6">Share Your Data</h1>
+
+        <!-- User Selection -->
+        <div class="mb-6">
+            <label for="user-search" class="block text-gray-400 mb-2">Share with:</label>
+            <div class="relative">
+                <input type="text" id="user-search" name="user-search" placeholder="Search users..." 
+                       class="w-full bg-gray-700 text-white rounded-md py-2 px-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                       aria-label="Search users to share with">
+                <div id="user-results" class="hidden absolute z-10 mt-1 w-full bg-gray-700 rounded-md shadow-lg max-h-60 overflow-auto"></div>
+            </div>
+            <div id="selected-users" class="flex flex-wrap gap-2 mt-2"></div>
+        </div>
+
+        <!-- Data Selection -->
+        <div class="mb-6">
+            <label class="block text-gray-400 mb-2">Select data to share:</label>
+            <div class="space-y-2">
+                <label class="flex items-center space-x-2">
+                    <input type="checkbox" name="data-type" value="visualise" class="form-checkbox text-blue-500">
+                    <span class="text-gray-300">Visualisation Data</span>
+                </label>
+                <label class="flex items-center space-x-2">
+                    <input type="checkbox" name="data-type" value="profile" class="form-checkbox text-blue-500">
+                    <span class="text-gray-300">Profile Information</span>
+                </label>
+                <label class="flex items-center space-x-2">
+                    <input type="checkbox" name="data-type" value="leaderboard" class="form-checkbox text-blue-500">
+                    <span class="text-gray-300">Leaderboard Stats</span>
+                </label>
+            </div>
+        </div>
+
+        <!-- Permission Settings -->
+        <div class="mb-6">
+            <label class="block text-gray-400 mb-2">Permissions:</label>
+            <div class="space-y-2">
+                <label class="flex items-center space-x-2">
+                    <input type="radio" name="permission" value="view" checked class="form-radio text-blue-500">
+                    <span class="text-gray-300">View Only</span>
+                </label>
+                <label class="flex items-center space-x-2">
+                    <input type="radio" name="permission" value="edit" class="form-radio text-blue-500">
+                    <span class="text-gray-300">Can Edit</span>
+                </label>
+            </div>
+        </div>
+
+        <!-- Feedback Message -->
+        <div id="feedback" class="hidden text-center mb-4 text-sm"></div>
+
+        <!-- Share Button -->
+        <div class="text-center">
+            <button type="submit" id="share-btn"
+                class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-6 rounded-md transition duration-200 animate__animated animate__pulse animate__infinite animate__slow">
+                Share Data
+            </button>
+        </div>
+    </form>
+</div>
+
+<script>
+    const selectedUsers = new Set();
+
+    // Handle user input search
+    document.getElementById('user-search').addEventListener('input', e => {
+        const query = e.target.value.toLowerCase();
+        const resultsContainer = document.getElementById('user-results');
+
+        if (query.length < 2) {
+            resultsContainer.classList.add('hidden');
+            return;
+        }
+
+        const filteredUsers = users.filter(user =>
+            user.name.toLowerCase().includes(query) || user.email.toLowerCase().includes(query)
+        );
+
+        resultsContainer.innerHTML = filteredUsers.length > 0 ? filteredUsers.map(user => `
+            <div class="p-2 hover:bg-gray-600 cursor-pointer flex justify-between items-center" 
+                data-id="${user.id}" data-name="${user.name}">
+                <span>${user.name}</span>
+                <span class="text-gray-400 text-sm">${user.email}</span>
+            </div>
+        `).join('') : '<div class="p-2 text-gray-400">No users found</div>';
+
+        resultsContainer.classList.remove('hidden');
+    });
+
+    // Handle user selection
+    document.getElementById('user-results').addEventListener('click', e => {
+        const userEl = e.target.closest('[data-id]');
+        if (userEl) {
+            const userId = userEl.dataset.id;
+            const userName = userEl.dataset.name;
+
+            if (!selectedUsers.has(userId)) {
+                selectedUsers.add(userId);
+                updateSelectedUsers();
+            }
+
+            document.getElementById('user-search').value = '';
+            document.getElementById('user-results').classList.add('hidden');
+        }
+    });
+
+    // Update selected users visually
+    function updateSelectedUsers() {
+        const container = document.getElementById('selected-users');
+        container.innerHTML = '';
+        selectedUsers.forEach(userId => {
+            const user = users.find(u => u.id == userId);
+            if (user) {
+                const pill = document.createElement('div');
+                pill.className = 'bg-blue-900 text-blue-300 rounded-full px-3 py-1 flex items-center';
+                pill.innerHTML = `
+                    ${user.name}
+                    <button class="ml-2 text-blue-400 hover:text-blue-200" type="button" data-id="${user.id}">
+                        &times;
+                    </button>`;
+                container.appendChild(pill);
+            }
+        });
+    }
+
+    // Remove user from selection
+    document.getElementById('selected-users').addEventListener('click', e => {
+        if (e.target.tagName === 'BUTTON') {
+            const userId = e.target.dataset.id;
+            selectedUsers.delete(userId);
+            updateSelectedUsers();
+        }
+    });
+
+    // Share form submission
+    document.getElementById('share-form').addEventListener('submit', async e => {
+        e.preventDefault();
+        const feedback = document.getElementById('feedback');
+
+        if (selectedUsers.size === 0) {
+            return showFeedback('Please select at least one user to share with.', false);
+        }
+
+        const dataTypes = Array.from(document.querySelectorAll('input[name="data-type"]:checked'))
+            .map(el => el.value);
+
+        if (dataTypes.length === 0) {
+            return showFeedback('Please select at least one data type to share.', false);
+        }
+
+        const permission = document.querySelector('input[name="permission"]:checked').value;
+
+        try {
+            document.getElementById('share-btn').disabled = true;
+            document.getElementById('share-btn').textContent = 'Sharing...';
+
+            await new Promise(resolve => setTimeout(resolve, 1000));  // Simulate delay
+
+            showFeedback(`Successfully shared ${dataTypes.join(', ')} with ${selectedUsers.size} user(s) [${permission}]`, true);
+
+            selectedUsers.clear();
+            updateSelectedUsers();
+            document.querySelectorAll('input[name="data-type"]').forEach(el => el.checked = false);
+
+        } catch (err) {
+            console.error(err);
+            showFeedback('An error occurred while sharing data. Please try again.', false);
+        } finally {
+            document.getElementById('share-btn').disabled = false;
+            document.getElementById('share-btn').textContent = 'Share Data';
+        }
+    });
+
+    function showFeedback(message, success = true) {
+        const el = document.getElementById('feedback');
+        el.textContent = message;
+        el.classList.remove('hidden');
+        el.classList.toggle('text-green-400', success);
+        el.classList.toggle('text-red-400', !success);
+    }
+</script>
+{% endblock %}
