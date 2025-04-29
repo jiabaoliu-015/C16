@@ -1,7 +1,6 @@
 # app/routes/upload_routes.py: Routes for uploading data
 
-from flask import Blueprint, render_template, request, redirect, url_for, flash, jsonify
-from importlib import import_module
+from flask import Blueprint, render_template, jsonify
 from app.test.sessions_data import sessions
 
 upload_bp = Blueprint('upload', __name__, url_prefix='/upload')
