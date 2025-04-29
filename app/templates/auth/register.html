@@ -14,7 +14,7 @@
 
     <!-- Right Side -->
     <div class="flex-1 flex items-center justify-center bg-gray-100">
-        <div class="w-full max-w-md bg-white rounded-lg shadow-lg p-8">
+        <div class="w-full max-w-md bg-white rounded-lg shadow-lg p-8"> 
             <div class="flex flex-col items-center mb-6">
                 <img src="{{ url_for('static', filename='images/rocket.png') }}" alt="Rocket Icon" class="w-20 h-16 mb-4 transition-transform transform hover:scale-110 hover:shadow-[0_0_20px_rgba(0,0,255,0.6)]">
                 <h1 class="text-2xl font-bold text-gray-800">Sign up to StudyTrackr</h1>
@@ -47,6 +47,29 @@
                     <input type="checkbox" id="terms" name="terms" class="h-4 w-4 text-blue-500 focus:ring-blue-500 border-gray-300 rounded">
                     <label for="terms" class="text-gray-700 text-sm">I agree with the <a href="#" class="text-blue-500 hover:text-blue-600">Terms of Use</a> of StudyTrackr</label>
                 </div>
+                
+                <!-- Flash Messages Section -->
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        <div class="mt-4 flash-message">
+                            {% for category, message in messages %}
+                                <div class="alert alert-{{ category }} p-3 mb-2 text-center text-white {{ 'bg-green-500' if category == 'success' else 'bg-red-500' }}">
+                                    {{ message }}
+                                </div>
+                            {% endfor %}
+                        </div>
+                        <script>
+                            setTimeout(function() {
+                                const flashMessage = document.querySelector('.flash-message');
+                                flashMessage.classList.add('fade-out');
+                                setTimeout(function() {
+                                    flashMessage.remove();  // Remove the flash message from the DOM after it fades out
+                                }, 1000); // Wait for the fade-out transition to finish before removing the element
+                            }, 3000);
+                        </script>
+                    {% endif %}
+                {% endwith %}
+
                 <button type="submit" class="w-full bg-gray-800 hover:bg-gray-900 text-white font-medium py-2 px-4 rounded-md transition duration-200">
                     Sign Up →
                 </button>
