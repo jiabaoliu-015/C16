@@ -14,8 +14,8 @@
     </thead>
     <tbody class="text-gray-700">
       {% for user in leaderboard %}
-      <tr class="border-b hover:bg-gray-50">
-        <td class="py-3 px-4">{{ loop.index }}</td>
+      <tr class="border-b hover:bg-gray-50 {% if loop.index == 1 %}bg-yellow-100{% elif loop.index == 2 %}bg-gray-200{% elif loop.index == 3 %}bg-orange-100{% endif %}">
+        <td class="py-3 px-4 font-bold {% if loop.index == 1 %}text-yellow-500{% elif loop.index == 2 %}text-gray-500{% elif loop.index == 3 %}text-orange-500{% endif %}">{{ loop.index }}</td>
         <td class="py-3 px-4">{{ user.username }}</td>
         <td class="py-3 px-4">{{ user.points }}</td>
       </tr>
@@ -27,4 +27,15 @@
     <p class="text-center text-gray-500 mt-6">No scores yet. Be the first!</p>
   {% endif %}
 </div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const rows = document.querySelectorAll('tbody tr');
+    rows.forEach((row, index) => {
+      if (index === 0) row.classList.add('animate-bounce');
+      if (index === 1) row.classList.add('animate-pulse');
+      if (index === 2) row.classList.add('animate-flash');
+    });
+  });
+</script>
 {% endblock %}
