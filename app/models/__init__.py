@@ -1,1 +1,8 @@
 from .user import User
+
+'''
+Database Relationships
+    User ↔ Session: One-to-Many (A user can have multiple sessions).
+    Session ↔ Course: Many-to-One (Optional, if courses are normalized).
+    Session ↔ SharedData: One-to-Many (Optional, for sharing functionality).
+'''

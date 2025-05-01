@@ -3,16 +3,19 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
 from flask_wtf import CSRFProtect
+from flask_migrate import Migrate
+from instance.config import Config  # Import the Config class
 
 db = SQLAlchemy()
 csrf = CSRFProtect()
 login_manager = LoginManager()
+migrate = Migrate()
 
 def create_app():
     app = Flask(__name__)
-    app.config['SECRET_KEY'] = 'your_secret_key_here'
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///db.sqlite'
-    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+    # Load configuration from Config class
+    app.config.from_object(Config)  
 
     db.init_app(app)
     csrf.init_app(app)

@@ -1,6 +1,7 @@
 # Placeholder for requirements.txt
 # This file is used to specify the dependencies for the project.
 
+<<<<<<< Updated upstream
 flask==2.0.1
 flask_sqlalchemy
 flask_login
@@ -9,3 +10,15 @@ pytest
 chart.js
 plotly
 tailwindcss
+=======
+
+flask==2.0.1
+
+# additional plugins that need to be installed to run the website properly
+flask_sqlalchemy
+flask_login
+email_validator
+flask-migrate
+flask-wtf
+python-dotenv
+>>>>>>> Stashed changes
