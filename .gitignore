@@ -21,3 +21,5 @@ instance/
 
 # Ignore any other files related to Flask or your app
 *.log
+# Ignore Flask instance configuration file
+instance/config.py
