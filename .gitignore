@@ -1,5 +1,3 @@
-# .gitignore: Git ignore file
-
 # Ignore Python virtual environment
 venv/
 flask_env/
@@ -11,15 +9,14 @@ __pycache__/
 
 # Ignore environment configuration
 *.env
+instance/.env
 
 # Ignore SQLite database file
 *.db
 *.sqlite3
 
-# Ignore Flask instance folder if it exists (where the database might be stored)
-instance/
-
-# Ignore any other files related to Flask or your app
+# Ignore logs
 *.log
-# Ignore Flask instance configuration file
-instance/config.py
+
+# DO NOT ignore the whole instance/ folder, just .env
+# (instance/config.py needs to be tracked!)
