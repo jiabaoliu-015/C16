@@ -3,7 +3,7 @@ from werkzeug.security import generate_password_hash
 from werkzeug.security import check_password_hash
 from flask_login import login_user, logout_user
 from app.models.user import User
-from app.templates.auth.forms import LoginForm, SignupForm
+from app.templates.auth.forms import LoginForm, SignupForm, LogoutForm
 from app import db
 
 auth_bp = Blueprint('auth', __name__, url_prefix='/auth')
@@ -72,6 +72,8 @@ def forgot_password():
 # Logout Route
 @auth_bp.route('/logout', methods=['POST'])
 def logout():
-    logout_user()  # Use Flask-Login's built-in logout_user method
-    flash('You have been logged out.', 'info')
-    return redirect(url_for('main.home_not_logged_in'))  # Redirect to the homepage or login page
+    form = LogoutForm()
+    if form.validate_on_submit():  # Flask-WTF automatically checks CSRF
+        logout_user()  # Logout the user
+        return redirect(url_for('main.home_not_logged_in'))
+    return redirect(url_for('main.dashboard'))

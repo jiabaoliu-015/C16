@@ -57,9 +57,7 @@
 
             <!-- Logout Button -->
             <form action="{{ url_for('auth.logout') }}" method="POST" class="flex items-center space-x-2">
-              {% if form is defined %}
-                {{ form.hidden_tag() }}  <!-- CSRF token -->
-              {% endif %}
+              {{ logout_form.hidden_tag() }}
               <button type="submit" class="nav-link flex items-center space-x-1 text-red-500 hover:text-red-600">
                 <i data-lucide="log-out"></i><span>Logout</span>
               </button>
