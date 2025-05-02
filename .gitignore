@@ -18,5 +18,6 @@ instance/.env
 # Ignore logs
 *.log
 
-# DO NOT ignore the whole instance/ folder, just .env
-# (instance/config.py needs to be tracked!)
+# Ignore any migration files not in 'versions/'
+migrations/env.py
+migrations/script.py.mako
