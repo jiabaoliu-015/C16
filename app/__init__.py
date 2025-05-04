@@ -43,7 +43,7 @@ def create_app():
 
     app.register_blueprint(main_bp, url_prefix='/')
     app.register_blueprint(upload_bp, url_prefix='/upload')
-    app.register_blueprint(visualise_bp, url_prefix='/visualise')
+    app.register_blueprint(visualise_bp, url_prefix='/dashboard')
     app.register_blueprint(share_bp, url_prefix='/share')
     app.register_blueprint(auth_bp, url_prefix='/auth')
     app.register_blueprint(info_bp, url_prefix='/info')
