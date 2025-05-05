@@ -16,7 +16,7 @@ def anonymous_required(view_func):
 @bp.route('/')
 def home_not_logged_in():
     if current_user.is_authenticated:  # Checks if the user is logged in with Flask-Login
-        return redirect(url_for('logged_out.home_logged_in'))  # Redirect to dashboard if logged in
+        return redirect(url_for('logged_in.home_logged_in'))  # Redirect to dashboard if logged in
     return render_template('home.html')  # Regular home page for non-logged-in users
 
 # Route for the info page

@@ -147,7 +147,7 @@ def api_sessions():
 @bp.route('/dashboard/')
 @login_required
 def dashboard():
-    return render_template('visualise.html')
+    return render_template('dashboard_2.html')
 
 # API route to return study time data as JSON
 @bp.route('/api/study-time-data')
