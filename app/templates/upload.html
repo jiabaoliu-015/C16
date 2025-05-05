@@ -212,7 +212,7 @@
                     </code>
                 </div>
 
-                <form method="POST" action="{{ url_for('upload.upload_data') }}" class="space-y-6">
+                <form method="POST" action="{{ url_for('logged_in.upload_data') }}" class="space-y-6">
                     {{ form.csrf_token if form }}
 
                     <div class="space-y-6">

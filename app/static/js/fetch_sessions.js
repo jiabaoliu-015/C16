@@ -10,7 +10,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // Fetch sessions from the server
     async function fetchSessions() {
         try {
-            const response = await fetch("/upload/api/sessions");
+            const response = await fetch("/api/sessions");
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
