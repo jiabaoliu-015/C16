@@ -7,6 +7,11 @@ document.addEventListener("DOMContentLoaded", () => {
     let currentPage = 1;
     const sessionsPerPage = 10;
 
+    const csrfMeta = document.querySelector('meta[name="csrf-token"]');
+    const csrfToken = csrfMeta ? csrfMeta.getAttribute('content') : '';
+
+    let sessions = [];
+
     // Fetch sessions from the server
     async function fetchSessions() {
         try {
@@ -27,14 +32,12 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
-    let sessions = []; // Initialize sessions as an empty array
-
     // Render sessions in the DOM with pagination
     function renderSessions() {
         const startIndex = (currentPage - 1) * sessionsPerPage;
         const endIndex = startIndex + sessionsPerPage;
         const paginatedSessions = sessions.slice(startIndex, endIndex);
-
+    
         if (!paginatedSessions || paginatedSessions.length === 0) {
             sessionList.innerHTML = `
                 <div class="text-gray-500 font-medium text-center py-4">
@@ -42,14 +45,20 @@ document.addEventListener("DOMContentLoaded", () => {
                 </div>`;
             return;
         }
-
+    
         sessionList.innerHTML = paginatedSessions
             .map(session => {
-                const productivityClass = getProductivityClass(session.productivity || 0); // Fallback for missing productivity
+                // Make sure we have a valid session_id
+                const sessionId = session.session_id || session.id;
+                if (!sessionId) {
+                    console.warn("Found session without ID:", session);
+                }
+                
+                const productivityClass = getProductivityClass(session.productivity || 0);
                 return `
-                    <div class="flex items-center text-gray-700 text-sm py-2 border-b border-gray-300 notes-row hover:bg-blue-100 justify-between">
+                    <div class="flex items-center text-gray-700 text-sm py-2 border-b border-gray-300 notes-row hover:bg-blue-100 justify-between" data-session-id="${sessionId || ''}">
                         <div class="flex items-center w-20 justify-center">
-                            <input type="checkbox" class="entry-checkbox form-checkbox h-4 w-4 text-blue-600">
+                            <input type="checkbox" class="entry-checkbox form-checkbox h-4 w-4 text-blue-600" ${!sessionId ? 'disabled' : ''}>
                         </div>
                         <div class="flex items-center w-24 justify-center">
                             <span class="bg-gray-200 text-black font-bold rounded-full px-2 py-1">${session.date || "N/A"}</span>
@@ -80,10 +89,10 @@ document.addEventListener("DOMContentLoaded", () => {
                 `;
             })
             .join("");
-
+    
         updatePaginationInfo();
-        attachCheckboxListeners(); // Add this line
-        updateDeleteButtonVisibility(); // Add this line
+        attachCheckboxListeners();
+        updateDeleteButtonVisibility();
     }
 
     // Update pagination info and button states
@@ -195,16 +204,82 @@ document.addEventListener("DOMContentLoaded", () => {
         deleteButton.classList.toggle("hidden", selectedCheckboxes.length === 0);
     }
 
-    // Handle delete confirmation
     function handleDeleteSelected() {
         const selectedCheckboxes = document.querySelectorAll(".entry-checkbox:checked");
         const count = selectedCheckboxes.length;
-
+    
         if (count > 0) {
             const confirmation = confirm(`Are you sure you want to delete ${count} session(s)?`);
             if (confirmation) {
-                // Logic to delete sessions (e.g., send a request to the server)
-                console.log(`${count} session(s) deleted.`);
+                // Get the session IDs from the selected rows
+                const sessionIds = [];
+                selectedCheckboxes.forEach(checkbox => {
+                    // Get the session ID from the data attribute
+                    const sessionRow = checkbox.closest('.notes-row');
+                    const sessionId = sessionRow.getAttribute('data-session-id');
+                    if (sessionId && sessionId !== "null" && sessionId !== "undefined") {
+                        // Make sure we only add valid sessionIds
+                        sessionIds.push(parseInt(sessionId));
+                    }
+                });
+                
+                // Check if we have valid session IDs
+                if (sessionIds.length === 0) {
+                    alert('No valid session IDs found. Please try again.');
+                    return;
+                }
+                
+                console.log("Sending session_ids for deletion:", sessionIds);
+                
+                // Send the delete request to the server
+                fetch('/api/sessions/bulk-delete', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': csrfToken // Add CSRF token
+                    },
+                    body: JSON.stringify({ session_ids: sessionIds }),
+                    credentials: 'same-origin' // Include cookies for authentication
+                })
+                .then(response => {
+                    console.log("Response status:", response.status);
+                    
+                    if (!response.ok) {
+                        return response.text().then(text => {
+                            console.error('Server response:', text);
+                            
+                            try {
+                                // Try to parse as JSON
+                                const data = JSON.parse(text);
+                                throw new Error(data.error || 'Failed to delete sessions');
+                            } catch (jsonError) {
+                                // CSRF specific error handling
+                                if (text.includes('CSRF token is missing')) {
+                                    throw new Error('CSRF protection error: Make sure CSRF token is included in your request.');
+                                } else if (text.includes('login') || text.includes('sign in')) {
+                                    throw new Error('Authentication expired. Please refresh the page and log in again.');
+                                } else {
+                                    throw new Error('Server error: ' + text.split('<p>')[1]?.split('</p>')[0] || 'Unknown error');
+                                }
+                            }
+                        });
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log("Success response:", data);
+                    alert('Sessions deleted successfully!');
+                    // Refresh the sessions list
+                    fetchSessions();
+                    // Reset the select all checkbox
+                    selectAllCheckbox.checked = false;
+                    // Hide the delete button
+                    document.getElementById("delete-selected").classList.add("hidden");
+                })
+                .catch(error => {
+                    console.error('Error deleting sessions:', error);
+                    alert('Failed to delete sessions: ' + error.message);
+                });
             }
         }
     }

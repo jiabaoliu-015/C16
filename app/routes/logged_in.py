@@ -30,91 +30,10 @@ def profile():
 def share():
     return render_template('share.html')
 
-def validate_session_data(session_data):
-    try:
-        # Handle different field names from form vs API
-        date_field = session_data.get('date')
-        
-        # Check which field names are being used (form or API)
-        if 'new_start' in session_data and 'new_end' in session_data:
-            # Form submission field names
-            start_field = session_data.get('new_start')
-            end_field = session_data.get('new_end')
-        elif 'start_time' in session_data and 'end_time' in session_data:
-            # API submission field names
-            start_field = session_data.get('start_time')
-            end_field = session_data.get('end_time')
-        else:
-            return {'error': 'Required time fields are missing'}
-            
-        # Check if required fields exist
-        if not date_field or not start_field or not end_field:
-            return {'error': 'Required fields are missing'}
-
-        # Parse date and times
-        session_date = datetime.strptime(date_field, '%Y-%m-%d').date()
-        start_time = datetime.strptime(start_field, '%H:%M').time()
-        end_time = datetime.strptime(end_field, '%H:%M').time()
-
-        # Check if end time is after start time
-        if (datetime.combine(datetime.today(), end_time) <= datetime.combine(datetime.today(), start_time)):
-            return {'error': 'End time must be after start time'}
-        
-        return {
-            'date': session_date,
-            'start_time': start_time,
-            'end_time': end_time
-        }
-    except ValueError as e:
-        return {'error': f'Invalid date or time format: {str(e)}'}
-    except Exception as e:
-        return {'error': f'Validation error: {str(e)}'}
-
-# Route to render the upload form page
-@bp.route('/upload/', methods=['GET', 'POST'])
-@login_required
-def upload_data():
-    if request.method == 'POST':
-        session_data = request.form.to_dict()
-
-        # Validate the session data
-        validated_data = validate_session_data(session_data)
-        if 'error' in validated_data:
-            return render_template('upload.html', error=validated_data['error'])
-
-        try:
-            # Create a new session
-            new_session = Session(
-                user_id=current_user.id,
-                date=validated_data['date'],
-                start_time=validated_data['start_time'],
-                end_time=validated_data['end_time'],
-                break_minutes=int(session_data['new_break']) if session_data.get('new_break') else None,
-                course=session_data['new_course'],
-                productivity_rating=int(session_data['new_productivity']),
-                notes=session_data.get('new_activity')
-            )
-
-            # Save to the database
-            db.session.add(new_session)
-            db.session.commit()
-
-            # Render the template with a success message
-            return render_template('upload.html', success="Session successfully added!")
-
-        except Exception as e:
-            db.session.rollback()
-            return render_template('upload.html', error=f"Error: {str(e)}")
-
-    # GET Request - Retrieve all sessions for the current user
-    sessions = Session.query.filter_by(user_id=current_user.id).all()
-
-    # Pass the sessions to the template for display
-    return render_template('upload.html', sessions=sessions)
-
 @bp.route('/api/sessions', methods=['GET', 'POST'])
 @login_required
 def api_sessions():
+    """Get all sessions or create a new session"""
     if request.method == 'GET':
         try:
             sessions = Session.query.filter_by(user_id=current_user.id).all()
@@ -136,14 +55,14 @@ def api_sessions():
                 formatted_date = session.date.strftime('%d/%m/%Y')
                 
                 session_list.append({
-                    "id": session.session_id,
+                    "session_id": session.session_id,  # Standardized to session_id
                     "date": formatted_date,
                     "time": time_range, 
                     "duration": duration,
-                    "break_minutes": session.break_minutes,  # Changed from break_time
+                    "break_minutes": session.break_minutes,
                     "course": session.course,
-                    "productivity": session.productivity_rating,  # Changed from productivity_rating
-                    "notes": session.notes  # Changed from activity
+                    "productivity": session.productivity_rating,
+                    "notes": session.notes
                 })
                 
             return jsonify(session_list), 200
@@ -154,11 +73,7 @@ def api_sessions():
     elif request.method == 'POST':
         session_data = request.get_json()
         
-        if 'start_time' in session_data:
-            session_data['new_start'] = session_data.pop('start_time')
-        if 'end_time' in session_data:
-            session_data['new_end'] = session_data.pop('end_time')
-            
+        # Validate the session data directly with standardized field names
         validated_data = validate_session_data(session_data)
         if 'error' in validated_data:
             return jsonify(validated_data), 400
@@ -178,44 +93,212 @@ def api_sessions():
             db.session.add(new_session)
             db.session.commit()
 
-            return jsonify({'message': 'Session added successfully'}), 201
+            return jsonify({'message': 'Session added successfully', 'session_id': new_session.session_id}), 201
         
         except Exception as e:
             db.session.rollback()
             return jsonify({'error': str(e)}), 400
 
-@bp.route('/api/sessions/<int:session_id>', methods=['DELETE'])
+
+@bp.route('/api/sessions/<int:session_id>', methods=['GET', 'PUT', 'DELETE'])
 @login_required
-def delete_session(session_id):
-    try:
-        session = Session.query.get_or_404(session_id)
-        if session.user_id != current_user.id:
-            return jsonify({'error': 'Unauthorized'}), 403
+def session_detail(session_id):
+    """Get, update or delete a specific session"""
+    # First, get the session and check permissions
+    session = Session.query.get_or_404(session_id)
+    if session.user_id != current_user.id:
+        return jsonify({'error': 'Unauthorized'}), 403
+    
+    if request.method == 'GET':
+        # Return the session details
+        start = session.start_time
+        end = session.end_time
+        duration_minutes = (end.hour * 60 + end.minute) - (start.hour * 60 + start.minute)
+        hours = duration_minutes // 60
+        minutes = duration_minutes % 60
+        
+        session_data = {
+            "session_id": session.session_id,
+            "date": session.date.strftime('%Y-%m-%d'),
+            "start_time": start.strftime('%H:%M'),
+            "end_time": end.strftime('%H:%M'),
+            "duration": f"{hours}h {minutes}m",
+            "break_minutes": session.break_minutes,
+            "course": session.course,
+            "productivity": session.productivity_rating,
+            "notes": session.notes
+        }
+        
+        return jsonify(session_data), 200
+        
+    elif request.method == 'PUT':
+        # Update the session
+        session_data = request.get_json()
+        
+        # Validate the session data
+        validated_data = validate_session_data(session_data)
+        if 'error' in validated_data:
+            return jsonify(validated_data), 400
             
-        db.session.delete(session)
-        db.session.commit()
-        return jsonify({'message': 'Session deleted successfully'}), 200
-    except Exception as e:
-        db.session.rollback()
-        return jsonify({'error': str(e)}), 500
+        try:
+            # Update session fields
+            session.date = validated_data['date']
+            session.start_time = validated_data['start_time']
+            session.end_time = validated_data['end_time']
+            session.break_minutes = int(session_data['break_minutes']) if session_data.get('break_minutes') else None
+            session.course = session_data['course']
+            session.productivity_rating = int(session_data['productivity'])
+            session.notes = session_data.get('notes')
+            
+            db.session.commit()
+            return jsonify({'message': 'Session updated successfully'}), 200
+            
+        except Exception as e:
+            db.session.rollback()
+            return jsonify({'error': str(e)}), 400
+    
+    elif request.method == 'DELETE':
+        try:
+            db.session.delete(session)
+            db.session.commit()
+            return jsonify({'message': 'Session deleted successfully'}), 200
+        except Exception as e:
+            db.session.rollback()
+            return jsonify({'error': str(e)}), 500
 
 @bp.route('/api/sessions/bulk-delete', methods=['POST'])
 @login_required
 def bulk_delete_sessions():
-    session_ids = request.get_json().get('ids', [])
+    """Delete multiple sessions at once"""
     try:
-        deleted = Session.query.filter(
+        # Ensure the request is JSON
+        if not request.is_json:
+            return jsonify({'error': 'Request must be JSON'}), 400
+            
+        data = request.get_json()
+        
+        # Only accept session_ids as the parameter name
+        if 'session_ids' not in data:
+            return jsonify({'error': 'session_ids field is required'}), 400
+            
+        session_ids = data['session_ids']
+        
+        # Validate that session_ids is a list of integers
+        if not isinstance(session_ids, list):
+            return jsonify({'error': 'session_ids must be a list'}), 400
+            
+        # Convert any string IDs to integers
+        try:
+            session_ids = [int(id) for id in session_ids]
+        except ValueError:
+            return jsonify({'error': 'All session IDs must be integers'}), 400
+            
+        # Check if these sessions exist for this user
+        existing_sessions = Session.query.filter(
             Session.session_id.in_(session_ids),
             Session.user_id == current_user.id
-        ).delete(synchronize_session=False)
+        ).all()
         
+        existing_ids = [s.session_id for s in existing_sessions]
+        
+        if not existing_ids:
+            return jsonify({'message': 'No matching sessions found to delete'}), 200
+            
+        # Delete the sessions
+        deletion_count = 0
+        for session in existing_sessions:
+            db.session.delete(session)
+            deletion_count += 1
+        
+        # Commit all successful deletions
         db.session.commit()
-        return jsonify({'message': f'{deleted} sessions deleted successfully'}), 200
+        return jsonify({'message': f'{deletion_count} sessions deleted successfully'}), 200
+            
     except Exception as e:
         db.session.rollback()
-        return jsonify({'error': str(e)}), 500
+        return jsonify({'error': f'Server error: {str(e)}'}), 500
 
-# Route for the dashboard visualization page
+def validate_session_data(session_data):
+    try:
+        # Check for required fields using standardized names
+        date_field = session_data.get('date')
+        start_field = session_data.get('start_time')
+        end_field = session_data.get('end_time')
+            
+        # Check if required fields exist
+        if not date_field or not start_field or not end_field:
+            return {'error': 'Required fields (date, start_time, end_time) are missing'}
+
+        # Parse date and times
+        session_date = datetime.strptime(date_field, '%Y-%m-%d').date()
+        start_time = datetime.strptime(start_field, '%H:%M').time()
+        end_time = datetime.strptime(end_field, '%H:%M').time()
+
+        # Check if end time is after start time
+        if (datetime.combine(datetime.today(), end_time) <= datetime.combine(datetime.today(), start_time)):
+            return {'error': 'End time must be after start time'}
+        
+        return {
+            'date': session_date,
+            'start_time': start_time,
+            'end_time': end_time
+        }
+    except ValueError as e:
+        return {'error': f'Invalid date or time format: {str(e)}'}
+    except Exception as e:
+        return {'error': f'Validation error: {str(e)}'}
+
+@bp.route('/upload/', methods=['GET', 'POST'])
+@login_required
+def upload_data():
+    if request.method == 'POST':
+        # Convert form data to use standardized field names
+        form_data = request.form.to_dict()
+        session_data = {
+            'date': form_data.get('date'),
+            'start_time': form_data.get('start_time'),
+            'end_time': form_data.get('end_time'),
+            'break_minutes': form_data.get('break_minutes'),
+            'course': form_data.get('course'),
+            'productivity': form_data.get('productivity'),
+            'notes': form_data.get('notes')
+        }
+
+        # Validate the session data
+        validated_data = validate_session_data(session_data)
+        if 'error' in validated_data:
+            return render_template('upload.html', error=validated_data['error'])
+
+        try:
+            # Create a new session
+            new_session = Session(
+                user_id=current_user.id,
+                date=validated_data['date'],
+                start_time=validated_data['start_time'],
+                end_time=validated_data['end_time'],
+                break_minutes=int(session_data['break_minutes']) if session_data.get('break_minutes') else None,
+                course=session_data['course'],
+                productivity_rating=int(session_data['productivity']),
+                notes=session_data.get('notes')
+            )
+
+            # Save to the database
+            db.session.add(new_session)
+            db.session.commit()
+
+            # Render the template with a success message
+            return render_template('upload.html', success="Session successfully added!")
+
+        except Exception as e:
+            db.session.rollback()
+            return render_template('upload.html', error=f"Error: {str(e)}")
+
+    # GET Request - Retrieve all sessions for the current user
+    sessions = Session.query.filter_by(user_id=current_user.id).all()
+
+    # Pass the sessions to the template for display
+    return render_template('upload.html', sessions=sessions)
+
 @bp.route('/dashboard/')
 @login_required
 def dashboard():

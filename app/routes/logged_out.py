@@ -1,4 +1,4 @@
-# This is for all the pages an unlogged in user can visit 
+# This is for all the pages an unlogged in user can visit
 from . import *
 
 bp = Blueprint('logged_out', __name__)

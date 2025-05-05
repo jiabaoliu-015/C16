@@ -305,39 +305,7 @@
                     </div>
                 {% endfor %}
             </div>
-
-            <!-- Debug section - remove after fixing -->
-            <!-- <div class="bg-black p-4 mb-4 rounded">
-                <h3 class="font-bold">Debug Info:</h3>
-                <p>Number of sessions: {{ sessions|length }}</p>
-                
-                {% for session in sessions %}
-                    <div class="border-t border-yellow-300 mt-2 pt-2">
-                        <p>Session ID: {{ session.session_id }}</p>
-                        <p>Date: {{ session.date }} (Type: {{ session.date.__class__.__name__ }})</p>
-                        <p>Start Time: {{ session.start_time }} (Type: {{ session.start_time.__class__.__name__ }})</p>
-                        <p>End Time: {{ session.end_time }} (Type: {{ session.end_time.__class__.__name__ }})</p>
-                        <p>Break Minutes: {{ session.break_minutes }}</p>
-                        <p>Course: {{ session.course }}</p>
-                        <p>Productivity: {{ session.productivity_rating }}</p>
-                        <p>Notes: {{ session.notes }}</p>
-                        
-                        <!-- Try to access duration property -->
-                        <p>Duration:
-                        {% if session.duration is defined %}
-                            {{ session.duration }} (exists)
-                        {% else %}
-                            (not defined)
-                        {% endif %}
-                        </p>
-                    
-                        <!-- Show all attributes -->
-                        <p>Available attributes: {{ session.__dict__.keys()|list }}</p>
-                    </div>
-                {% endfor %}
-            </div> -->
             
-
             <!-- Pagination -->
             <div class="flex justify-between items-center mt-4">
                 <button id="prev-page" class="bg-blue-500 text-white px-4 py-2 rounded-full shadow-md hover:bg-blue-600 transition duration-300" aria-label="Previous page" disabled>
