@@ -1,5 +1,5 @@
 from .user import User
-
+from .session import Session
 '''
 Database Relationships
     User ↔ Session: One-to-Many (A user can have multiple sessions).
