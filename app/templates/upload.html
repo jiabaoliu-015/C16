@@ -221,14 +221,14 @@
                     </code>
                 </div>
 
-                <form method="POST" action="{{ url_for('logged_in.upload_data') }}" class="space-y-6">
+                <form method="POST" action="{{ url_for('logged_in.upload_data') }}" enctype="multipart/form-data" class="space-y-6">
                     {{ form.csrf_token if form }}
-
+                
                     <div class="space-y-6">
                         <div>
                             <label for="file" class="text-gray-700 font-semibold text-sm block mb-2">Select CSV File *</label>
                             <div class="flex items-center">
-                                <input type="file" name="data_file" id="file" accept=".csv" class="hidden" onchange="validateCSVFile(); resetUploadState();">
+                                <input type="file" name="data_file" id="file" accept=".csv" class="hidden" onchange="validateCSVFile(); resetUploadState(); enableUploadBtn();">
                                 <label for="file" class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md cursor-pointer transition duration-200">
                                     Browse Files
                                 </label>
@@ -237,7 +237,7 @@
                             <p id="file-error" class="text-red-500 text-sm mt-2 hidden"></p>
                         </div>
                     </div>
-
+                
                     <div class="mt-10">
                         <button type="submit" id="upload-btn" class="w-full bg-gray-400 text-gray-200 font-bold py-3 px-4 rounded-lg shadow-lg transition duration-300 cursor-not-allowed" disabled>
                             📂 Upload Data
@@ -346,6 +346,9 @@
             activity: activity,
             productivity: productivity
         };
+
+        const csrfToken = document.querySelector('input[name="csrf_token"]')?.value ||
+                          document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
         
         try {
             // Send the POST request to the backend API
@@ -353,6 +356,7 @@
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
+                    'X-CSRFToken': csrfToken // Add this line
                 },
                 body: JSON.stringify(sessionData),
             });
