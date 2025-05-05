@@ -2,11 +2,11 @@
 
 from flask import Blueprint, render_template, jsonify
 
-visualise_bp = Blueprint('visualise', __name__, url_prefix='/visualise')
+visualise_bp = Blueprint('visualise', __name__, url_prefix='/dashboard')
 
 @visualise_bp.route('/')
 def visualise():
-    return render_template('visualise.html')
+    return render_template('dashboard_2.html')
 
 
 @visualise_bp.route('/api/study-time-data')

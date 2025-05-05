@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard | StudyTrackr</title>
+    <link rel="icon" href="{{ url_for('static', filename='images/logo.png') }}" type="image/x-icon">
+    <script src="{{ url_for('static', filename='js/date-adjust.js') }}"></script>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Updated Lucide Icons CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/lucide@latest/dist/umd/lucide.min.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            lucide.createIcons(); // Ensure icons are initialized after DOM is loaded
+        });
+    </script>
+</head>
+<body class="bg-gray-50 font-sans">
+  <div class="min-h-screen flex">
+    <!-- Sidebar -->
+    <aside id="sidebar" class="w-64 bg-gray-900 text-white flex flex-col justify-between transition-all duration-300">
+        <div>
+          <div class="flex items-center px-6 py-4 space-x-2">
+            <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo" class="w-8 h-8">
+            <span class="text-xl font-bold sidebar-title">StudyTrackr</span>
+          </div>
+          <nav class="px-2 space-y-1">
+            <a href="/visualise/" class="sidebar-link flex items-center h-12 space-x-3 px-4 py-2 bg-gray-800 rounded">
+              <i class="lucide" data-lucide="bar-chart-2"></i><span class="sidebar-title">Dashboard</span>
+            </a>
+            <a href="/upload/" class="sidebar-link flex items-center h-12 space-x-3 px-4 py-2 hover:bg-gray-800 rounded">
+              <i class="lucide" data-lucide="upload"></i><span class="sidebar-title">Upload</span>
+            </a>
+            <a href="/share/" class="sidebar-link flex items-center h-12 space-x-3 px-4 py-2 hover:bg-gray-800 rounded">
+              <i class="lucide" data-lucide="link"></i><span class="sidebar-title">Share</span>
+            </a>
+            <a href="/leaderboard/" class="sidebar-link flex items-center h-12 space-x-3 px-4 py-2 hover:bg-gray-800 rounded">
+              <i class="lucide" data-lucide="award"></i><span class="sidebar-title">Leaderboard</span>
+            </a>
+            <a href="/profile/" class="sidebar-link flex items-center h-12 space-x-3 px-4 py-2 hover:bg-gray-800 rounded">
+              <i class="lucide" data-lucide="user-circle"></i><span class="sidebar-title">Profile</span>
+            </a>
+      
+            <!-- Collapse Button -->
+            <button id="toggleSidebar" class="sidebar-link flex items-center h-12 w-full space-x-3 px-4 py-2 hover:bg-gray-800 rounded justify-start">
+              <i id="toggleIcon" class="lucide" data-lucide="arrow-left"></i>
+              <span class="sidebar-title">Collapse</span>
+            </button>
+          </nav>
+        </div>
+        <div class="px-6 py-4 border-t border-gray-700">
+          <div class="flex items-center space-x-2">
+            <div class="w-6 h-6 bg-gray-400 rounded-full"></div>
+            <p class="text-sm text-gray-400 hover:text-gray-500 truncate sidebar-title">1234@student.uwu.edu.au</p>
+          </div>
+          <a href="/logout/" class="flex items-center space-x-2 text-red-400 mt-2 sidebar-link">
+            <i class="lucide" data-lucide="log-out"></i><span class="sidebar-title">Log out</span>
+          </a>
+        </div>
+      </aside>
+      
+
+      <div class="flex-1 flex flex-col">
+        <header class="bg-white shadow px-6 py-4 flex flex-col sm:flex-row sm:items-start sm:justify-between space-y-4 sm:space-y-0">
+            <!-- Left Section: Date, Email, and Dashboard Title -->
+            <div>
+              <div class="flex items-center text-sm text-gray-600 space-x-2">
+                <p class="font-medium text-gray-800">Sunday 4/5/2025</p>
+                <span class="text-gray-400">•</span>
+                <p>1234@student.uwu.edu.au</p>
+              </div>
+              <h1 class="text-3xl font-bold text-gray-900 mt-2 flex items-center">
+                Dashboard
+                <span class="ml-2 relative group">
+                  <span class="w-5 h-5 bg-gray-200 rounded-full flex items-center justify-center text-gray-600 text-xs cursor-pointer">?</span>
+                  <div class="absolute top-full left-0 mt-2 w-64 bg-white p-3 rounded-lg shadow-lg text-sm text-gray-800 hidden group-hover:block z-10">
+                    Overview of your productivity and study sessions.
+                  </div>
+                </span>
+              </h1>
+            </div>
+          
+            <!-- Right Section: Stats and User Avatar -->
+            <div class="flex flex-col sm:flex-row sm:items-start sm:space-x-4 sm:ml-auto">
+              <!-- Stats (hidden on small screens) -->
+              <div class="hidden lg:flex flex-wrap gap-3 justify-end text-sm text-gray-700">
+                <div class="bg-blue-50 p-4 rounded-xl shadow-sm w-28 text-center">
+                  <p class="text-xs text-gray-500">TODAY</p>
+                  <p class="font-semibold text-blue-800">30m / 1h</p>
+                </div>
+                <div class="bg-green-50 p-4 rounded-xl shadow-sm w-20 text-center">
+                  <p class="text-xs text-gray-500">SESSIONS</p>
+                  <p class="font-semibold text-green-800">2</p>
+                </div>
+                <div class="bg-yellow-50 p-4 rounded-xl shadow-sm w-24 text-center">
+                  <p class="text-xs text-gray-500">AVG. DURATION</p>
+                  <p class="font-semibold text-yellow-800">48m</p>
+                </div>
+                <div class="bg-purple-50 p-4 rounded-xl shadow-sm w-28 text-center">
+                  <p class="text-xs text-gray-500">AVG. PRODUCTIVITY</p>
+                  <p class="font-semibold text-purple-800">78%</p>
+                </div>
+                <div class="bg-red-50 p-4 rounded-xl shadow-sm w-28 text-center">
+                  <p class="text-xs text-gray-500">THIS WEEK</p>
+                  <p class="font-semibold text-red-800">18h 45m</p>
+                </div>
+              </div>
+          
+              <!-- User Icon -->
+              <div class="mt-4 sm:mt-0">
+                <div class="w-10 h-10 bg-gradient-to-tr from-purple-300 to-indigo-400 rounded-full flex items-center justify-center text-white font-semibold">
+                  U
+                </div>
+              </div>
+            </div>
+          </header>
+          
+
+      <!-- Main Content -->
+      <main class="flex-1 p-6 grid grid-cols-1 lg:grid-cols-3 gap-6 max-w-screen-xl mx-auto w-full">
+        <!-- Productivity Overview -->
+        <section class="lg:col-span-2 bg-white p-4 rounded-lg shadow">
+          <h2 class="text-xl font-semibold mb-4">Productivity Overview</h2>
+          <div class="h-64 bg-gray-200 rounded-lg flex items-center justify-center">
+            <span class="text-gray-500">[Line/Area Chart]</span>
+          </div>
+        </section>
+
+        <!-- Daily Timeline -->
+        <section class="bg-white p-4 rounded-lg shadow">
+          <h2 class="text-xl font-semibold mb-4">Daily Timeline</h2>
+          <div class="space-y-4">
+            <div class="flex items-center">
+              <div class="w-2 h-10 bg-gray-300 rounded mr-4"></div>
+              <div class="flex-1 bg-gray-100 p-2 rounded">Mon: 3h 20m (2 breaks)</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Course Insights -->
+        <section class="bg-white p-4 rounded-lg shadow">
+          <h2 class="text-xl font-semibold mb-4">Course Insights</h2>
+          <div class="h-48 bg-gray-200 rounded-lg flex items-center justify-center">
+            <span class="text-gray-500">[Bar/Radar Chart]</span>
+          </div>
+        </section>
+
+        <!-- Reflection & Notes -->
+        <section class="lg:col-span-2 bg-white p-4 rounded-lg shadow">
+          <h2 class="text-xl font-semibold mb-4">Reflection & Notes</h2>
+          <div class="space-y-2">
+            <div class="p-3 bg-gray-100 rounded">
+              <p class="text-gray-700 italic">"Tried Pomodoro — felt focused!"</p>
+            </div>
+            <button class="mt-2 px-4 py-2 bg-blue-500 text-white rounded-lg">Add Reflection</button>
+          </div>
+        </section>
+
+        <!-- Weekly Comparison -->
+        <section class="bg-white p-4 rounded-lg shadow">
+          <h2 class="text-xl font-semibold mb-4">Week Comparison</h2>
+          <div class="flex justify-between">
+            <div class="text-center">
+              <p class="text-sm text-gray-500">Last Week</p>
+              <p class="text-lg font-semibold">16h 10m</p>
+            </div>
+            <div class="text-center">
+              <p class="text-sm text-gray-500">This Week</p>
+              <p class="text-lg font-semibold">18h 45m</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- Study Streaks Section -->
+        <section class="bg-white p-4 rounded-lg shadow">
+          <h2 class="text-xl font-semibold mb-4">Study Streak</h2>
+          <div class="flex items-center space-x-2 mb-2">
+            <div class="w-4 h-4 rounded-full bg-green-500"></div>
+            <div class="w-4 h-4 rounded-full bg-green-500"></div>
+            <div class="w-4 h-4 rounded-full bg-green-500"></div>
+            <div class="w-4 h-4 rounded-full bg-gray-300"></div>
+            <div class="w-4 h-4 rounded-full bg-gray-300"></div>
+            <div class="w-4 h-4 rounded-full bg-gray-300"></div>
+            <div class="w-4 h-4 rounded-full bg-gray-300"></div>
+          </div>
+          <p class="text-gray-700">You're on a 3-day streak! Keep it up!</p>
+        </section>
+
+        <!-- Study Distribution by Day -->
+        <section class="bg-white p-4 rounded-lg shadow">
+          <h2 class="text-xl font-semibold mb-4">Study Distribution by Day</h2>
+          <div class="h-64 bg-gray-200 rounded-lg flex items-center justify-center">
+            <span class="text-gray-500">[Web Graph Placeholder]</span>
+          </div>
+        </section>
+      </main>
+
+      <!-- Footer -->
+      <footer class="bg-white shadow p-4 text-center text-sm text-gray-500">
+        <nav class="space-x-4">
+          <a href="/upload/" class="hover:underline">Upload Data</a>
+          <a href="/share/" class="hover:underline">Share Settings</a>
+          <a href="/info/" class="hover:underline">Support</a>
+          <a href="/" class="hover:underline">Privacy Policy</a>
+        </nav>
+      </footer>
+    </div>
+  </div>
+
+  <script>
+    // Function to toggle the sidebar state
+    function toggleSidebar() {
+      const sidebar = document.getElementById("sidebar");
+      const toggleIcon = document.getElementById("toggleIcon");
+      const isCollapsed = sidebar.classList.toggle("collapsed");
+  
+      // Save the state to localStorage
+      localStorage.setItem("sidebarCollapsed", isCollapsed);
+  
+      // Update the arrow direction
+      toggleIcon.setAttribute("data-lucide", isCollapsed ? "arrow-right" : "arrow-left");
+      lucide.createIcons(); // Re-render the icon
+    }
+  
+    // Function to load the sidebar state on page load
+    function loadSidebarState() {
+      const sidebar = document.getElementById("sidebar");
+      const toggleIcon = document.getElementById("toggleIcon");
+      const isCollapsed = localStorage.getItem("sidebarCollapsed") === "true";
+  
+      if (isCollapsed) {
+        sidebar.classList.add("collapsed");
+        toggleIcon.setAttribute("data-lucide", "arrow-right");
+      } else {
+        sidebar.classList.remove("collapsed");
+        toggleIcon.setAttribute("data-lucide", "arrow-left");
+      }
+      lucide.createIcons(); // Re-render the icon
+    }
+  
+    // Attach event listener to the toggle button
+    document.getElementById("toggleSidebar").addEventListener("click", toggleSidebar);
+  
+    // Load the sidebar state when the page loads
+    document.addEventListener("DOMContentLoaded", loadSidebarState);
+  </script>
+  
+  <style>
+    /* Tailwind CSS overrides for collapsed sidebar */
+    #sidebar.collapsed {
+      width: 5rem; /* Shrink sidebar width */
+    }
+    #sidebar.collapsed .sidebar-title {
+      display: none; /* Hide titles */
+    }
+    #sidebar.collapsed nav a {
+      justify-content: center; /* Center icons */
+    }
+  
+    /* Styling for the toggle button */
+    #toggleSidebar {
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Add a subtle shadow */
+    }
+
+    /* Sidebar link standardization */
+    .sidebar-link {
+        height: 3rem; /* Consistent button height */
+    }
+    
+    /* Adjust layout when collapsed */
+    #sidebar.collapsed .sidebar-title {
+        display: none;
+    }
+    
+    #sidebar.collapsed nav a,
+    #sidebar.collapsed #toggleSidebar {
+        justify-content: center;
+        padding-left: 0.75rem;
+        padding-right: 0.75rem;
+    }
+  </style>
+</body>
+</html>
