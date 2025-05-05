@@ -84,7 +84,7 @@
                             <div class="relative">
                                 <label for="new_start" class="text-gray-700 font-semibold text-sm block mb-2">Start *</label>
                                 <div class="relative">
-                                    <input type="time" name="new_start" id="new_start" value="14:00" 
+                                    <input type="time" name="start_time" id="new_start" value="14:00" 
                                         class="w-full bg-gray-100 border border-gray-300 rounded-md px-4 py-2 text-gray-800 placeholder-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer">
                                     <div id="start-dropdown" class="absolute bg-white border border-gray-300 rounded-lg shadow-lg p-4 mt-2 hidden z-50">
                                         <div class="grid grid-cols-2 gap-2">
@@ -104,7 +104,7 @@
                             <div class="relative">
                                 <label for="new_end" class="text-gray-700 font-semibold text-sm block mb-2">End *</label>
                                 <div class="relative">
-                                    <input type="time" name="new_end" id="new_end" value="16:20" 
+                                    <input type="time" name="end_time" id="new_end" value="16:20" 
                                         class="w-full bg-gray-100 border border-gray-300 rounded-md px-4 py-2 text-gray-800 placeholder-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer">
                                     <div id="end-dropdown" class="absolute bg-white border border-gray-300 rounded-lg shadow-lg p-4 mt-2 hidden z-50">
                                         <div class="grid grid-cols-2 gap-2">
@@ -135,7 +135,7 @@
                         <div class="relative">
                             <label for="new_break" class="text-gray-700 font-semibold text-sm block mb-2">Break (minutes)</label>
                             <div class="relative">
-                                <input type="number" name="new_break" id="new_break" value="0" min="0" 
+                                <input type="number" name="break_minutes" id="new_break" value="0" min="0"
                                     class="w-full bg-gray-100 border border-gray-300 rounded-md px-4 py-2 text-gray-800 placeholder-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer">
                                 <div id="break-dropdown" class="absolute bg-white border border-gray-300 rounded-lg shadow-lg p-4 mt-2 hidden z-50">
                                     <div class="grid grid-cols-2 gap-2">
@@ -154,21 +154,21 @@
                         <!-- Course Field -->
                         <div>
                             <label for="new_course" class="text-gray-700 font-semibold text-sm block mb-2">Course *</label>
-                            <input type="text" name="new_course" id="new_course" placeholder="e.g., CITS3403" 
+                            <input type="text" name="course" id="new_course" placeholder="e.g., CITS3403" 
                                 class="w-full bg-gray-100 border border-gray-300 rounded-md px-4 py-2 text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500">
                         </div>
 
                         <!-- Activity Field -->
                         <div>
                             <label for="new_activity" class="text-gray-700 font-semibold text-sm block mb-2">Activity</label>
-                            <input type="text" name="new_activity" id="new_activity" placeholder="e.g., listening to Matthew Daggitt" 
+                            <input type="text" name="notes" id="new_activity" placeholder="e.g., listening to Matthew Daggitt" 
                                 class="w-full bg-gray-100 border border-gray-300 rounded-md px-4 py-2 text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500">
                         </div>
 
                         <!-- Productivity Rating -->
                         <div>
                             <label for="new_productivity" class="text-gray-700 font-semibold text-sm block mb-2">Productivity Rating (0-10) *</label>
-                            <input type="range" name="new_productivity" id="new_productivity" min="0" max="10" value="7" 
+                            <input type="range" name="productivity" id="new_productivity" min="0" max="10" value="7" 
                                 class="w-full appearance-none bg-gray-300 rounded-lg overflow-hidden h-4 focus:outline-none focus:ring-2 focus:ring-blue-500">
                             <p class="text-center text-gray-500 font-medium mt-2">
                                 <span id="productivity-value">7</span> - <span id="productivity-descriptor">Good</span>
@@ -293,7 +293,7 @@
                 </div>
             </div>
             
-            <!-- <div id="session-list" class="mt-4 w-full overflow-x-hidden" >
+            <div id="session-list" class="mt-4 w-full overflow-x-hidden" >
                 {% for session in sessions %}
                     <div class="session-entry flex items-center justify-between border-b py-2">
                         <div class="w-20">{{ session.date }}</div>
@@ -304,10 +304,10 @@
                         <div class="w-48">{{ session.notes if session.notes else 'N/A' }}</div>
                     </div>
                 {% endfor %}
-            </div> -->
+            </div>
 
             <!-- Debug section - remove after fixing -->
-            <div class="bg-black p-4 mb-4 rounded">
+            <!-- <div class="bg-black p-4 mb-4 rounded">
                 <h3 class="font-bold">Debug Info:</h3>
                 <p>Number of sessions: {{ sessions|length }}</p>
                 
@@ -335,7 +335,7 @@
                         <p>Available attributes: {{ session.__dict__.keys()|list }}</p>
                     </div>
                 {% endfor %}
-            </div>
+            </div> -->
             
 
             <!-- Pagination -->

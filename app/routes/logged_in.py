@@ -32,15 +32,31 @@ def share():
 
 def validate_session_data(session_data):
     try:
-        # Check for the expected keys first
-        if 'date' not in session_data or 'new_start' not in session_data or 'new_end' not in session_data:
+        # Handle different field names from form vs API
+        date_field = session_data.get('date')
+        
+        # Check which field names are being used (form or API)
+        if 'new_start' in session_data and 'new_end' in session_data:
+            # Form submission field names
+            start_field = session_data.get('new_start')
+            end_field = session_data.get('new_end')
+        elif 'start_time' in session_data and 'end_time' in session_data:
+            # API submission field names
+            start_field = session_data.get('start_time')
+            end_field = session_data.get('end_time')
+        else:
+            return {'error': 'Required time fields are missing'}
+            
+        # Check if required fields exist
+        if not date_field or not start_field or not end_field:
             return {'error': 'Required fields are missing'}
 
-        session_date = datetime.strptime(session_data['date'], '%Y-%m-%d').date()
-        start_time = datetime.strptime(session_data['new_start'], '%H:%M').time()
-        end_time = datetime.strptime(session_data['new_end'], '%H:%M').time()
+        # Parse date and times
+        session_date = datetime.strptime(date_field, '%Y-%m-%d').date()
+        start_time = datetime.strptime(start_field, '%H:%M').time()
+        end_time = datetime.strptime(end_field, '%H:%M').time()
 
-        # Check if end time is after start time (basic check)
+        # Check if end time is after start time
         if (datetime.combine(datetime.today(), end_time) <= datetime.combine(datetime.today(), start_time)):
             return {'error': 'End time must be after start time'}
         
@@ -49,8 +65,10 @@ def validate_session_data(session_data):
             'start_time': start_time,
             'end_time': end_time
         }
-    except ValueError:
-        return {'error': 'Invalid date or time format'}
+    except ValueError as e:
+        return {'error': f'Invalid date or time format: {str(e)}'}
+    except Exception as e:
+        return {'error': f'Validation error: {str(e)}'}
 
 # Route to render the upload form page
 @bp.route('/upload/', methods=['GET', 'POST'])
@@ -94,23 +112,40 @@ def upload_data():
     # Pass the sessions to the template for display
     return render_template('upload.html', sessions=sessions)
 
-# API route for handling GET and POST requests for sessions
 @bp.route('/api/sessions', methods=['GET', 'POST'])
 @login_required
 def api_sessions():
     if request.method == 'GET':
         try:
             sessions = Session.query.filter_by(user_id=current_user.id).all()
-            session_list = [{
-                "id": session.session_id,
-                "date": session.date.strftime('%Y-%m-%d'),
-                "start_time": session.start_time.strftime('%H:%M'),
-                "end_time": session.end_time.strftime('%H:%M'),
-                "break_time": session.break_minutes,
-                "course": session.course,
-                "activity": session.notes,
-                "productivity": session.productivity_rating
-            } for session in sessions]
+            session_list = []
+            
+            for session in sessions:
+                # Calculate duration from start and end time
+                start = session.start_time
+                end = session.end_time
+                duration_minutes = (end.hour * 60 + end.minute) - (start.hour * 60 + start.minute)
+                hours = duration_minutes // 60
+                minutes = duration_minutes % 60
+                duration = f"{hours}h {minutes}m"
+                
+                # Format time as "start_time - end_time"
+                time_range = f"{start.strftime('%H:%M')} - {end.strftime('%H:%M')}"
+                
+                # Format date as DD/MM/YYYY to match frontend display
+                formatted_date = session.date.strftime('%d/%m/%Y')
+                
+                session_list.append({
+                    "id": session.session_id,
+                    "date": formatted_date,
+                    "time": time_range, 
+                    "duration": duration,
+                    "break_minutes": session.break_minutes,  # Changed from break_time
+                    "course": session.course,
+                    "productivity": session.productivity_rating,  # Changed from productivity_rating
+                    "notes": session.notes  # Changed from activity
+                })
+                
             return jsonify(session_list), 200
         except Exception as e:
             print(f"Error fetching sessions: {e}")
@@ -118,6 +153,12 @@ def api_sessions():
 
     elif request.method == 'POST':
         session_data = request.get_json()
+        
+        if 'start_time' in session_data:
+            session_data['new_start'] = session_data.pop('start_time')
+        if 'end_time' in session_data:
+            session_data['new_end'] = session_data.pop('end_time')
+            
         validated_data = validate_session_data(session_data)
         if 'error' in validated_data:
             return jsonify(validated_data), 400
@@ -128,10 +169,10 @@ def api_sessions():
                 date=validated_data['date'],
                 start_time=validated_data['start_time'],
                 end_time=validated_data['end_time'],
-                break_minutes=int(session_data['new_break']) if session_data.get('new_break') else None,
-                course=session_data['new_course'],
-                productivity_rating=int(session_data['new_productivity']),
-                notes=session_data.get('new_activity')
+                break_minutes=int(session_data['break_minutes']) if session_data.get('break_minutes') else None,
+                course=session_data['course'],
+                productivity_rating=int(session_data['productivity']),
+                notes=session_data.get('notes')
             )
 
             db.session.add(new_session)
@@ -142,6 +183,37 @@ def api_sessions():
         except Exception as e:
             db.session.rollback()
             return jsonify({'error': str(e)}), 400
+
+@bp.route('/api/sessions/<int:session_id>', methods=['DELETE'])
+@login_required
+def delete_session(session_id):
+    try:
+        session = Session.query.get_or_404(session_id)
+        if session.user_id != current_user.id:
+            return jsonify({'error': 'Unauthorized'}), 403
+            
+        db.session.delete(session)
+        db.session.commit()
+        return jsonify({'message': 'Session deleted successfully'}), 200
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'error': str(e)}), 500
+
+@bp.route('/api/sessions/bulk-delete', methods=['POST'])
+@login_required
+def bulk_delete_sessions():
+    session_ids = request.get_json().get('ids', [])
+    try:
+        deleted = Session.query.filter(
+            Session.session_id.in_(session_ids),
+            Session.user_id == current_user.id
+        ).delete(synchronize_session=False)
+        
+        db.session.commit()
+        return jsonify({'message': f'{deleted} sessions deleted successfully'}), 200
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'error': str(e)}), 500
 
 # Route for the dashboard visualization page
 @bp.route('/dashboard/')
