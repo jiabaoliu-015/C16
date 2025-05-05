@@ -202,18 +202,95 @@ def delete_session(session_id):
 @bp.route('/api/sessions/bulk-delete', methods=['POST'])
 @login_required
 def bulk_delete_sessions():
-    session_ids = request.get_json().get('ids', [])
+    # Debug incoming request
+    print(f"Request method: {request.method}")
+    print(f"Request content-type: {request.content_type}")
     try:
-        deleted = Session.query.filter(
+        print(f"Request body: {request.get_data(as_text=True)}")
+    except:
+        print("Could not read request body")
+        
+    try:
+        # If there's any issue with the JSON, this will raise an exception
+        if not request.is_json:
+            print("Request is not JSON")
+            return jsonify({'error': 'Request must be JSON'}), 400
+            
+        data = request.get_json(silent=False)  # Will raise BadRequest if JSON is invalid
+        print(f"Parsed request data: {data}")
+        
+        # Check if we have the session_ids in either format
+        session_ids = None
+        if 'session_ids' in data:
+            session_ids = data['session_ids']
+        elif 'ids' in data:
+            session_ids = data['ids']
+        
+        if not session_ids:
+            print("No session IDs found in request")
+            return jsonify({'error': 'No session IDs provided'}), 400
+            
+        # Validate that session_ids is a list of integers
+        if not isinstance(session_ids, list):
+            print(f"session_ids is not a list: {type(session_ids)}")
+            return jsonify({'error': 'session_ids must be a list'}), 400
+            
+        # Convert any string IDs to integers
+        try:
+            session_ids = [int(id) for id in session_ids]
+        except ValueError:
+            print(f"Could not convert all session_ids to integers: {session_ids}")
+            return jsonify({'error': 'All session IDs must be integers'}), 400
+            
+        print(f"Processing deletion for session_ids: {session_ids}")
+        
+        # Check if these sessions exist for this user
+        existing_sessions = Session.query.filter(
             Session.session_id.in_(session_ids),
             Session.user_id == current_user.id
-        ).delete(synchronize_session=False)
+        ).all()
         
-        db.session.commit()
-        return jsonify({'message': f'{deleted} sessions deleted successfully'}), 200
+        existing_ids = [s.session_id for s in existing_sessions]
+        missing_ids = [id for id in session_ids if id not in existing_ids]
+        
+        if missing_ids:
+            print(f"Some session IDs were not found: {missing_ids}")
+            # Continue with the deletion for the existing IDs
+        
+        if not existing_ids:
+            return jsonify({'message': 'No matching sessions found to delete'}), 200
+            
+        # Delete the sessions one by one to have better error reporting
+        deletion_count = 0
+        for session_id in existing_ids:
+            try:
+                session = Session.query.filter_by(session_id=session_id, user_id=current_user.id).first()
+                if session:
+                    db.session.delete(session)
+                    deletion_count += 1
+            except Exception as e:
+                print(f"Error deleting session {session_id}: {str(e)}")
+                # Continue with other deletions
+        
+        # Commit all successful deletions
+        try:
+            db.session.commit()
+            print(f"Successfully deleted {deletion_count} sessions")
+            return jsonify({'message': f'{deletion_count} sessions deleted successfully'}), 200
+        except Exception as e:
+            db.session.rollback()
+            print(f"Error during commit: {str(e)}")
+            return jsonify({'error': f'Database error during commit: {str(e)}'}), 500
+            
+    except BadRequest as e:
+        print(f"BadRequest error: {str(e)}")
+        return jsonify({'error': f'Invalid JSON: {str(e)}'}), 400
     except Exception as e:
         db.session.rollback()
-        return jsonify({'error': str(e)}), 500
+        print(f"Unexpected error in bulk delete: {str(e)}")
+        import traceback
+        traceback.print_exc()  # Print the full stack trace to the console
+        return jsonify({'error': f'Server error: {str(e)}'}), 500
 
 # Route for the dashboard visualization page
 @bp.route('/dashboard/')
