@@ -8,7 +8,7 @@ def anonymous_required(view_func):
     @wraps(view_func)
     def wrapper(*args, **kwargs):
         if current_user.is_authenticated:
-            return redirect(url_for('logged_out.home_logged_in'))
+            return redirect(url_for('logged_in.home_logged_in'))
         return view_func(*args, **kwargs)
     return wrapper
 
@@ -38,7 +38,7 @@ def login():
         if user and check_password_hash(user.password, password):  # Compare the hashed password
             login_user(user)  # Use Flask-Login's login_user to handle session management
             flash('Login successful!', 'success')
-            return redirect(url_for('logged_out.home_logged_in'))  # Redirect to the dashboard after login
+            return redirect(url_for('logged_in.home_logged_in'))  # Redirect to the dashboard after login
         else:
             flash('Invalid credentials, please try again.', 'error')
 
@@ -52,7 +52,7 @@ def logout():
     if form.validate_on_submit():  # Flask-WTF automatically checks CSRF
         logout_user()  # Logout the user
         return redirect(url_for('logged_out.home_not_logged_in'))
-    return redirect(url_for('logged_out.home_logged_in'))
+    return redirect(url_for('logged_in.home_logged_in'))
 
 # Signup Route
 @bp.route('/register', methods=['GET', 'POST'])

@@ -16,7 +16,7 @@ def home_logged_in():
         logout_user()  # Call Flask-Login's logout function to log out the user
         return redirect(url_for('logged_out.home_not_logged_in'))  # Redirect to the home page
     
-    return render_template('dashboard.html', form=form)  # Pass the form to the template
+    return render_template('dashboard_2.html', form=form)  # Pass the form to the template
 
 # Route for the user's profile page
 @bp.route('/profile/')
