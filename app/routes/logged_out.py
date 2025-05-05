@@ -35,14 +35,52 @@ def login():
 
         user = User.query.filter_by(email=email).first()
 
-        if user and check_password_hash(user.password, password):  # Compare the hashed password
-            login_user(user)  # Use Flask-Login's login_user to handle session management
+        # Prevent password login for Google-only users
+        if user and not user.password:
+            flash('Please log in with Google.', 'error')
+            return redirect(url_for('logged_out.login'))
+
+        if user and check_password_hash(user.password, password):
+            login_user(user)
             flash('Login successful!', 'success')
-            return redirect(url_for('logged_in.home_logged_in'))  # Redirect to the dashboard after login
+            return redirect(url_for('logged_in.home_logged_in'))
         else:
             flash('Invalid credentials, please try again.', 'error')
 
     return render_template('auth/login.html', form=form)
+
+@bp.route("/login/google/authorized")
+def google_login():
+    try:
+        if not google.authorized:
+            return redirect(url_for("google.login"))
+        resp = google.get("/oauth2/v2/userinfo")
+        if not resp.ok:
+            flash("Failed to fetch user info from Google.", "error")
+            return redirect(url_for("logged_out.login"))
+        info = resp.json()
+        google_id = info["id"]
+        email = info["email"]
+
+        user = User.query.filter_by(google_id=google_id).first()
+        if not user:
+            # Check if a user with this email already exists
+            user = User.query.filter_by(email=email).first()
+            if user:
+                user.google_id = google_id
+            else:
+                # If your User model requires a password, set a dummy one
+                user = User(email=email, google_id=google_id, password="")
+                db.session.add(user)
+            db.session.commit()
+        login_user(user)
+        flash("Logged in with Google!", "success")
+        return redirect(url_for("logged_in.home_logged_in"))
+    except Exception as e:
+        import traceback
+        print(traceback.format_exc())
+        flash(f"Internal server error: {e}", "error")
+        return redirect(url_for("logged_out.login"))
 
 # Logout Route
 @bp.route('/logout', methods=['POST'])

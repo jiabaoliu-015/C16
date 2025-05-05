@@ -11,11 +11,11 @@ from app.templates.auth.forms import LoginForm, SignupForm, LogoutForm
 from app.test import sessions_data
 from app.models import *
 from datetime import datetime
-
+from flask_dance.contrib.google import make_google_blueprint, google
 
 # Sample data
 from app.test.sessions_data import sessions
-from app import db as db
+from app import db
 
 # Optional: inline form class definition (if used elsewhere)
 class LogoutForm(FlaskForm):
