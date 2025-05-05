@@ -9,7 +9,8 @@ from functools import wraps
 
 from app.templates.auth.forms import LoginForm, SignupForm, LogoutForm
 from app.test import sessions_data
-from app.models.user import User
+from app.models import *
+import datetime
 
 # Sample data
 from app.test.sessions_data import sessions
