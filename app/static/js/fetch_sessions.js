@@ -57,9 +57,11 @@ document.addEventListener("DOMContentLoaded", () => {
                 const productivityClass = getProductivityClass(session.productivity || 0);
                 return `
                     <div class="flex items-center text-gray-700 text-sm py-2 border-b border-gray-300 notes-row hover:bg-blue-100 justify-between" data-session-id="${sessionId || ''}">
+                        ${window.location.pathname.includes('/share') ? '' : `
                         <div class="flex items-center w-20 justify-center">
                             <input type="checkbox" class="entry-checkbox form-checkbox h-4 w-4 text-blue-600" ${!sessionId ? 'disabled' : ''}>
                         </div>
+                        `}
                         <div class="flex items-center w-24 justify-center">
                             <span class="bg-gray-200 text-black font-bold rounded-full px-2 py-1">${session.date || "N/A"}</span>
                         </div>
@@ -286,15 +288,19 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Attach event listeners to checkboxes
     function attachCheckboxListeners() {
-        const entryCheckboxes = document.querySelectorAll(".entry-checkbox");
-        entryCheckboxes.forEach(checkbox => {
-            checkbox.addEventListener("change", updateDeleteButtonVisibility);
-        });
+        if (!window.location.pathname.includes('/share')) {
+            const entryCheckboxes = document.querySelectorAll(".entry-checkbox");
+            entryCheckboxes.forEach(checkbox => {
+                checkbox.addEventListener("change", updateDeleteButtonVisibility);
+            });
+        }
     }
 
     // Initialize event listeners
     dateToggle.addEventListener("click", sortSessionsByDate);
-    selectAllCheckbox.addEventListener("change", toggleSelectAll);
+    if (!window.location.pathname.includes('/share')) {
+        selectAllCheckbox.addEventListener("change", toggleSelectAll);
+    }
     document.getElementById("prev-page").addEventListener("click", () => goToPage(currentPage - 1));
     document.getElementById("next-page").addEventListener("click", () => goToPage(currentPage + 1));
     document.getElementById("delete-selected").addEventListener("click", handleDeleteSelected); // Add this line
@@ -302,5 +308,3 @@ document.addEventListener("DOMContentLoaded", () => {
     // Fetch and render sessions on page load
     fetchSessions();
 });
-
-

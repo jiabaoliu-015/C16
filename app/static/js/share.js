@@ -5,6 +5,9 @@ document.addEventListener('DOMContentLoaded', function() {
     // Initialize the checkbox
     initCheckboxes();
     
+    // Initialize the share sessions checkbox
+    initShareSessionsCheckbox();
+    
     // Initialize to generate the button
     document.getElementById('generate-url-btn').addEventListener('click', generateShareUrl);
     
@@ -20,6 +23,32 @@ document.addEventListener('DOMContentLoaded', function() {
     // Initialize the QR code download button
     document.getElementById('download-qr-btn').addEventListener('click', downloadQRCode);
 });
+
+// Initialize the share sessions checkbox
+function initShareSessionsCheckbox() {
+    const shareSessionsCheckbox = document.getElementById('share-sessions-checkbox');
+    
+    if (shareSessionsCheckbox) {
+        shareSessionsCheckbox.addEventListener('click', function() {
+            // Toggle checked state
+            this.classList.toggle('checked');
+            
+            // Add animation class
+            this.classList.add('animate');
+            
+            // Remove animation class after animation completes
+            setTimeout(() => {
+                this.classList.remove('animate');
+            }, 800);
+            
+            // Hide URL display when selection changes
+            const urlDisplay = document.getElementById('share-url-display');
+            if (urlDisplay) {
+                urlDisplay.style.display = 'none';
+            }
+        });
+    }
+}
 
 // Update date display
 function updateDateDisplay() {
@@ -66,24 +95,67 @@ function initCheckboxes() {
 
 // Generate the sharing URL
 function generateShareUrl() {
-    const checkboxes = document.querySelectorAll('.custom-checkbox');
+    const shareSessionsCheckbox = document.getElementById('share-sessions-checkbox');
     const selectedItems = [];
     
-    checkboxes.forEach(checkbox => {
-        if (checkbox.classList.contains('checked')) {
-            const contentId = checkbox.getAttribute('data-content-id');
-            selectedItems.push(contentId);
+    // Check if sessions are selected for sharing
+    if (shareSessionsCheckbox && shareSessionsCheckbox.classList.contains('checked')) {
+        // Get all selected session IDs
+        const selectedSessions = getSelectedSessions();
+        if (selectedSessions.length > 0) {
+            selectedItems.push('sessions=' + selectedSessions.join(','));
+        } else {
+            alert('Please select at least one session to share');
+            return;
         }
-    });
+    }
+    
+    // If nothing is selected, show an alert
+    if (selectedItems.length === 0) {
+        alert('Please select content to share');
+        return;
+    }
     
     const baseUrl = window.location.origin + window.location.pathname;
-    const queryParams = selectedItems.length > 0 ? '?share=' + selectedItems.join(',') : '';
+    const queryParams = '?' + selectedItems.join('&');
     const shareUrl = baseUrl + queryParams;
 
     const urlDisplay = document.getElementById('share-url-display');
     urlDisplay.textContent = shareUrl;
     urlDisplay.style.display = 'block';
     generateQRCode(shareUrl);
+}
+
+// Get selected sessions based on page type
+function getSelectedSessions() {
+    const selectedSessions = [];
+    const sessionRows = document.querySelectorAll('.notes-row');
+    
+    // Check if we're on the share page
+    if (window.location.pathname.includes('/share')) {
+        // In share page, we select all visible sessions
+        sessionRows.forEach(row => {
+            if (row.style.display !== 'none') {
+                const sessionId = row.getAttribute('data-session-id');
+                if (sessionId) {
+                    selectedSessions.push(sessionId);
+                }
+            }
+        });
+    } else {
+        // In upload page, we select only checked sessions
+        sessionRows.forEach(row => {
+            const checkbox = row.querySelector('.entry-checkbox');
+            if (checkbox && checkbox.checked) {
+                const sessionId = row.getAttribute('data-session-id');
+                if (sessionId) {
+                    selectedSessions.push(sessionId);
+                }
+            }
+        });
+    }
+    
+    return selectedSessions;
 }
 
 //  Generate qr code
@@ -305,9 +377,9 @@ function copyShareUrl() {
 // Parse the URL parameters and display the corresponding content (when the page is loaded through a shared link)
 function parseUrlAndShowContent() {
     const urlParams = new URLSearchParams(window.location.search);
-    const shareParam = urlParams.get('share');
+    const sessionsParam = urlParams.get('sessions');
     
-    if (shareParam) {
+    if (sessionsParam) {
         // Hide the navigation bar
         const navbar = document.querySelector('nav');
         if (navbar) {
@@ -340,26 +412,11 @@ function parseUrlAndShowContent() {
             shareContainer.style.maxWidth = '100%';
         }
         
-        const sharedItems = shareParam.split(',');
-        
-     
-        const allContentItems = document.querySelectorAll('.content-item');
-        allContentItems.forEach(item => {
-            item.style.display = 'none';
-        });
-        
-    
-        sharedItems.forEach(contentId => {
-            const contentElement = document.querySelector(`[data-content-id="${contentId}"]`).closest('.content-item');
-            if (contentElement) {
-                contentElement.style.display = 'flex';
-            }
-        });
-        
-        // Hide the checkbox and URL generator (in the Share view)
-        document.querySelectorAll('.checkbox-container').forEach(checkbox => {
-            checkbox.style.display = 'none';
-        });
+        // Hide the share checkbox and URL generator
+        const shareCheckboxContainer = document.querySelector('.share-checkbox-container');
+        if (shareCheckboxContainer) {
+            shareCheckboxContainer.style.display = 'none';
+        }
         
         document.querySelector('.url-generator').style.display = 'none';
         
@@ -369,11 +426,34 @@ function parseUrlAndShowContent() {
             contentSection.style.margin = '0';
         }
         
+        // Hide other elements
         document.querySelectorAll('.share-container > *:not(.content-section)').forEach(element => {
             if (element !== contentSection) {
                 element.style.display = 'none';
             }
         });
+        
+        // Wait for sessions to load, then filter them
+        const checkSessionsLoaded = setInterval(() => {
+            const sessionRows = document.querySelectorAll('.notes-row');
+            if (sessionRows.length > 0) {
+                clearInterval(checkSessionsLoaded);
+                
+                // Get the shared session IDs
+                const sharedSessionIds = sessionsParam.split(',');
+                
+                // Hide sessions that are not in the shared list
+                sessionRows.forEach(row => {
+                    const sessionId = row.getAttribute('data-session-id');
+                    if (!sharedSessionIds.includes(sessionId)) {
+                        row.style.display = 'none';
+                    }
+                });
+                
+                // Hide the delete button
+                document.querySelector('#delete-selected').style.display = 'none';
+            }
+        }, 100);
     }
 }
 

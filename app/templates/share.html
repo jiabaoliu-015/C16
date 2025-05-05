@@ -8,6 +8,7 @@
 <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js" integrity="sha512-CNgIRecGo7nphbeZ04Sc13ka07paqdeTu0WR1IM4kNcpmBAUSHSQX0FslNhTDadL4O5SAGapGt4FodqL8My0mA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script src="{{ url_for('static', filename='js/share.js') }}" defer></script>
+<script src="{{ url_for('static', filename='js/fetch_sessions.js') }}" defer></script>
 
 <div class="share-container">
     <!-- date display -->
@@ -22,142 +23,68 @@
         <p>Here you can select the content you want to share and generate a QR code. Use this to share your study progress with others!</p>
     </div>
 
-    <!-- context -->
+    <!-- Sessions Section -->
     <div class="content-section">
-        <!-- Study Goals -->
-        <div class="content-item">
-            <div class="checkbox-container">
-                <div class="custom-checkbox" data-content-id="study-goals"></div>
-            </div>
-            <div class="content-details">
-                <div class="card">
-                    <h2>Study Goals</h2>
-                    <p class="stat">75%</p>
-                    <p class="description">You are on track to meet your weekly goals.</p>
-                    <p>Study Time: 2m</p>
-                    <p>Goal: 4m</p>
-                    <div class="progress-bar mt-4">
-                        <div class="progress-bar-inner"></div>
-                    </div>
+        <div class="sessions-container">
+            <div class="share-checkbox-container">
+                <div class="share-custom-checkbox" id="share-sessions-checkbox" data-content-type="sessions">
+                    <div class="checkbox-ripple"></div>
+                    <div class="checkbox-inner"></div>
                 </div>
             </div>
-        </div>
+            <div class="bg-white rounded-lg shadow-xl p-6 flex flex-col justify-start space-y-8">
+            <!-- Header -->
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-2xl font-bold text-gray-900">
+                    Sessions <span id="session-count" class="text-gray-500 font-medium">• 0</span>
+                </h2>
+                <button id="delete-selected" class="bg-red-500 text-white px-4 py-2 rounded-full shadow-md hover:bg-red-600 transition duration-300 hidden">
+                    Delete Selected
+                </button>
+            </div>
 
-        <!-- Study Streak -->
-        <div class="content-item">
-            <div class="checkbox-container">
-                <div class="custom-checkbox" data-content-id="study-streak"></div>
-            </div>
-            <div class="content-details">
-                <div class="card">
-                    <h2>Study Streak</h2>
-                    <div class="flex justify-around mb-4">
-                        <div class="flex flex-col items-center">
-                            <span class="text-gray-500 text-xl">📅</span>
-                            <span class="text-sm text-gray-500">Today</span>
-                            <span class="text-lg font-bold text-gray-700">0m</span>
-                        </div>
-                        <div class="flex flex-col items-center">
-                            <span class="text-gray-500 text-xl">📅</span>
-                            <span class="text-sm text-gray-500">Week</span>
-                            <span class="text-lg font-bold text-gray-700">3h 20m</span>
-                        </div>
-                        <div class="flex flex-col items-center">
-                            <span class="text-gray-500 text-xl">📅</span>
-                            <span class="text-sm text-gray-500">Month</span>
-                            <span class="text-lg font-bold text-gray-700">2d 3h 40m</span>
-                        </div>
-                    </div>
-                    <p>Streak: 4/5 days</p>
-                    <div class="flex space-x-4 mt-4">
-                        <div class="flex flex-col items-center">
-                            <span class="text-red-500 text-2xl font-bold">✗</span>
-                            <span class="text-xs text-gray-500">Day 1</span>
-                        </div>
-                        <div class="flex flex-col items-center">
-                            <span class="text-yellow-500 text-2xl font-bold">-</span>
-                            <span class="text-xs text-gray-500">Day 2</span>
-                        </div>
-                        <div class="flex flex-col items-center">
-                            <span class="text-green-500 text-2xl font-bold">✓</span>
-                            <span class="text-xs text-gray-500">Day 3</span>
-                        </div>
-                        <div class="flex flex-col items-center">
-                            <span class="text-gray-400 text-2xl font-bold">?</span>
-                            <span class="text-xs text-gray-500">Day 4</span>
-                        </div>
-                    </div>
+            <!-- Table Header -->
+            <div class="flex items-center text-gray-700 font-bold text-sm border-b border-gray-300 pb-2 justify-center">
+                <div class="flex items-center w-44 justify-center space-x-1">
+                    <span class="font-extrabold">Date</span>
+                    <button class="text-gray-500 sort-active" id="date-toggle" data-sort="desc" aria-label="Sort by date">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                        </svg>
+                    </button>
+                </div>
+                <div class="flex items-center w-48 justify-center">
+                    <span>Time</span>
+                </div>
+                <div class="flex items-center w-20 justify-center">
+                    <span>Duration</span>
+                </div>
+                <div class="flex items-center w-28 justify-center">
+                    <span>Course</span>
+                </div>
+                <div class="flex items-center w-20 justify-center">
+                    <span>Productivity</span>
+                </div>
+                <div class="flex items-center w-48 justify-center">
+                    <span>Notes</span>
                 </div>
             </div>
-        </div>
-
-        <!-- Focus Distribution -->
-        <div class="content-item">
-            <div class="checkbox-container">
-                <div class="custom-checkbox" data-content-id="focus-distribution"></div>
-            </div>
-            <div class="content-details">
-                <div class="card">
-                    <h2>Focus Distribution</h2>
-                    <img src="{{ url_for('static', filename='images/pie.png') }}" alt="Focus Distribution Pie Chart" class="w-full h-auto rounded-lg">
-                </div>
-            </div>
-        </div>
-
-        <!-- Study Graph -->
-        <div class="content-item">
-            <div class="checkbox-container">
-                <div class="custom-checkbox" data-content-id="study-graph"></div>
-            </div>
-            <div class="content-details">
-                <div class="card">
-                    <div class="flex items-center justify-between mb-4">
-                        <h2>Study Time Graph</h2>
-                        <div class="flex space-x-2">
-                            <button class="toggle-btn active" data-period="day">Day</button>
-                            <button class="toggle-btn" data-period="week">Week</button>
-                            <button class="toggle-btn" data-period="month">Month</button>
-                        </div>
-                    </div>
-                    <div class="chart-container bg-gray-100 p-4 rounded-lg shadow-md mt-4">
-                        <canvas id="studyTimeGraph" class="w-full h-64"></canvas>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Activities -->
-        <div class="content-item">
-            <div class="checkbox-container">
-                <div class="custom-checkbox" data-content-id="activities"></div>
-            </div>
-            <div class="content-details">
-                <div class="card">
-                    <h2>Activities</h2>
-                    <ul class="space-y-4">
-                        <li class="flex items-center justify-between bg-gray-100 p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300">
-                            <div>
-                                <p class="text-lg font-semibold text-gray-700">Complete Assignment 2</p>
-                                <p class="text-sm text-gray-500">Build a responsive portfolio website using HTML, CSS, and JavaScript.</p>
-                            </div>
-                            <span class="text-sm text-blue-500 font-semibold">Due: 3 days</span>
-                        </li>
-                        <li class="flex items-center justify-between bg-gray-100 p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300">
-                            <div>
-                                <p class="text-lg font-semibold text-gray-700">Attend Workshop</p>
-                                <p class="text-sm text-gray-500">Learn advanced React.js concepts and state management.</p>
-                            </div>
-                            <span class="text-sm text-green-500 font-semibold">Tomorrow</span>
-                        </li>
-                        <li class="flex items-center justify-between bg-gray-100 p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300">
-                            <div>
-                                <p class="text-lg font-semibold text-gray-700">Group Project Meeting</p>
-                                <p class="text-sm text-gray-500">Discuss API integration and database schema for the final project.</p>
-                            </div>
-                            <span class="text-sm text-yellow-500 font-semibold">In 2 days</span>
-                        </li>
-                    </ul>
-                </div>
+            
+            <div id="session-list" class="mt-4 w-full overflow-x-hidden"></div>
+            
+            <!-- Pagination -->
+            <div class="flex justify-between items-center mt-4">
+                <button id="prev-page" class="bg-blue-500 text-white px-4 py-2 rounded-full shadow-md hover:bg-blue-600 transition duration-300" aria-label="Previous page" disabled>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                    </svg>
+                </button>
+                <div id="page-info" class="text-gray-700 font-medium">Page 1 (1-10)</div>
+                <button id="next-page" class="bg-blue-500 text-white px-4 py-2 rounded-full shadow-md hover:bg-blue-600 transition duration-300" aria-label="Next page" disabled>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                    </svg>
+                </button>
             </div>
         </div>
     </div>
@@ -191,8 +118,5 @@
         </div>
     </div>
 </div>
-
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script src="{{ url_for('static', filename='js/studyTimeGraph.js') }}"></script>
 
 {% endblock %}
