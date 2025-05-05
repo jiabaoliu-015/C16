@@ -46,8 +46,8 @@
           <a href="/" class="nav-link flex items-center space-x-1"><i data-lucide="home"></i><span>Home</span></a>
 
           {% if not current_user.is_authenticated %}
-            <a href="{{ url_for('auth.login') }}" class="nav-link flex items-center space-x-1"><i data-lucide="log-in"></i><span>Login</span></a>
-            <a href="{{ url_for('auth.signup') }}" class="nav-link flex items-center space-x-1"><i data-lucide="user-plus"></i><span>Sign Up</span></a>
+            <a href="{{ url_for('logged_out.login') }}" class="nav-link flex items-center space-x-1"><i data-lucide="log-in"></i><span>Login</span></a>
+            <a href="{{ url_for('logged_out.signup') }}" class="nav-link flex items-center space-x-1"><i data-lucide="user-plus"></i><span>Sign Up</span></a>
           {% else %}
             <a href="/upload" class="nav-link flex items-center space-x-1"><i data-lucide="upload"></i><span>Upload</span></a>
             <a href="/visualise" class="nav-link flex items-center space-x-1"><i data-lucide="bar-chart"></i><span>Visualise</span></a>
@@ -56,7 +56,7 @@
             <a href="/profile" class="nav-link flex items-center space-x-1"><i data-lucide="user"></i><span>Profile</span></a>
 
             <!-- Logout Button -->
-            <form action="{{ url_for('auth.logout') }}" method="POST" class="flex items-center space-x-2">
+            <form action="{{ url_for('logged_out.logout') }}" method="POST" class="flex items-center space-x-2">
               {{ logout_form.hidden_tag() }}
               <button type="submit" class="nav-link flex items-center space-x-1 text-red-500 hover:text-red-600">
                 <i data-lucide="log-out"></i><span>Logout</span>
@@ -76,8 +76,8 @@
         <a href="/" class="block px-6 py-3 hover:bg-blue-600 transition-all">Home</a>
 
         {% if not current_user.is_authenticated %}
-          <a href="{{ url_for('auth.login') }}" class="block px-6 py-3 hover:bg-blue-600 transition-all">Login</a>
-          <a href="{{ url_for('auth.signup') }}" class="block px-6 py-3 hover:bg-blue-600 transition-all">Sign Up</a>
+          <a href="{{ url_for('logged_out.login') }}" class="block px-6 py-3 hover:bg-blue-600 transition-all">Login</a>
+          <a href="{{ url_for('logged_out.signup') }}" class="block px-6 py-3 hover:bg-blue-600 transition-all">Sign Up</a>
         {% else %}
           <a href="/upload" class="block px-6 py-3 hover:bg-blue-600 transition-all">Upload</a>
           <a href="/visualise" class="block px-6 py-3 hover:bg-blue-600 transition-all">Visualise</a>
@@ -86,7 +86,7 @@
           <a href="/profile" class="block px-6 py-3 hover:bg-blue-600 transition-all">Profile</a>
 
           <!-- Mobile Logout Button -->
-          <form action="{{ url_for('auth.logout') }}" method="POST" class="block px-6 py-3 hover:bg-red-500 transition-all">
+          <form action="{{ url_for('logged_out.logout') }}" method="POST" class="block px-6 py-3 hover:bg-red-500 transition-all">
             <button type="submit" class="w-full text-left text-red-500 hover:text-red-600">
                 Logout
             </button>

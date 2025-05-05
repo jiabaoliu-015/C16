@@ -1,6 +1,6 @@
 # app/routes/main_routes.py
 from flask import Blueprint, render_template, redirect, url_for
-from flask_login import current_user
+from flask_login import current_user, login_required
 from flask_wtf import FlaskForm
 from wtforms import SubmitField
 from app.templates.auth.forms import LogoutForm
@@ -17,6 +17,7 @@ def home_not_logged_in():
     return render_template('home.html')  # Regular home page for non-logged-in users
 
 @main_bp.route('/dashboard', methods=['GET', 'POST'])
+@login_required
 def home_logged_in():
     if not current_user.is_authenticated:
         return redirect(url_for('auth.login'))  # Redirect to login if not logged in
