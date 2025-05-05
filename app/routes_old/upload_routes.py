@@ -1,8 +1,8 @@
-from flask import Blueprint, render_template, request, jsonify
-from flask_login import current_user, login_required
-from app import db
-from app.models import Session
-from datetime import datetime
+# app/routes/upload_routes.py: Routes for uploading data
+
+from flask import Blueprint, render_template, jsonify
+from app.test.sessions_data import sessions
+from flask_login import login_required
 
 upload_bp = Blueprint('upload', __name__, url_prefix='/upload')
 
