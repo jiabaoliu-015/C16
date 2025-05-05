@@ -20,6 +20,10 @@ def create_app():
     CORS(app)
     login_manager.login_view = "logged_out.login"
 
+    # # Database setup (make sure to update the URI for your environment)
+    # app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///yourdatabase.db'  # or your actual database URI
+    # app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False  # optional, disables a warning
+
     from app.models.user import User
 
     # User loader for Flask-Login
