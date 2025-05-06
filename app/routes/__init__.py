@@ -15,6 +15,11 @@ from datetime import datetime
 from app.forms import ResetRequestForm, ResetPasswordForm
 from flask_mail import Message
 from app import db, mail
+from flask_dance.contrib.google import make_google_blueprint, google
+
+# Sample data
+from app.test.sessions_data import sessions
+from app import db
 
 # Optional: inline form class definition (if used elsewhere)
 class LogoutForm(FlaskForm):

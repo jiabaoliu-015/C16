@@ -16,7 +16,8 @@
         });
     </script>
 </head>
-<body class="bg-gray-50 font-sans">
+<body class="bg-gray-50 font-sans" data-user-email="{{ current_user.email }}">
+<div class="absolute inset-0 -z-10 bg-[url('/static/images/liquid-cheese.svg')] opacity-80 bg-cover bg-fixed"></div>
   <div class="min-h-screen flex">
     <!-- Sidebar -->
     <aside id="sidebar" class="w-64 bg-gray-900 text-white flex flex-col justify-between transition-all duration-300">
@@ -51,12 +52,16 @@
         </div>
         <div class="px-6 py-4 border-t border-gray-700">
           <div class="flex items-center space-x-2">
-            <div class="w-6 h-6 bg-gray-400 rounded-full"></div>
-            <p class="text-sm text-gray-400 hover:text-gray-500 truncate sidebar-title">1234@student.uwu.edu.au</p>
+            <div class="w-6 h-6 bg-gray-400 rounded-full bg-gradient-to-tr from-purple-300 to-indigo-400 rounded-full flex items-center justify-center text-white font-semibold" id="sidebar-profile-circle"></div>
+            <p id="sidebar-email" class="text-sm text-gray-400 hover:text-gray-500 truncate sidebar-title">Loading...</p>
           </div>
-          <a href="/logout/" class="flex items-center space-x-2 text-red-400 mt-2 sidebar-link">
-            <i class="lucide" data-lucide="log-out"></i><span class="sidebar-title">Log out</span>
-          </a>
+          <form action="{{ url_for('logged_out.logout') }}" method="POST" class="mt-2">
+            {{ logout_form.hidden_tag() }}
+            <button type="submit" class="flex items-center space-x-2 text-red-400 sidebar-link w-full">
+              <i class="lucide" data-lucide="log-out"></i>
+              <span class="sidebar-title">Log out</span>
+            </button>
+          </form>
         </div>
       </aside>
       
@@ -68,7 +73,7 @@
               <div class="flex items-center text-sm text-gray-600 space-x-2">
                 <p class="font-medium text-gray-800">Sunday 4/5/2025</p>
                 <span class="text-gray-400">•</span>
-                <p>1234@student.uwu.edu.au</p>
+                <p id="header-email">Loading...</p>
               </div>
               <h1 class="text-3xl font-bold text-gray-900 mt-2 flex items-center">
                 Dashboard
@@ -84,34 +89,77 @@
             <!-- Right Section: Stats and User Avatar -->
             <div class="flex flex-col sm:flex-row sm:items-start sm:space-x-4 sm:ml-auto">
               <!-- Stats (hidden on small screens) -->
-              <div class="hidden lg:flex flex-wrap gap-3 justify-end text-sm text-gray-700">
-                <div class="bg-blue-50 p-4 rounded-xl shadow-sm w-28 text-center">
-                  <p class="text-xs text-gray-500">TODAY</p>
-                  <p class="font-semibold text-blue-800">30m / 1h</p>
+              <div class="hidden lg:flex flex-nowrap gap-4 items-center justify-end">
+                <!-- Today -->
+                <div class="flex items-center gap-2 bg-blue-50 px-4 py-2 rounded-xl shadow-sm transition-transform hover:scale-105 group">
+                  <i class="lucide text-blue-500" data-lucide="clock"></i>
+                  <div class="flex flex-col items-start">
+                    <span class="text-xs text-gray-500">Today</span>
+                    <span class="font-semibold text-blue-800 flex items-center gap-1">
+                      30m / 1h
+                      <span class="ml-1 text-green-500 flex items-center text-xs animate-pulse">
+                        <i class="lucide text-green-500" data-lucide="arrow-up-right"></i>+10%
+                      </span>
+                    </span>
+                  </div>
                 </div>
-                <div class="bg-green-50 p-4 rounded-xl shadow-sm w-20 text-center">
-                  <p class="text-xs text-gray-500">SESSIONS</p>
-                  <p class="font-semibold text-green-800">2</p>
+                <!-- Sessions -->
+                <div class="flex items-center gap-2 bg-green-50 px-4 py-2 rounded-xl shadow-sm transition-transform hover:scale-105 group">
+                  <i class="lucide text-green-500" data-lucide="play-circle"></i>
+                  <div class="flex flex-col items-start">
+                    <span class="text-xs text-gray-500">Sessions</span>
+                    <span class="font-semibold text-green-800 flex items-center gap-1">
+                      2
+                      <span class="ml-1 text-red-500 flex items-center text-xs">
+                        <i class="lucide text-red-500" data-lucide="arrow-down-right"></i>-1
+                      </span>
+                    </span>
+                  </div>
                 </div>
-                <div class="bg-yellow-50 p-4 rounded-xl shadow-sm w-24 text-center">
-                  <p class="text-xs text-gray-500">AVG. DURATION</p>
-                  <p class="font-semibold text-yellow-800">48m</p>
+                <!-- Avg Duration -->
+                <div class="flex items-center gap-2 bg-yellow-50 px-4 py-2 rounded-xl shadow-sm transition-transform hover:scale-105 group">
+                  <i class="lucide text-yellow-500" data-lucide="timer"></i>
+                  <div class="flex flex-col items-start">
+                    <span class="text-xs text-gray-500">Avg. Duration</span>
+                    <span class="font-semibold text-yellow-800 flex items-center gap-1">
+                      48m
+                      <span class="ml-1 text-green-500 flex items-center text-xs">
+                        <i class="lucide text-green-500" data-lucide="arrow-up-right"></i>+5%
+                      </span>
+                    </span>
+                  </div>
                 </div>
-                <div class="bg-purple-50 p-4 rounded-xl shadow-sm w-28 text-center">
-                  <p class="text-xs text-gray-500">AVG. PRODUCTIVITY</p>
-                  <p class="font-semibold text-purple-800">78%</p>
+                <!-- Avg Productivity -->
+                <div class="flex items-center gap-2 bg-purple-50 px-4 py-2 rounded-xl shadow-sm transition-transform hover:scale-105 group">
+                  <i class="lucide text-purple-500" data-lucide="activity"></i>
+                  <div class="flex flex-col items-start">
+                    <span class="text-xs text-gray-500">Avg. Productivity</span>
+                    <span class="font-semibold text-purple-800 flex items-center gap-1">
+                      78%
+                      <span class="ml-1 text-green-500 flex items-center text-xs">
+                        <i class="lucide text-green-500" data-lucide="arrow-up-right"></i>+2%
+                      </span>
+                    </span>
+                  </div>
                 </div>
-                <div class="bg-red-50 p-4 rounded-xl shadow-sm w-28 text-center">
-                  <p class="text-xs text-gray-500">THIS WEEK</p>
-                  <p class="font-semibold text-red-800">18h 45m</p>
+                <!-- This Week -->
+                <div class="flex items-center gap-2 bg-red-50 px-4 py-2 rounded-xl shadow-sm transition-transform hover:scale-105 group">
+                  <i class="lucide text-red-500" data-lucide="calendar-days"></i>
+                  <div class="flex flex-col items-start">
+                    <span class="text-xs text-gray-500">This Week</span>
+                    <span class="font-semibold text-red-800 flex items-center gap-1">
+                      18h 45m
+                      <span class="ml-1 text-green-500 flex items-center text-xs">
+                        <i class="lucide text-green-500" data-lucide="arrow-up-right"></i>+1h
+                      </span>
+                    </span>
+                  </div>
                 </div>
               </div>
           
               <!-- User Icon -->
               <div class="mt-4 sm:mt-0">
-                <div class="w-10 h-10 bg-gradient-to-tr from-purple-300 to-indigo-400 rounded-full flex items-center justify-center text-white font-semibold">
-                  U
-                </div>
+                <div class="w-10 h-10 bg-gradient-to-tr from-purple-300 to-indigo-400 rounded-full flex items-center justify-center text-white font-semibold" id="header-profile-circle"></div>
               </div>
             </div>
           </header>
@@ -120,7 +168,7 @@
       <!-- Main Content -->
       <main class="flex-1 p-6 grid grid-cols-1 lg:grid-cols-3 gap-6 max-w-screen-xl mx-auto w-full">
         <!-- Productivity Overview -->
-        <section class="lg:col-span-2 bg-white p-4 rounded-lg shadow">
+        <section class="lg:col-span-2 bg-white p-4 rounded-lg shadow transition-transform duration-200 hover:scale-[1.02] hover:shadow-md">
           <h2 class="text-xl font-semibold mb-4">Productivity Overview</h2>
           <div class="h-64 bg-gray-200 rounded-lg flex items-center justify-center">
             <span class="text-gray-500">[Line/Area Chart]</span>
@@ -128,7 +176,7 @@
         </section>
 
         <!-- Daily Timeline -->
-        <section class="bg-white p-4 rounded-lg shadow">
+        <section class="bg-white p-4 rounded-lg shadow transition-transform duration-200 hover:scale-[1.02] hover:shadow-md">
           <h2 class="text-xl font-semibold mb-4">Daily Timeline</h2>
           <div class="space-y-4">
             <div class="flex items-center">
@@ -139,7 +187,7 @@
         </section>
 
         <!-- Course Insights -->
-        <section class="bg-white p-4 rounded-lg shadow">
+        <section class="bg-white p-4 rounded-lg shadow transition-transform duration-200 hover:scale-[1.02] hover:shadow-md">
           <h2 class="text-xl font-semibold mb-4">Course Insights</h2>
           <div class="h-48 bg-gray-200 rounded-lg flex items-center justify-center">
             <span class="text-gray-500">[Bar/Radar Chart]</span>
@@ -147,7 +195,7 @@
         </section>
 
         <!-- Reflection & Notes -->
-        <section class="lg:col-span-2 bg-white p-4 rounded-lg shadow">
+        <section class="lg:col-span-2 bg-white p-4 rounded-lg shadow transition-transform duration-200 hover:scale-[1.02] hover:shadow-md">
           <h2 class="text-xl font-semibold mb-4">Reflection & Notes</h2>
           <div class="space-y-2">
             <div class="p-3 bg-gray-100 rounded">
@@ -158,7 +206,7 @@
         </section>
 
         <!-- Weekly Comparison -->
-        <section class="bg-white p-4 rounded-lg shadow">
+        <section class="bg-white p-4 rounded-lg shadow transition-transform duration-200 hover:scale-[1.02] hover:shadow-md">
           <h2 class="text-xl font-semibold mb-4">Week Comparison</h2>
           <div class="flex justify-between">
             <div class="text-center">
@@ -173,7 +221,7 @@
         </section>
 
         <!-- Study Streaks Section -->
-        <section class="bg-white p-4 rounded-lg shadow">
+        <section class="bg-white p-4 rounded-lg shadow transition-transform duration-200 hover:scale-[1.02] hover:shadow-md">
           <h2 class="text-xl font-semibold mb-4">Study Streak</h2>
           <div class="flex items-center space-x-2 mb-2">
             <div class="w-4 h-4 rounded-full bg-green-500"></div>
@@ -188,7 +236,7 @@
         </section>
 
         <!-- Study Distribution by Day -->
-        <section class="bg-white p-4 rounded-lg shadow">
+        <section class="bg-white p-4 rounded-lg shadow transition-transform duration-200 hover:scale-[1.02] hover:shadow-md">
           <h2 class="text-xl font-semibold mb-4">Study Distribution by Day</h2>
           <div class="h-64 bg-gray-200 rounded-lg flex items-center justify-center">
             <span class="text-gray-500">[Web Graph Placeholder]</span>
@@ -245,7 +293,46 @@
     // Load the sidebar state when the page loads
     document.addEventListener("DOMContentLoaded", loadSidebarState);
   </script>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const email = document.body.getAttribute('data-user-email');
+        if (email) {
+            // Set email in sidebar and header
+            const sidebarEmail = document.getElementById('sidebar-email');
+            if (sidebarEmail) sidebarEmail.textContent = email;
+    
+            const headerEmail = document.getElementById('header-email');
+            if (headerEmail) headerEmail.textContent = email;
+    
+            // Set profile circles to first letter of email
+            const firstLetter = email.trim()[0]?.toUpperCase() || '';
+            const sidebarCircle = document.getElementById('sidebar-profile-circle');
+            if (sidebarCircle) sidebarCircle.textContent = firstLetter;
+    
+            const headerCircle = document.getElementById('header-profile-circle');
+            if (headerCircle) headerCircle.textContent = firstLetter;
+        }
+    });
+    </script>
   
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        // Option 1: From data attribute
+        const email = document.body.getAttribute('data-user-email');
+        // Option 2: From JS variable
+        // const email = window.userEmail;
+
+        if (email) {
+            const sidebarEmail = document.getElementById('sidebar-email');
+            if (sidebarEmail) sidebarEmail.textContent = email;
+
+            const headerEmail = document.getElementById('header-email');
+            if (headerEmail) headerEmail.textContent = email;
+        }
+    });
+  </script>
+
   <style>
     /* Tailwind CSS overrides for collapsed sidebar */
     #sidebar.collapsed {

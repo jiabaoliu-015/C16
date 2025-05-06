@@ -25,10 +25,12 @@
                 {{ form.hidden_tag() }}  <!-- CSRF token is included here -->
             
                 <!-- Google login button -->
-                <button type="button" class="w-full bg-blue-500 hover:bg-blue-600 text-white font-medium py-2 px-4 rounded-md transition duration-200">
-                    Continue with Google
-                </button>
-                
+                <a href="{{ url_for('google.login') }}"
+                class="w-full bg-blue-500 hover:bg-blue-600 text-white font-medium py-2 px-4 rounded-md transition duration-200 flex items-center justify-center space-x-2">
+                    <img src="{{ url_for('static', filename='images/google_icon.png') }}" alt="Google Icon" class="w-5 h-5">
+                    <span>Login with Google</span>
+                </a>
+                                
                 <!-- OR separator -->
                 <div class="flex items-center justify-center space-x-2">
                     <hr class="flex-1 border-gray-300">

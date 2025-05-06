@@ -1,6 +1,9 @@
 # app\routes\logged_in.py: Stores all the routes that a logged in user can view
 from . import *
 
+import csv
+from io import TextIOWrapper
+
 # Define blueprint for main routes
 bp = Blueprint('logged_in', __name__)
 
@@ -43,7 +46,7 @@ def api_sessions():
                 # Calculate duration from start and end time
                 start = session.start_time
                 end = session.end_time
-                duration_minutes = (end.hour * 60 + end.minute) - (start.hour * 60 + start.minute)
+                duration_minutes = (end.hour * 60 + end.minute) - (start.hour * 60 + start.minute) - (session.break_minutes)
                 hours = duration_minutes // 60
                 minutes = duration_minutes % 60
                 duration = f"{hours}h {minutes}m"
@@ -113,7 +116,7 @@ def session_detail(session_id):
         # Return the session details
         start = session.start_time
         end = session.end_time
-        duration_minutes = (end.hour * 60 + end.minute) - (start.hour * 60 + start.minute)
+        duration_minutes = (end.hour * 60 + end.minute) - (start.hour * 60 + start.minute) - (session.break_minutes)
         hours = duration_minutes // 60
         minutes = duration_minutes % 60
         
@@ -252,46 +255,89 @@ def validate_session_data(session_data):
 @login_required
 def upload_data():
     if request.method == 'POST':
-        # Convert form data to use standardized field names
-        form_data = request.form.to_dict()
-        session_data = {
-            'date': form_data.get('date'),
-            'start_time': form_data.get('start_time'),
-            'end_time': form_data.get('end_time'),
-            'break_minutes': form_data.get('break_minutes'),
-            'course': form_data.get('course'),
-            'productivity': form_data.get('productivity'),
-            'notes': form_data.get('notes')
-        }
+        # Check if a CSV file was uploaded
+        if 'data_file' in request.files and request.files['data_file'].filename != '':
+            file = request.files['data_file']
+            if not file.filename.endswith('.csv'):
+                return render_template('upload.html', error="Please upload a CSV file.")
 
-        # Validate the session data
-        validated_data = validate_session_data(session_data)
-        if 'error' in validated_data:
-            return render_template('upload.html', error=validated_data['error'])
+            try:
+                # Read and decode the CSV file
+                stream = TextIOWrapper(file.stream, encoding='utf-8')
+                reader = csv.DictReader(stream)
+                added, errors = 0, []
+                for idx, row in enumerate(reader, start=1):
+                    # Map CSV columns to standardized field names
+                    session_data = {
+                        'date': row.get('date'),
+                        'start_time': row.get('start'),
+                        'end_time': row.get('end'),
+                        'break_minutes': row.get('break', 0),
+                        'course': row.get('subject'),
+                        'productivity': row.get('rating'),
+                        'notes': row.get('activity')
+                    }
+                    validated = validate_session_data(session_data)
+                    if 'error' in validated:
+                        errors.append(f"Row {idx}: {validated['error']}")
+                        continue
 
-        try:
-            # Create a new session
-            new_session = Session(
-                user_id=current_user.id,
-                date=validated_data['date'],
-                start_time=validated_data['start_time'],
-                end_time=validated_data['end_time'],
-                break_minutes=int(session_data['break_minutes']) if session_data.get('break_minutes') else None,
-                course=session_data['course'],
-                productivity_rating=int(session_data['productivity']),
-                notes=session_data.get('notes')
-            )
+                    try:
+                        new_session = Session(
+                            user_id=current_user.id,
+                            date=validated['date'],
+                            start_time=validated['start_time'],
+                            end_time=validated['end_time'],
+                            break_minutes=int(session_data['break_minutes']) if session_data.get('break_minutes') else None,
+                            course=session_data['course'],
+                            productivity_rating=int(session_data['productivity']),
+                            notes=session_data.get('notes')
+                        )
+                        db.session.add(new_session)
+                        added += 1
+                    except Exception as e:
+                        errors.append(f"Row {idx}: {str(e)}")
+                db.session.commit()
+                msg = f"{added} sessions uploaded successfully."
+                if errors:
+                    msg += " Some rows failed: " + "; ".join(errors)
+                return render_template('upload.html', success=msg if added else None, error=None if added else msg)
+            except Exception as e:
+                db.session.rollback()
+                return render_template('upload.html', error=f"Error processing CSV: {str(e)}")
+        else:
+            # Manual form entry (existing logic)
+            form_data = request.form.to_dict()
+            session_data = {
+                'date': form_data.get('date'),
+                'start_time': form_data.get('start_time'),
+                'end_time': form_data.get('end_time'),
+                'break_minutes': form_data.get('break_minutes'),
+                'course': form_data.get('course'),
+                'productivity': form_data.get('productivity'),
+                'notes': form_data.get('notes')
+            }
+            validated_data = validate_session_data(session_data)
+            if 'error' in validated_data:
+                return render_template('upload.html', error=validated_data['error'])
 
-            # Save to the database
-            db.session.add(new_session)
-            db.session.commit()
-
-            # Render the template with a success message
-            return render_template('upload.html', success="Session successfully added!")
-
-        except Exception as e:
-            db.session.rollback()
-            return render_template('upload.html', error=f"Error: {str(e)}")
+            try:
+                new_session = Session(
+                    user_id=current_user.id,
+                    date=validated_data['date'],
+                    start_time=validated_data['start_time'],
+                    end_time=validated_data['end_time'],
+                    break_minutes=int(session_data['break_minutes']) if session_data.get('break_minutes') else None,
+                    course=session_data['course'],
+                    productivity_rating=int(session_data['productivity']),
+                    notes=session_data.get('notes')
+                )
+                db.session.add(new_session)
+                db.session.commit()
+                return render_template('upload.html', success="Session successfully added!")
+            except Exception as e:
+                db.session.rollback()
+                return render_template('upload.html', error=f"Error: {str(e)}")
 
     # GET Request - Retrieve all sessions for the current user
     sessions = Session.query.filter_by(user_id=current_user.id).all()
