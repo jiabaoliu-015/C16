@@ -9,8 +9,8 @@ from werkzeug.security import generate_password_hash, check_password_hash
 class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(150), unique=True, nullable=False)
-    password = db.Column(db.String(128))  # Can be empty for Google users
-    google_id = db.Column(db.String(128), unique=True) 
+    password = db.Column(db.String(200), nullable=False)
+    google_id = db.Column(db.String(200), unique=True, nullable=True)
 
     sessions = db.relationship('Session', back_populates='user', cascade='all, delete-orphan')
 

@@ -11,4 +11,5 @@ email_validator
 flask-migrate
 flask-wtf
 python-dotenv
-
+flask-mail
+flask-cors
