@@ -1,6 +1,6 @@
 # app\routes\logged_in.py: Stores all the routes that a logged in user can view
 from . import *
-
+from flask import flash, redirect, url_for
 import csv
 from io import TextIOWrapper
 
@@ -101,7 +101,6 @@ def api_sessions():
         except Exception as e:
             db.session.rollback()
             return jsonify({'error': str(e)}), 400
-
 
 @bp.route('/api/sessions/<int:session_id>', methods=['GET', 'PUT', 'DELETE'])
 @login_required
@@ -223,28 +222,38 @@ def bulk_delete_sessions():
 
 def validate_session_data(session_data):
     try:
-        # Check for required fields using standardized names
+        # Check for required fields using standardised names
         date_field = session_data.get('date')
         start_field = session_data.get('start_time')
         end_field = session_data.get('end_time')
-            
+        course = session_data.get('course')
+        notes = session_data.get('notes')
+
         # Check if required fields exist
-        if not date_field or not start_field or not end_field:
-            return {'error': 'Required fields (date, start_time, end_time) are missing'}
+        if not date_field or not start_field or not end_field or not course or not notes:
+            return {'error': 'Required fields (date, start_time, end_time, course, notes) are missing'}
 
         # Parse date and times
         session_date = datetime.strptime(date_field, '%Y-%m-%d').date()
         start_time = datetime.strptime(start_field, '%H:%M').time()
         end_time = datetime.strptime(end_field, '%H:%M').time()
-
+    
         # Check if end time is after start time
         if (datetime.combine(datetime.today(), end_time) <= datetime.combine(datetime.today(), start_time)):
             return {'error': 'End time must be after start time'}
         
+        if len(course) > 5:
+            return {'error': 'Course name must be 5 characters or fewer'}
+        
+        if len(notes) > 20:
+            return {'error': 'Notes must be 20 characters or fewer'}
+        
         return {
             'date': session_date,
             'start_time': start_time,
-            'end_time': end_time
+            'end_time': end_time,
+            'notes': notes,
+            'course': course,
         }
     except ValueError as e:
         return {'error': f'Invalid date or time format: {str(e)}'}
@@ -301,7 +310,9 @@ def upload_data():
                 msg = f"{added} sessions uploaded successfully."
                 if errors:
                     msg += " Some rows failed: " + "; ".join(errors)
-                return render_template('upload.html', success=msg if added else None, error=None if added else msg)
+                flash(msg if added else "Error uploading sessions.", 'success' if added else 'error')
+                return redirect(url_for('main.upload_data'))
+
             except Exception as e:
                 db.session.rollback()
                 return render_template('upload.html', error=f"Error processing CSV: {str(e)}")

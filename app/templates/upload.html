@@ -52,12 +52,17 @@
                 <!-- Feedback Message -->
                 <div id="feedback-message" class="p-4 mb-4 rounded-md {% if success or error %}block{% else %}hidden{% endif %}">
                     {% if success %}
-                    <div class="alert alert-success">{{ success }}</div>
-                    {% elif error %}
-                    <div class="alert alert-danger">{{ error }}</div>
+                        <div id="message-content" style="background-color: #d4edda; color: #155724; padding: 1rem; border-radius: 0.5rem; margin-bottom: 1rem;">
+                            {{ success }}
+                        </div>
+                    {% endif %}
+                    {% if error %}
+                        <div id="message-content" style="background-color: #f8d7da; color: #721c24; padding: 1rem; border-radius: 0.5rem; margin-bottom: 1rem;">
+                            {{ error }}
+                        </div>
                     {% endif %}
                 </div>
-        
+                
                 <form method="POST" action="{{ url_for('logged_in.upload_data') }}" class="space-y-8">
                     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                     <div class="space-y-6">
@@ -290,79 +295,93 @@
 </div>
 
 <script>
-    document.getElementById('submit-btn').addEventListener('click', async function(event) {
-        event.preventDefault();
-        const date = document.getElementById('new_date').value;
-        const start_time = document.getElementById('new_start').value;
-        const end_time = document.getElementById('new_end').value;
-        const break_time = document.getElementById('new_break').value;
-        const course = document.getElementById('new_course').value;
-        const activity = document.getElementById('new_activity').value;
-        const productivity = document.getElementById('new_productivity').value;
-        
-        // Prepare the data to be sent
-        const sessionData = {
-            date: date,
-            start_time: start_time,
-            end_time: end_time,
-            break_time: break_time,
-            course: course,
-            activity: activity,
-            productivity: productivity
-        };
-
-        const csrfToken = document.querySelector('input[name="csrf_token"]')?.value ||
-                        document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
-        
-        try {
-            // Send the POST request to the backend API
-            const response = await fetch('/upload/', {  // This should match the route handling POST in Flask
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRFToken': csrfToken // Add this line
-                },
-                body: JSON.stringify(sessionData),
-            });
-
-            const result = await response.json();
+    document.addEventListener('DOMContentLoaded', function() {
+        const feedback = document.getElementById('feedback-message');
+    
+        if (feedback && feedback.classList.contains('block')) {
+            autoHideFeedback();
+        }
+    
+        document.getElementById('submit-btn').addEventListener('click', async function(event) {
+            event.preventDefault();
             
-            // Handle response from the backend
-            if (response.ok) {
-                // Display success message
-                showFeedbackMessage('Session added successfully!', 'success');
-                resetForm(); // Reset the form after successful submission
-            } else {
-                // Display error message
-                showFeedbackMessage(`Error: ${result.error || 'An error occurred'}`, 'error');
+            const date = document.getElementById('new_date').value;
+            const start_time = document.getElementById('new_start').value;
+            const end_time = document.getElementById('new_end').value;
+            const break_time = document.getElementById('new_break').value;
+            const course = document.getElementById('new_course').value;
+            const activity = document.getElementById('new_activity').value;
+            const productivity = document.getElementById('new_productivity').value;
+            
+            // Correct field names to match Flask expectations
+            const sessionData = {
+                date: date,
+                start_time: start_time,
+                end_time: end_time,
+                break_minutes: break_time,  // <- match backend
+                course: course,
+                notes: activity,            // <- match backend
+                productivity: productivity
+            };
+    
+            const csrfToken = document.querySelector('input[name="csrf_token"]')?.value ||
+                              document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+            
+            try {
+                const response = await fetch('/upload/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': csrfToken
+                    },
+                    body: JSON.stringify(sessionData),
+                });
+    
+                const result = await response.json();
+                
+                if (response.ok) {
+                    showFeedbackMessage('Session added successfully!', 'success');
+                    resetForm();
+                } else {
+                    showFeedbackMessage(`Error: ${result.error || 'An error occurred'}`, 'error');
+                }
+            } catch (error) {
+                console.error('Error submitting form:', error);
+                showFeedbackMessage('Failed to submit session data', 'error');
             }
-        } catch (error) {
-            console.error('Error submitting form:', error);
-            showFeedbackMessage('Failed to submit session data', 'error');
+        });
+    
+        function showFeedbackMessage(message, type) {
+            const feedback = document.getElementById('feedback-message');
+            feedback.textContent = message;
+            feedback.style.opacity = "1"; // Reset opacity
+            feedback.style.display = 'block';
+    
+            if (type === 'success') {
+                feedback.style.color = 'green';
+                feedback.style.backgroundColor = '#d4edda';
+            } else {
+                feedback.style.color = 'red';
+                feedback.style.backgroundColor = '#f8d7da';
+            }
+    
+            autoHideFeedback(); // Hide after 3 seconds
+        }
+    
+        function autoHideFeedback() {
+            const feedback = document.getElementById('feedback-message');
+            setTimeout(() => {
+                feedback.style.transition = "opacity 0.5s ease";
+                feedback.style.opacity = "0";
+                setTimeout(() => {
+                    feedback.style.display = "none";
+                }, 500); // Wait for fade-out before hiding
+            }, 3000); // Show for 3 seconds
+        }
+    
+        function resetForm() {
+            document.getElementById('upload-form').reset();
         }
     });
-
-    // Function to display feedback messages
-    function showFeedbackMessage(message, type) {
-        const feedbackElement = document.getElementById('feedback-message');
-        feedbackElement.textContent = message;
-        
-        // Set the style based on the message type (success or error)
-        if (type === 'success') {
-            feedbackElement.style.color = 'green';
-            feedbackElement.style.backgroundColor = '#d4edda';
-        } else {
-            feedbackElement.style.color = 'red';
-            feedbackElement.style.backgroundColor = '#f8d7da';
-        }
-        
-        // Make feedback visible
-        feedbackElement.style.display = 'block';
-    }
-
-    // Function to reset the form
-    function resetForm() {
-        document.getElementById('upload-form').reset(); // Reset all form fields
-    }
-</script>
+    </script>
 {% endblock %}
