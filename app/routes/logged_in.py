@@ -242,11 +242,11 @@ def validate_session_data(session_data):
         if (datetime.combine(datetime.today(), end_time) <= datetime.combine(datetime.today(), start_time)):
             return {'error': 'End time must be after start time'}
         
-        if len(course) > 5:
-            return {'error': 'Course name must be 5 characters or fewer'}
+        if len(course) >= 10:
+            return {'error': 'Course name must be 9 characters or fewer'}
         
-        if len(notes) > 20:
-            return {'error': 'Notes must be 20 characters or fewer'}
+        if len(notes) >= 26:
+            return {'error': 'Notes must be 25 characters or fewer'}
         
         return {
             'date': session_date,
