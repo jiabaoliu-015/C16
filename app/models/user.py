@@ -6,7 +6,8 @@ from flask_login import UserMixin
 class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(150), unique=True, nullable=False)
-    password = db.Column(db.String(150), nullable=False)
+    password = db.Column(db.String(128))  # Can be empty for Google users
+    google_id = db.Column(db.String(128), unique=True) 
 
     # Define the relationship to the Session model
     sessions = db.relationship('Session', back_populates='user', cascade='all, delete-orphan')

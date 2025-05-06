@@ -6,11 +6,28 @@ from flask_cors import CORS
 from instance.config import Config
 from app.templates.auth.forms import LogoutForm
 from app.routes import register_blueprints
-
+from flask_dance.contrib.google import make_google_blueprint, google
 
 def create_app():
     app = Flask(__name__, instance_relative_config=True)
     app.config.from_object(Config)
+
+
+    google_bp = make_google_blueprint(
+        client_id=app.config['GOOGLE_OAUTH_CLIENT_ID'],
+        client_secret=app.config['GOOGLE_OAUTH_CLIENT_SECRET'],
+            scope=[
+                "https://www.googleapis.com/auth/userinfo.profile",
+                "https://www.googleapis.com/auth/userinfo.email",
+                "openid"
+            ],
+        redirect_to="logged_in.home_logged_in"  # or your dashboard route
+    )
+    app.register_blueprint(google_bp, url_prefix="/login")
+
+    @login_manager.user_loader
+    def load_user(user_id):
+        return User.query.get(int(user_id))
 
     # Initialize extensions
     db.init_app(app)

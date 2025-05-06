@@ -22,10 +22,12 @@
             </div>
             <form method="POST" action="{{ url_for('logged_out.signup') }}" class="space-y-4">
                 {{ form.hidden_tag() }}
-                <button type="button" class="w-full bg-blue-500 hover:bg-blue-600 text-white font-medium py-2 px-4 rounded-md transition duration-200 flex items-center justify-center space-x-2">
+                <!-- Google login button -->
+                <a href="{{ url_for('google.login') }}"
+                class="w-full bg-blue-500 hover:bg-blue-600 text-white font-medium py-2 px-4 rounded-md transition duration-200 flex items-center justify-center space-x-2">
                     <img src="{{ url_for('static', filename='images/google_icon.png') }}" alt="Google Icon" class="w-5 h-5">
-                    <span>Continue with Google</span>
-                </button>
+                    <span>Register with Google</span>
+                </a>
                 <div class="flex items-center justify-center space-x-2">
                     <hr class="flex-1 border-gray-300">
                     <span class="text-gray-500 text-sm">OR</span>
