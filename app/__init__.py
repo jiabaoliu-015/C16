@@ -1,5 +1,5 @@
 from flask import Flask
-from app.extensions import db, migrate, csrf, login_manager
+from app.extensions import db, migrate, csrf, login_manager, mail
 
 
 from flask_cors import CORS
@@ -34,12 +34,9 @@ def create_app():
     migrate.init_app(app, db)
     csrf.init_app(app)
     login_manager.init_app(app)
+    mail.init_app(app)
     CORS(app)
     login_manager.login_view = "logged_out.login"
-
-    # # Database setup (make sure to update the URI for your environment)
-    # app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///yourdatabase.db'  # or your actual database URI
-    # app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False  # optional, disables a warning
 
     from app.models.user import User
 

@@ -126,12 +126,34 @@ def signup():
 
     return render_template('auth/register.html', form=form)  # Pass the form to the template
 
-# Forgot Password Route
 @bp.route('/reset-password', methods=['GET', 'POST'])
-@anonymous_required
 def forgot_password():
-    if request.method == 'POST':
-        # Handle password reset logic (send email, etc.)
-        flash('Password reset link sent!', 'info')
-        return redirect(url_for('logged_out.login'))  # Correct
-    return render_template('auth/reset_password.html')
+    form = ResetRequestForm()
+    if form.validate_on_submit():
+        email = form.email.data
+        user = User.get_user_by_email(email)
+        if user:
+            token = user.get_reset_token()
+            reset_link = url_for('logged_out.reset_token', token=token, _external=True)
+            send_reset_email(user.email, reset_link)
+        flash('If an account with that email exists, a reset link has been sent.', 'info')
+        return redirect(url_for('logged_out.login'))
+
+    return render_template('auth/reset_password.html', form=form)
+
+
+@bp.route('/reset-password/<token>', methods=['GET', 'POST'])
+def reset_token(token):
+    user = User.verify_reset_token(token)
+    if not user:
+        flash('That reset link is invalid or has expired.', 'warning')
+        return redirect(url_for('logged_out.forgot_password'))
+
+    form = ResetPasswordForm()
+    if form.validate_on_submit():
+        user.set_password(form.password.data)
+        db.session.commit()
+        flash('Your password has been updated!', 'success')
+        return redirect(url_for('logged_out.login'))
+
+    return render_template('auth/reset_with_token.html', form=form)
