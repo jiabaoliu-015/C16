@@ -10,6 +10,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Updated Lucide Icons CDN -->
     <script src="https://cdn.jsdelivr.net/npm/lucide@latest/dist/umd/lucide.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
         document.addEventListener("DOMContentLoaded", function() {
             lucide.createIcons(); // Ensure icons are initialized after DOM is loaded
@@ -171,7 +172,7 @@
         <section class="lg:col-span-2 bg-white p-4 rounded-lg shadow transition-transform duration-200 hover:scale-[1.02] hover:shadow-md">
           <h2 class="text-xl font-semibold mb-4">Productivity Overview</h2>
           <div class="h-64 bg-gray-200 rounded-lg flex items-center justify-center">
-            <span class="text-gray-500">[Line/Area Chart]</span>
+            <canvas id="productivityChart" class="w-full h-full"></canvas>
           </div>
         </section>
 
@@ -330,6 +331,105 @@
             const headerEmail = document.getElementById('header-email');
             if (headerEmail) headerEmail.textContent = email;
         }
+    });
+  </script>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", async function() {
+        // Fetch session data from your API
+        const response = await fetch("/api/sessions");
+        const sessions = await response.json();
+    
+        // Helper: Parse date in format "DD/MM/YY" or "DD/MM/YYYY"
+        function parseDate(dateStr) {
+            const [day, month, year] = dateStr.split("/");
+            let fullYear = year.length === 2 ? "20" + year : year;
+            return new Date(fullYear, month - 1, day);
+        }
+    
+        // Aggregate productivity by day for the last 2 weeks
+        const today = new Date();
+        const twoWeeksAgo = new Date(today);
+        twoWeeksAgo.setDate(today.getDate() - 13); // includes today (14 days)
+    
+        const productivityByDay = {};
+    
+        sessions.forEach(session => {
+            const date = parseDate(session.date);
+            // Only include sessions from the last 2 weeks
+            if (date >= twoWeeksAgo && date <= today) {
+                const key = date.toISOString().slice(0,10); // YYYY-MM-DD
+                if (!productivityByDay[key]) {
+                    productivityByDay[key] = { total: 0, count: 0 };
+                }
+                productivityByDay[key].total += session.productivity;
+                productivityByDay[key].count += 1;
+            }
+        });
+
+        // Fill in missing days with null for gaps in the chart
+        const labels = [];
+        const data = [];
+        for (let i = 0; i < 14; i++) {
+            const d = new Date(twoWeeksAgo);
+            d.setDate(twoWeeksAgo.getDate() + i);
+            const key = d.toISOString().slice(0,10);
+            labels.push(key);
+            if (productivityByDay[key]) {
+                data.push(Number((productivityByDay[key].total / productivityByDay[key].count).toFixed(2)));
+            } else {
+                data.push(null);
+            }
+        }
+        console.log('labels', labels);
+        console.log('data', data);
+    
+        // Render Chart.js line chart
+        const ctx = document.getElementById('productivityChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Avg Productivity',
+                    data: data,
+                    fill: true,
+                    borderColor: 'rgb(99, 102, 241)',
+                    backgroundColor: 'rgba(99, 102, 241, 0.1)',
+                    tension: 0.3,
+                    pointRadius: 3,
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { display: false }
+                },
+                scales: {
+                  x: {
+                    display: true,
+                    ticks: {
+                        autoSkip: false,
+                        maxRotation: 60,
+                        minRotation: 45,
+                        color: '#6B7280',
+                        font: { size: 10 },
+                        callback: function(value, index, values) {
+                            // Show as 'DD/MM'
+                            const date = this.getLabelForValue(labels[index]);
+                            return date ? date.slice(8,10) + '/' + date.slice(5,7) : '';
+                        }
+                    },
+                    title: { display: true, text: 'Date' }
+                  },
+                  y: {
+                    min: 0,
+                    max: 10,
+                    title: { display: true, text: 'Productivity (0-10)' }
+                  }
+                }
+            }
+        });
     });
   </script>
 
