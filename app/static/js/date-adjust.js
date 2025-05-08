@@ -1,4 +1,14 @@
 document.addEventListener('DOMContentLoaded', () => {
+    // Calculate min and max dates dynamically (e.g., today - 7 days to today + 7 days)
+    const today = new Date();
+    const minDateObj = new Date(today);
+    minDateObj.setDate(today.getDate() - 1);
+    const maxDateObj = new Date(today);
+    maxDateObj.setDate(today.getDate() + 3);
+
+    const minDate = minDateObj.toISOString().split('T')[0];
+    const maxDate = maxDateObj.toISOString().split('T')[0];
+
     const adjustDate = (inputId, prevButtonId, nextButtonId, minDate, maxDate) => {
         const input = document.getElementById(inputId);
         const prevButton = document.getElementById(prevButtonId);
@@ -31,14 +41,20 @@ document.addEventListener('DOMContentLoaded', () => {
             updateButtonState();
         };
 
-        prevButton.addEventListener('click', () => incrementDate(-1));
-        nextButton.addEventListener('click', () => incrementDate(1));
+        prevButton.addEventListener('click', (event) => {
+            event.preventDefault();
+            incrementDate(-1);
+        });
+        nextButton.addEventListener('click', (event) => {
+            event.preventDefault();
+            incrementDate(1);
+        });
 
         // Initialize button states
         updateButtonState();
     };
 
-    adjustDate('new_date', 'prev-day', 'next-day', '2025-04-26', '2025-04-30');
+    adjustDate('new_date', 'prev-day', 'next-day', minDate, maxDate);
 });
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -50,4 +66,5 @@ document.addEventListener("DOMContentLoaded", () => {
         const formattedDate = `${dayName} ${today.getDate()}/${today.getMonth() + 1}/${today.getFullYear()}`;
         currentDateElement.textContent = formattedDate;
     }
+
 });

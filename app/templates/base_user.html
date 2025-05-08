@@ -5,7 +5,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}Dashboard | StudyTrackr{% endblock %}</title>
+    <title>{% block title %}{% endblock %}</title>
     <link rel="icon" href="{{ url_for('static', filename='images/logo.png') }}" type="image/x-icon">
     <script src="{{ url_for('static', filename='js/date-adjust.js') }}"></script>
     <!-- Tailwind CSS CDN -->
@@ -56,6 +56,14 @@
                 const headerCircle = document.getElementById('header-profile-circle');
                 if (headerCircle) headerCircle.textContent = firstLetter;
             }
+
+            // Highlight the current sidebar link based on the URL path
+            const path = window.location.pathname;
+            document.querySelectorAll('.sidebar-link').forEach(link => {
+                if (link.tagName === 'A' && path.startsWith(link.getAttribute('href'))) {
+                    link.classList.add('bg-gray-800');
+                }
+            });
         });
     </script>
     <style>
@@ -86,8 +94,8 @@
         }
     </style>
 </head>
-<body class="bg-gray-50 font-sans" data-user-email="{{ current_user.email }}">
-<div class="absolute inset-0 -z-10 bg-[url('/static/images/liquid-cheese.svg')] opacity-80 bg-cover bg-fixed"></div>
+<body class="font-sans bg-transparent" data-user-email="{{ current_user.email }}">
+{% block background %}{% endblock %}
 <div class="min-h-screen flex">
     <!-- Sidebar -->
     <aside id="sidebar" class="w-64 bg-gray-900 text-white flex flex-col justify-between transition-all duration-300">
@@ -97,7 +105,7 @@
                 <span class="text-xl font-bold sidebar-title">StudyTrackr</span>
             </div>
             <nav class="px-2 space-y-1">
-                <a href="/visualise/" class="sidebar-link flex items-center h-12 space-x-3 px-4 py-2 bg-gray-800 rounded">
+                <a href="/visualise/" class="sidebar-link flex items-center h-12 space-x-3 px-4 py-2 hover:bg-gray-800 rounded">
                     <i class="lucide" data-lucide="bar-chart-2"></i><span class="sidebar-title">Dashboard</span>
                 </a>
                 <a href="/upload/" class="sidebar-link flex items-center h-12 space-x-3 px-4 py-2 hover:bg-gray-800 rounded">
@@ -144,12 +152,10 @@
                     <p id="header-email">Loading...</p>
                 </div>
                 <h1 class="text-3xl font-bold text-gray-900 mt-2 flex items-center">
-                    Dashboard
+                    {% block subtitle %}{% endblock %}
                     <span class="ml-2 relative group">
                         <span class="w-5 h-5 bg-gray-200 rounded-full flex items-center justify-center text-gray-600 text-xs cursor-pointer">?</span>
-                        <div class="absolute top-full left-0 mt-2 w-64 bg-white p-3 rounded-lg shadow-lg text-sm text-gray-800 hidden group-hover:block z-10">
-                            Overview of your productivity and study sessions.
-                        </div>
+                        {% block tooltip %}{% endblock %}
                     </span>
                 </h1>
             </div>

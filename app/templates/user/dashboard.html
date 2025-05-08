@@ -1,5 +1,12 @@
 {% extends "base_user.html" %}
 {% block title %}Dashboard | StudyTrackr{% endblock %}
+{% block subtitle %}Dashboard{% endblock %}
+{% block tooltip %}
+<div class="absolute top-full left-0 mt-2 w-64 bg-white p-3 rounded-lg shadow-lg text-sm text-gray-800 hidden group-hover:block z-10">
+    Overview of your productivity and study sessions.
+</div>
+{% endblock %}
+{% block background %}<div class="absolute inset-0 -z-10 bg-[url('/static/images/liquid-cheese.svg')] opacity-80 bg-cover bg-fixed"></div>{% endblock %}
 {% block content %}
 <main class="flex-1 p-6 grid grid-cols-1 lg:grid-cols-3 gap-6 max-w-screen-xl mx-auto w-full">
   <!-- Productivity Overview -->
