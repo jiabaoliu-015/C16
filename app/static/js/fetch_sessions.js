@@ -85,7 +85,7 @@ document.addEventListener("DOMContentLoaded", () => {
                             </span>
                         </div>
                         <div class="flex items-center w-48 justify-center">
-                            <span>${session.notes || "No notes available"}</span>
+                            <span class="session-notes">${session.notes || "No notes available"}</span>
                         </div>
                     </div>
                 `;
