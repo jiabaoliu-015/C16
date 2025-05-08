@@ -19,19 +19,19 @@ def home_logged_in():
         logout_user()  # Call Flask-Login's logout function to log out the user
         return redirect(url_for('logged_out.home_not_logged_in'))  # Redirect to the home page
     
-    return render_template('dashboard_2.html', form=form)  # Pass the form to the template
+    return render_template('user/dashboard.html', form=form)  # Pass the form to the template
 
 # Route for the user's profile page
 @bp.route('/profile/')
 @login_required
 def profile():
-    return render_template('profile.html')
+    return render_template('user/profile.html')
 
 # Route for the share page
 @bp.route('/share/')
 @login_required
 def share():
-    return render_template('share.html')
+    return render_template('user/share.html')
 
 @bp.route('/api/sessions', methods=['GET', 'POST'])
 @login_required
@@ -268,7 +268,7 @@ def upload_data():
         if 'data_file' in request.files and request.files['data_file'].filename != '':
             file = request.files['data_file']
             if not file.filename.endswith('.csv'):
-                return render_template('upload.html', error="Please upload a CSV file.")
+                return render_template('user/upload.html', error="Please upload a CSV file.")
 
             try:
                 # Read and decode the CSV file
@@ -315,7 +315,7 @@ def upload_data():
 
             except Exception as e:
                 db.session.rollback()
-                return render_template('upload.html', error=f"Error processing CSV: {str(e)}")
+                return render_template('user/upload.html', error=f"Error processing CSV: {str(e)}")
         else:
             # Manual form entry (existing logic)
             form_data = request.form.to_dict()
@@ -330,7 +330,7 @@ def upload_data():
             }
             validated_data = validate_session_data(session_data)
             if 'error' in validated_data:
-                return render_template('upload.html', error=validated_data['error'])
+                return render_template('user/upload.html', error=validated_data['error'])
 
             try:
                 new_session = Session(
@@ -345,21 +345,21 @@ def upload_data():
                 )
                 db.session.add(new_session)
                 db.session.commit()
-                return render_template('upload.html', success="Session successfully added!")
+                return render_template('user/upload.html', success="Session successfully added!")
             except Exception as e:
                 db.session.rollback()
-                return render_template('upload.html', error=f"Error: {str(e)}")
+                return render_template('user/upload.html', error=f"Error: {str(e)}")
 
     # GET Request - Retrieve all sessions for the current user
     sessions = Session.query.filter_by(user_id=current_user.id).all()
 
     # Pass the sessions to the template for display
-    return render_template('upload.html', sessions=sessions)
+    return render_template('user/upload.html', sessions=sessions)
 
 @bp.route('/dashboard/')
 @login_required
 def dashboard():
-    return render_template('dashboard_2.html')
+    return render_template('user/dashboard.html')
 
 # API route to return study time data as JSON
 @bp.route('/api/study-time-data')
@@ -376,4 +376,4 @@ def study_time_data():
 @bp.route('/leaderboard/')
 @login_required
 def leaderboard():
-    return render_template('leaderboard.html')
+    return render_template('user/leaderboard.html')

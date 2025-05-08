@@ -1,0 +1,251 @@
+<!-- templates/base_user.html -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Dashboard | StudyTrackr{% endblock %}</title>
+    <link rel="icon" href="{{ url_for('static', filename='images/logo.png') }}" type="image/x-icon">
+    <script src="{{ url_for('static', filename='js/date-adjust.js') }}"></script>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Updated Lucide Icons CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/lucide@latest/dist/umd/lucide.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            lucide.createIcons(); // Ensure icons are initialized after DOM is loaded
+
+            // Sidebar/email/profile logic
+            // Sidebar collapse
+            function toggleSidebar() {
+                const sidebar = document.getElementById("sidebar");
+                const toggleIcon = document.getElementById("toggleIcon");
+                const isCollapsed = sidebar.classList.toggle("collapsed");
+                localStorage.setItem("sidebarCollapsed", isCollapsed);
+                toggleIcon.setAttribute("data-lucide", isCollapsed ? "arrow-right" : "arrow-left");
+                lucide.createIcons();
+            }
+            function loadSidebarState() {
+                const sidebar = document.getElementById("sidebar");
+                const toggleIcon = document.getElementById("toggleIcon");
+                const isCollapsed = localStorage.getItem("sidebarCollapsed") === "true";
+                if (isCollapsed) {
+                    sidebar.classList.add("collapsed");
+                    toggleIcon.setAttribute("data-lucide", "arrow-right");
+                } else {
+                    sidebar.classList.remove("collapsed");
+                    toggleIcon.setAttribute("data-lucide", "arrow-left");
+                }
+                lucide.createIcons();
+            }
+            document.getElementById("toggleSidebar").addEventListener("click", toggleSidebar);
+            loadSidebarState();
+
+            // Email/profile circle
+            const email = document.body.getAttribute('data-user-email');
+            if (email) {
+                const sidebarEmail = document.getElementById('sidebar-email');
+                if (sidebarEmail) sidebarEmail.textContent = email;
+                const headerEmail = document.getElementById('header-email');
+                if (headerEmail) headerEmail.textContent = email;
+                const firstLetter = email.trim()[0]?.toUpperCase() || '';
+                const sidebarCircle = document.getElementById('sidebar-profile-circle');
+                if (sidebarCircle) sidebarCircle.textContent = firstLetter;
+                const headerCircle = document.getElementById('header-profile-circle');
+                if (headerCircle) headerCircle.textContent = firstLetter;
+            }
+        });
+    </script>
+    <style>
+        /* Tailwind CSS overrides for collapsed sidebar */
+        #sidebar.collapsed {
+            width: 5rem;
+        }
+        #sidebar.collapsed .sidebar-title {
+            display: none;
+        }
+        #sidebar.collapsed nav a {
+            justify-content: center;
+        }
+        #toggleSidebar {
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .sidebar-link {
+            height: 3rem;
+        }
+        #sidebar.collapsed .sidebar-title {
+            display: none;
+        }
+        #sidebar.collapsed nav a,
+        #sidebar.collapsed #toggleSidebar {
+            justify-content: center;
+            padding-left: 0.75rem;
+            padding-right: 0.75rem;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 font-sans" data-user-email="{{ current_user.email }}">
+<div class="absolute inset-0 -z-10 bg-[url('/static/images/liquid-cheese.svg')] opacity-80 bg-cover bg-fixed"></div>
+<div class="min-h-screen flex">
+    <!-- Sidebar -->
+    <aside id="sidebar" class="w-64 bg-gray-900 text-white flex flex-col justify-between transition-all duration-300">
+        <div>
+            <div class="flex items-center px-6 py-4 space-x-2">
+                <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo" class="w-8 h-8">
+                <span class="text-xl font-bold sidebar-title">StudyTrackr</span>
+            </div>
+            <nav class="px-2 space-y-1">
+                <a href="/visualise/" class="sidebar-link flex items-center h-12 space-x-3 px-4 py-2 bg-gray-800 rounded">
+                    <i class="lucide" data-lucide="bar-chart-2"></i><span class="sidebar-title">Dashboard</span>
+                </a>
+                <a href="/upload/" class="sidebar-link flex items-center h-12 space-x-3 px-4 py-2 hover:bg-gray-800 rounded">
+                    <i class="lucide" data-lucide="upload"></i><span class="sidebar-title">Upload</span>
+                </a>
+                <a href="/share/" class="sidebar-link flex items-center h-12 space-x-3 px-4 py-2 hover:bg-gray-800 rounded">
+                    <i class="lucide" data-lucide="link"></i><span class="sidebar-title">Share</span>
+                </a>
+                <a href="/leaderboard/" class="sidebar-link flex items-center h-12 space-x-3 px-4 py-2 hover:bg-gray-800 rounded">
+                    <i class="lucide" data-lucide="award"></i><span class="sidebar-title">Leaderboard</span>
+                </a>
+                <a href="/profile/" class="sidebar-link flex items-center h-12 space-x-3 px-4 py-2 hover:bg-gray-800 rounded">
+                    <i class="lucide" data-lucide="user-circle"></i><span class="sidebar-title">Profile</span>
+                </a>
+                <!-- Collapse Button -->
+                <button id="toggleSidebar" class="sidebar-link flex items-center h-12 w-full space-x-3 px-4 py-2 hover:bg-gray-800 rounded justify-start">
+                    <i id="toggleIcon" class="lucide" data-lucide="arrow-left"></i>
+                    <span class="sidebar-title">Collapse</span>
+                </button>
+            </nav>
+        </div>
+        <div class="px-6 py-4 border-t border-gray-700">
+            <div class="flex items-center space-x-2">
+                <div class="w-6 h-6 bg-gray-400 rounded-full bg-gradient-to-tr from-purple-300 to-indigo-400 rounded-full flex items-center justify-center text-white font-semibold" id="sidebar-profile-circle"></div>
+                <p id="sidebar-email" class="text-sm text-gray-400 hover:text-gray-500 truncate sidebar-title">Loading...</p>
+            </div>
+            <form action="{{ url_for('logged_out.logout') }}" method="POST" class="mt-2">
+                {{ logout_form.hidden_tag() }}
+                <button type="submit" class="flex items-center space-x-2 text-red-400 sidebar-link w-full">
+                    <i class="lucide" data-lucide="log-out"></i>
+                    <span class="sidebar-title">Log out</span>
+                </button>
+            </form>
+        </div>
+    </aside>
+
+    <div class="flex-1 flex flex-col">
+        <header class="bg-white shadow px-6 py-4 flex flex-col sm:flex-row sm:items-start sm:justify-between space-y-4 sm:space-y-0">
+            <!-- Left Section: Date, Email, and Dashboard Title -->
+            <div>
+                <div class="flex items-center text-sm text-gray-600 space-x-2">
+                    <span id="current-date" class="font-medium text-gray-800"></span>
+                    <span class="text-gray-400">•</span>
+                    <p id="header-email">Loading...</p>
+                </div>
+                <h1 class="text-3xl font-bold text-gray-900 mt-2 flex items-center">
+                    Dashboard
+                    <span class="ml-2 relative group">
+                        <span class="w-5 h-5 bg-gray-200 rounded-full flex items-center justify-center text-gray-600 text-xs cursor-pointer">?</span>
+                        <div class="absolute top-full left-0 mt-2 w-64 bg-white p-3 rounded-lg shadow-lg text-sm text-gray-800 hidden group-hover:block z-10">
+                            Overview of your productivity and study sessions.
+                        </div>
+                    </span>
+                </h1>
+            </div>
+            <!-- Right Section: Stats and User Avatar -->
+            <div class="flex flex-col sm:flex-row sm:items-start sm:space-x-4 sm:ml-auto">
+                <!-- Stats (hidden on small screens) -->
+                <div class="hidden lg:flex flex-nowrap gap-4 items-center justify-end">
+                    <!-- Today -->
+                    <div class="flex items-center gap-2 bg-blue-50 px-4 py-2 rounded-xl shadow-sm transition-transform hover:scale-105 group">
+                        <i class="lucide text-blue-500" data-lucide="clock"></i>
+                        <div class="flex flex-col items-start">
+                            <span class="text-xs text-gray-500">Today</span>
+                            <span class="font-semibold text-blue-800 flex items-center gap-1">
+                                30m / 1h
+                                <span class="ml-1 text-green-500 flex items-center text-xs animate-pulse">
+                                    <i class="lucide text-green-500" data-lucide="arrow-up-right"></i>+10%
+                                </span>
+                            </span>
+                        </div>
+                    </div>
+                    <!-- Sessions -->
+                    <div class="flex items-center gap-2 bg-green-50 px-4 py-2 rounded-xl shadow-sm transition-transform hover:scale-105 group">
+                        <i class="lucide text-green-500" data-lucide="play-circle"></i>
+                        <div class="flex flex-col items-start">
+                            <span class="text-xs text-gray-500">Sessions</span>
+                            <span class="font-semibold text-green-800 flex items-center gap-1">
+                                2
+                                <span class="ml-1 text-red-500 flex items-center text-xs">
+                                    <i class="lucide text-red-500" data-lucide="arrow-down-right"></i>-1
+                                </span>
+                            </span>
+                        </div>
+                    </div>
+                    <!-- Avg Duration -->
+                    <div class="flex items-center gap-2 bg-yellow-50 px-4 py-2 rounded-xl shadow-sm transition-transform hover:scale-105 group">
+                        <i class="lucide text-yellow-500" data-lucide="timer"></i>
+                        <div class="flex flex-col items-start">
+                            <span class="text-xs text-gray-500">Avg. Duration</span>
+                            <span class="font-semibold text-yellow-800 flex items-center gap-1">
+                                48m
+                                <span class="ml-1 text-green-500 flex items-center text-xs">
+                                    <i class="lucide text-green-500" data-lucide="arrow-up-right"></i>+5%
+                                </span>
+                            </span>
+                        </div>
+                    </div>
+                    <!-- Avg Productivity -->
+                    <div class="flex items-center gap-2 bg-purple-50 px-4 py-2 rounded-xl shadow-sm transition-transform hover:scale-105 group">
+                        <i class="lucide text-purple-500" data-lucide="activity"></i>
+                        <div class="flex flex-col items-start">
+                            <span class="text-xs text-gray-500">Avg. Productivity</span>
+                            <span class="font-semibold text-purple-800 flex items-center gap-1">
+                                78%
+                                <span class="ml-1 text-green-500 flex items-center text-xs">
+                                    <i class="lucide text-green-500" data-lucide="arrow-up-right"></i>+2%
+                                </span>
+                            </span>
+                        </div>
+                    </div>
+                    <!-- This Week -->
+                    <div class="flex items-center gap-2 bg-red-50 px-4 py-2 rounded-xl shadow-sm transition-transform hover:scale-105 group">
+                        <i class="lucide text-red-500" data-lucide="calendar-days"></i>
+                        <div class="flex flex-col items-start">
+                            <span class="text-xs text-gray-500">This Week</span>
+                            <span class="font-semibold text-red-800 flex items-center gap-1">
+                                18h 45m
+                                <span class="ml-1 text-green-500 flex items-center text-xs">
+                                    <i class="lucide text-green-500" data-lucide="arrow-up-right"></i>+1h
+                                </span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <!-- User Icon -->
+                <div class="mt-4 sm:mt-0">
+                    <div class="w-10 h-10 bg-gradient-to-tr from-purple-300 to-indigo-400 rounded-full flex items-center justify-center text-white font-semibold" id="header-profile-circle"></div>
+                </div>
+            </div>
+        </header>
+        <!-- Main content block for user pages -->
+        <main class="flex-1 p-6">
+            {% block content %}
+            <!-- Page-specific content goes here -->
+            {% endblock %}
+        </main>
+
+        <!-- Footer -->
+        <footer class="bg-white shadow p-4 text-center text-sm text-gray-500">
+            <nav class="space-x-4">
+            <a href="/upload/" class="hover:underline">Upload Data</a>
+            <a href="/share/" class="hover:underline">Share Settings</a>
+            <a href="/info/" class="hover:underline">Support</a>
+            <a href="/" class="hover:underline">Privacy Policy</a>
+            </nav>
+        </footer>
+    </div>
+</div>
+</body>
+</html>
