@@ -1,9 +1,18 @@
 <!-- app/templates/upload.html. Use: placeholder data for upload view. -->
 
-{% extends "base.html" %}
-
-{% block title %}Upload Study Data{% endblock %}
-
+{% extends "base_user.html" %}
+{% block title %}Upload | StudyTrackr{% endblock %}
+{% block subtitle %}Upload Sessions{% endblock %}
+{% block tooltip %}
+<div class="absolute left-0 mt-2 w-64 bg-white text-gray-800 font-light text-sm rounded-lg shadow-lg p-4 hidden group-hover:block z-50">
+    The <strong>Upload Sessions</strong> view allows you to track each individual study session you've tracked (with a timer or manually). You can quickly create, update and delete sessions as you please.
+</div>
+{% endblock %}
+{% block background %}
+<div class="absolute inset-0 -z-10 w-full min-h-full min-h-screen bg-cover bg-fixed opacity-80"
+     style="background-image: url('/static/images/radiant-gradient.svg'); background-repeat: no-repeat; background-size: cover;">
+</div>
+{% endblock %}
 {% block content %}
 <script src="{{ url_for('static', filename='js/time-and-break-dropdown.js') }}"></script>
 <script src="{{ url_for('static', filename='js/date-adjust.js') }}"></script>
@@ -12,30 +21,7 @@
 <script src="{{ url_for('static', filename='js/validate-upload.js') }}"></script>
 <script src="{{ url_for('static', filename='js/fetch_sessions.js') }}"></script>
 
-<div class="bg-gray-100 min-h-screen flex flex-col items-center justify-center py-12">
-    <!-- Header Section -->
-    <div class="max-w-7xl w-full mb-8">
-        <div class="mt-8 text-gray-600 text-sm flex justify-left items-center space-x-2">
-            <p id="current-date" class="text-gray-800 font-medium"></p>
-            <span class="text-gray-400">•</span>
-            <p class="text-gray-400">{{ session['user_id'] }}</p>
-        </div>
-        <h1 class="text-4xl font-bold text-gray-900 mt-4 flex items-center">
-            Upload Sessions
-            <span class="ml-3 relative group">
-                <span class="w-5 h-5 bg-white shadow-md rounded-full flex items-center justify-center text-gray-500 text-sm cursor-pointer">?</span>
-                <div class="absolute left-0 mt-2 w-64 bg-white text-gray-800 font-light text-sm rounded-lg shadow-lg p-4 hidden group-hover:block z-50">
-                    The <strong>Upload Sessions</strong> view allows you to track each individual study session you've tracked (with a timer or manually). You can quickly create, update and delete sessions as you please.
-                </div>
-            </span>
-        </h1>
-        <div class="mt-4 text-gray-600 text-sm">
-            <span>⏰ <strong>30m/1h</strong> • 50% studied today</span>
-            <span>⏱️ <strong>2</strong> sessions</span>
-            <span>⌛ <strong>48m</strong> avg. session</span>
-        </div>
-    </div>
-
+<div class="flex flex-col items-center justify-center">
     <!-- Centered Container -->
     <div class="flex flex-col md:flex-row max-w-7xl w-full items-start space-y-8 md:space-y-0 md:space-x-8">
         <!-- Left Section: Create New Session + Upload Session CSV -->
