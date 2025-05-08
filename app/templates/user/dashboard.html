@@ -6,7 +6,9 @@
     Overview of your productivity and study sessions.
 </div>
 {% endblock %}
-{% block background %}<div class="absolute inset-0 -z-10 bg-[url('/static/images/liquid-cheese.svg')] opacity-80 bg-cover bg-fixed"></div>{% endblock %}
+{% block background %}
+<div class="fixed inset-0 -z-10 w-full h-full bg-[url('/static/images/liquid-cheese.svg')] opacity-80 bg-cover bg-fixed"></div>
+{% endblock %}
 {% block content %}
 <main class="flex-1 p-6 grid grid-cols-1 lg:grid-cols-3 gap-6 max-w-screen-xl mx-auto w-full">
   <!-- Productivity Overview -->

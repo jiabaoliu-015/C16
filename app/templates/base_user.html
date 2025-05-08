@@ -92,10 +92,16 @@
             padding-left: 0.75rem;
             padding-right: 0.75rem;
         }
+        body {
+            background-size: cover;
+            background-attachment: fixed;
+            background-repeat: no-repeat;
+            background-position: center;
+            /* Optional: adjust opacity using a pseudo-element if needed */
+        }
     </style>
 </head>
 <body class="font-sans bg-transparent" data-user-email="{{ current_user.email }}">
-{% block background %}{% endblock %}
 <div class="min-h-screen flex">
     <!-- Sidebar -->
     <aside id="sidebar" class="w-64 bg-gray-900 text-white flex flex-col justify-between transition-all duration-300">
@@ -237,6 +243,7 @@
         </header>
         <!-- Main content block for user pages -->
         <main class="flex-1 p-6">
+            {% block background %}{% endblock %}
             {% block content %}
             <!-- Page-specific content goes here -->
             {% endblock %}
@@ -247,7 +254,7 @@
             <nav class="space-x-4">
             <a href="/upload/" class="hover:underline">Upload Data</a>
             <a href="/share/" class="hover:underline">Share Settings</a>
-            <a href="/info/" class="hover:underline">Support</a>
+            <a href="/info" class="hover:underline">Support</a>
             <a href="/" class="hover:underline">Privacy Policy</a>
             </nav>
         </footer>

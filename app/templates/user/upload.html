@@ -2,22 +2,16 @@
 {% extends "base_user.html" %}
 {% block title %}Upload | StudyTrackr{% endblock %}
 {% block subtitle %}Upload Sessions{% endblock %}
-
 {% block tooltip %}
 <div class="absolute left-0 mt-2 w-72 bg-white text-gray-800 font-light text-sm rounded-xl shadow-xl p-4 hidden group-hover:block z-50">
     <strong>Upload Sessions</strong> lets you track study sessions (timed or manual). Add, edit, or remove entries to manage your study log.
 </div>
 {% endblock %}
-
 {% block background %}
-<div class="absolute inset-0 -z-10 w-full h-full bg-cover bg-fixed opacity-90"
-     style="background-image: url('/static/images/radiant-gradient.svg'); background-repeat: no-repeat; background-size: cover;">
-</div>
+<div class="fixed inset-0 -z-10 w-full h-full bg-[url('/static/images/radiant-gradient.svg')] opacity-80 bg-cover bg-fixed"></div>
 {% endblock %}
-
 {% block content %}
 <script src="{{ url_for('static', filename='js/time-and-break-dropdown.js') }}"></script>
-<script src="{{ url_for('static', filename='js/productivity-rating.js') }}"></script>
 <script src="{{ url_for('static', filename='js/enable-submit.js') }}"></script>
 <script src="{{ url_for('static', filename='js/validate-upload.js') }}"></script>
 <script src="{{ url_for('static', filename='js/fetch_sessions.js') }}"></script>
@@ -75,15 +69,47 @@
 
                     <!-- Time Inputs -->
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <!-- Start time -->
                         <div>
                             <label for="new_start" class="block text-sm font-semibold text-gray-700 mb-1">Start *</label>
-                            <input type="time" name="start_time" id="new_start" value="14:00"
-                                class="w-full bg-gray-100 border border-gray-300 rounded-lg px-4 py-2 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <div class="relative">
+                                <input type="time" name="start_time" id="new_start" value="14:00" 
+                                    class="w-full bg-gray-100 border border-gray-300 rounded-md px-4 py-2 text-gray-800 placeholder-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer">
+                                <div id="start-dropdown" class="absolute bg-white border border-gray-300 rounded-lg shadow-lg p-4 mt-2 hidden z-50">
+                                    <div class="grid grid-cols-2 gap-2">
+                                        <button type="button" class="bg-red-100 text-red-600 text-xs font-medium px-3 py-1 rounded-md text-center" data-adjust="-5">-5m</button>
+                                        <button type="button" class="bg-green-100 text-green-600 text-xs font-medium px-3 py-1 rounded-md text-center" data-adjust="5">+5m</button>
+                                        <button type="button" class="bg-red-100 text-red-600 text-xs font-medium px-3 py-1 rounded-md text-center" data-adjust="-25">-25m</button>
+                                        <button type="button" class="bg-green-100 text-green-600 text-xs font-medium px-3 py-1 rounded-md text-center" data-adjust="25">+25m</button>
+                                        <button type="button" class="bg-red-100 text-red-600 text-xs font-medium px-3 py-1 rounded-md text-center" data-adjust="-50">-50m</button>
+                                        <button type="button" class="bg-green-100 text-green-600 text-xs font-medium px-3 py-1 rounded-md text-center" data-adjust="50">+50m</button>
+                                        <button type="button" class="bg-red-100 text-red-600 text-xs font-medium px-3 py-1 rounded-md text-center" data-adjust="-75">-75m</button>
+                                        <button type="button" class="bg-green-100 text-green-600 text-xs font-medium px-3 py-1 rounded-md text-center" data-adjust="75">+75m</button>
+                                    </div>
+                                    <p class="text-sm text-gray-500 mt-3">Start time adjusted: <span id="start-duration"><strong>14:00</strong></span></p>
+                                </div>
+                            </div>
                         </div>
+                        <!-- End time -->
                         <div>
                             <label for="new_end" class="block text-sm font-semibold text-gray-700 mb-1">End *</label>
-                            <input type="time" name="end_time" id="new_end" value="16:20"
-                                class="w-full bg-gray-100 border border-gray-300 rounded-lg px-4 py-2 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <div class="relative">
+                                <input type="time" name="end_time" id="new_end" value="16:20" 
+                                    class="w-full bg-gray-100 border border-gray-300 rounded-md px-4 py-2 text-gray-800 placeholder-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer">
+                                <div id="end-dropdown" class="absolute bg-white border border-gray-300 rounded-lg shadow-lg p-4 mt-2 hidden z-50">
+                                    <div class="grid grid-cols-2 gap-2">
+                                        <button type="button" class="bg-red-100 text-red-600 text-xs font-medium px-3 py-1 rounded-md text-center" data-adjust="-5">-5m</button>
+                                        <button type="button" class="bg-green-100 text-green-600 text-xs font-medium px-3 py-1 rounded-md text-center" data-adjust="5">+5m</button>
+                                        <button type="button" class="bg-red-100 text-red-600 text-xs font-medium px-3 py-1 rounded-md text-center" data-adjust="-25">-25m</button>
+                                        <button type="button" class="bg-green-100 text-green-600 text-xs font-medium px-3 py-1 rounded-md text-center" data-adjust="25">+25m</button>
+                                        <button type="button" class="bg-red-100 text-red-600 text-xs font-medium px-3 py-1 rounded-md text-center" data-adjust="-50">-50m</button>
+                                        <button type="button" class="bg-green-100 text-green-600 text-xs font-medium px-3 py-1 rounded-md text-center" data-adjust="50">+50m</button>
+                                        <button type="button" class="bg-red-100 text-red-600 text-xs font-medium px-3 py-1 rounded-md text-center" data-adjust="-75">-75m</button>
+                                        <button type="button" class="bg-green-100 text-green-600 text-xs font-medium px-3 py-1 rounded-md text-center" data-adjust="75">+75m</button>
+                                    </div>
+                                    <p class="text-sm text-gray-500 mt-3">End time adjusted: <span id="end-duration"><strong>16:20</strong></span></p>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
@@ -100,22 +126,41 @@
                     <!-- Break -->
                     <div>
                         <label for="new_break" class="block text-sm font-semibold text-gray-700 mb-1">Break (minutes)</label>
-                        <input type="number" name="break_minutes" id="new_break" value="0" min="0"
-                            class="w-full bg-gray-100 border border-gray-300 rounded-lg px-4 py-2 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <div class="relative">
+                            <input type="number" name="break_minutes" id="new_break" value="0" min="0"
+                                class="w-full bg-gray-100 border border-gray-300 rounded-md px-4 py-2 text-gray-800 placeholder-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 cursor-pointer">
+                            <div id="break-dropdown" class="absolute bg-white border border-gray-300 rounded-lg shadow-lg p-4 mt-2 hidden z-50">
+                                <div class="grid grid-cols-2 gap-2">
+                                    <button type="button" class="bg-red-100 text-red-600 text-xs font-medium px-3 py-1 rounded-md text-center" data-adjust="-5">-5m</button>
+                                    <button type="button" class="bg-green-100 text-green-600 text-xs font-medium px-3 py-1 rounded-md text-center" data-adjust="5">+5m</button>
+                                    <button type="button" class="bg-red-100 text-red-600 text-xs font-medium px-3 py-1 rounded-md text-center" data-adjust="-10">-10m</button>
+                                    <button type="button" class="bg-green-100 text-green-600 text-xs font-medium px-3 py-1 rounded-md text-center" data-adjust="10">+10m</button>
+                                    <button type="button" class="bg-red-100 text-red-600 text-xs font-medium px-3 py-1 rounded-md text-center" data-adjust="-30">-30m</button>
+                                    <button type="button" class="bg-green-100 text-green-600 text-xs font-medium px-3 py-1 rounded-md text-center" data-adjust="30">+30m</button>
+                                </div>
+                                <p class="text-sm text-gray-500 mt-3">Break duration adjusted: <span id="break-duration">0m</span></p>
+                            </div>
+                        </div>
                     </div>
 
                     <!-- Course -->
                     <div>
                         <label for="new_course" class="block text-sm font-semibold text-gray-700 mb-1">Course *</label>
                         <input type="text" name="course" id="new_course" placeholder="e.g., CITS3403"
-                            class="w-full bg-gray-100 border border-gray-300 rounded-lg px-4 py-2 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            maxlength="8"
+                            class="w-full bg-gray-100 border border-gray-300 rounded-lg px-4 py-2 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            oninput="handleCourseInput(this)">
+                        <p id="course-maxlength-notice" class="text-xs text-gray-500 mt-1 hidden">Max 8 characters reached.</p>
                     </div>
 
                     <!-- Activity -->
                     <div>
                         <label for="new_activity" class="block text-sm font-semibold text-gray-700 mb-1">Activity</label>
                         <input type="text" name="notes" id="new_activity" placeholder="e.g., listening to Matthew Daggitt"
-                            class="w-full bg-gray-100 border border-gray-300 rounded-lg px-4 py-2 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            maxlength="50"
+                            class="w-full bg-gray-100 border border-gray-300 rounded-lg px-4 py-2 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            oninput="handleActivityInput(this)">
+                        <p id="activity-maxlength-notice" class="text-xs text-gray-500 mt-1 hidden">Max 75 characters reached.</p>
                     </div>
 
                     <!-- Productivity -->
@@ -175,6 +220,117 @@
 </div>
 
 <script>
+    function resetForm() {
+        // Reset input values to defaults
+        const today = new Date();
+        const yyyy = today.getFullYear();
+        const mm = String(today.getMonth() + 1).padStart(2, '0');
+        const dd = String(today.getDate()).padStart(2, '0');
+        const todayStr = `${yyyy}-${mm}-${dd}`;
+        document.getElementById('new_date').value = todayStr;
+    
+        document.getElementById('new_start').value = "14:00";
+        document.getElementById('new_end').value = "16:20";
+        document.getElementById('new_break').value = "0";
+        document.getElementById('new_course').value = "";
+        document.getElementById('new_activity').value = "";
+        document.getElementById('new_productivity').value = "7";
+    
+        // Reset displayed values
+        // Productivity
+        const productivityInput = document.getElementById("new_productivity");
+        const productivityValue = document.getElementById("productivity-value");
+        const productivityDescriptor = document.getElementById("productivity-descriptor");
+        const descriptors = [
+            "Procrastinated the whole time",
+            "Barely started",
+            "Distracted",
+            "Could be better",
+            "Average effort",
+            "Decent focus",
+            "Productive",
+            "Good",
+            "Very productive",
+            "Excellent",
+            "Peak performance"
+        ];
+        productivityValue.textContent = "7";
+        productivityDescriptor.textContent = descriptors[7];
+        productivityDescriptor.classList.remove("text-red-600", "text-yellow-500", "text-green-600");
+        productivityDescriptor.classList.add("text-yellow-500");
+    
+        // Duration and progress bar
+        document.getElementById('session-duration').innerHTML = 'Duration: <strong>2h 20m</strong>';
+        document.getElementById('session-progress').style.width = "0%";
+    
+        // Hide max length notices
+        document.getElementById('course-maxlength-notice').classList.add('hidden');
+        document.getElementById('activity-maxlength-notice').classList.add('hidden');
+
+        document.getElementById('create-session-btn').disabled = true;
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+        const productivityInput = document.getElementById("new_productivity");
+        const productivityValue = document.getElementById("productivity-value");
+        const productivityDescriptor = document.getElementById("productivity-descriptor");
+    
+        const descriptors = [
+            "Procrastinated the whole time",
+            "Barely started",
+            "Distracted",
+            "Could be better",
+            "Average effort",
+            "Decent focus",
+            "Productive",
+            "Good",
+            "Very productive",
+            "Excellent",
+            "Peak performance"
+        ];
+    
+        const updateProductivity = () => {
+            const value = parseInt(productivityInput.value);
+            productivityValue.textContent = value;
+            productivityDescriptor.textContent = descriptors[value];
+    
+            // Remove all color classes
+            productivityDescriptor.classList.remove("text-red-600", "text-yellow-500", "text-green-600");
+    
+            // Add color based on value
+            if (value <= 5) {
+                productivityDescriptor.classList.add("text-red-600");
+            } else if (value <= 7) {
+                productivityDescriptor.classList.add("text-yellow-500");
+            } else {
+                productivityDescriptor.classList.add("text-green-600");
+            }
+        };
+    
+        productivityInput.addEventListener("input", updateProductivity);
+    
+        // Initialize on page load
+        updateProductivity();
+    });
+
+    function handleCourseInput(input) {
+        const notice = document.getElementById('course-maxlength-notice');
+        if (input.value.length >= 8) {
+            notice.classList.remove('hidden');
+        } else {
+            notice.classList.add('hidden');
+        }
+    }
+
+    function handleActivityInput(input) {
+        const notice = document.getElementById('activity-maxlength-notice');
+        if (input.value.length >= 75) {
+            notice.classList.remove('hidden');
+        } else {
+            notice.classList.add('hidden');
+        }
+    }
+
     document.addEventListener('DOMContentLoaded', function() {
         const feedback = document.getElementById('feedback-message');
     
