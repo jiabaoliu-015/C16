@@ -258,6 +258,36 @@ def validate_session_data(session_data):
     except Exception as e:
         return {'error': f'Validation error: {str(e)}'}
 
+@bp.route('/api/productivity-trend')
+@login_required
+def productivity_trend():
+    # Get range from query param
+    range_type = request.args.get('range', 'week')
+    today = datetime.today().date()
+    if range_type == 'day':
+        days = [today]
+    elif range_type == 'month':
+        days = [today - timedelta(days=i) for i in range(29, -1, -1)]
+    else:  # default to week
+        days = [today - timedelta(days=i) for i in range(6, -1, -1)]
+    data = []
+    for day in days:
+        sessions = Session.query.filter_by(user_id=current_user.id, date=day).all()
+        total_minutes = sum(
+            max((s.end_time.hour*60 + s.end_time.minute) - (s.start_time.hour*60 + s.start_time.minute) - (s.break_minutes or 0), 0)
+            for s in sessions
+        )
+        avg_productivity = (
+            sum(s.productivity_rating for s in sessions) / len(sessions)
+            if sessions else 0
+        )
+        data.append({
+            "date": day.strftime('%Y-%m-%d'),
+            "study_minutes": total_minutes,
+            "avg_productivity": avg_productivity * 10  # as percent
+        })
+    return jsonify(data)
+
 @bp.route('/api/user-stats')
 @login_required
 def user_stats():
