@@ -8,6 +8,7 @@
     <title>{% block title %}{% endblock %}</title>
     <link rel="icon" href="{{ url_for('static', filename='images/logo.png') }}" type="image/x-icon">
     <script src="{{ url_for('static', filename='js/date-adjust.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/renderStats.js') }}"></script>
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -170,72 +171,9 @@
             <div class="flex flex-col sm:flex-row sm:items-start sm:space-x-4 sm:ml-auto">
                 <!-- Stats (hidden on small screens) -->
                 <div class="hidden lg:flex flex-nowrap gap-4 items-center justify-end">
-                    <!-- Today -->
-                    <div class="flex items-center gap-2 bg-blue-50 px-4 py-2 rounded-xl shadow-sm transition-transform hover:scale-105 group">
-                        <i class="lucide text-blue-500" data-lucide="clock"></i>
-                        <div class="flex flex-col items-start">
-                            <span class="text-xs text-gray-500">Today</span>
-                            <span class="font-semibold text-blue-800 flex items-center gap-1">
-                                30m / 1h
-                                <span class="ml-1 text-green-500 flex items-center text-xs animate-pulse">
-                                    <i class="lucide text-green-500" data-lucide="arrow-up-right"></i>+10%
-                                </span>
-                            </span>
-                        </div>
+                    <div id="stats-container" class="hidden lg:flex flex-nowrap gap-4 items-center justify-end">
+                        <!-- JS will inject cards here -->
                     </div>
-                    <!-- Sessions -->
-                    <div class="flex items-center gap-2 bg-green-50 px-4 py-2 rounded-xl shadow-sm transition-transform hover:scale-105 group">
-                        <i class="lucide text-green-500" data-lucide="play-circle"></i>
-                        <div class="flex flex-col items-start">
-                            <span class="text-xs text-gray-500">Sessions</span>
-                            <span class="font-semibold text-green-800 flex items-center gap-1">
-                                2
-                                <span class="ml-1 text-red-500 flex items-center text-xs">
-                                    <i class="lucide text-red-500" data-lucide="arrow-down-right"></i>-1
-                                </span>
-                            </span>
-                        </div>
-                    </div>
-                    <!-- Avg Duration -->
-                    <div class="flex items-center gap-2 bg-yellow-50 px-4 py-2 rounded-xl shadow-sm transition-transform hover:scale-105 group">
-                        <i class="lucide text-yellow-500" data-lucide="timer"></i>
-                        <div class="flex flex-col items-start">
-                            <span class="text-xs text-gray-500">Avg. Duration</span>
-                            <span class="font-semibold text-yellow-800 flex items-center gap-1">
-                                48m
-                                <span class="ml-1 text-green-500 flex items-center text-xs">
-                                    <i class="lucide text-green-500" data-lucide="arrow-up-right"></i>+5%
-                                </span>
-                            </span>
-                        </div>
-                    </div>
-                    <!-- Avg Productivity -->
-                    <div class="flex items-center gap-2 bg-purple-50 px-4 py-2 rounded-xl shadow-sm transition-transform hover:scale-105 group">
-                        <i class="lucide text-purple-500" data-lucide="activity"></i>
-                        <div class="flex flex-col items-start">
-                            <span class="text-xs text-gray-500">Avg. Productivity</span>
-                            <span class="font-semibold text-purple-800 flex items-center gap-1">
-                                78%
-                                <span class="ml-1 text-green-500 flex items-center text-xs">
-                                    <i class="lucide text-green-500" data-lucide="arrow-up-right"></i>+2%
-                                </span>
-                            </span>
-                        </div>
-                    </div>
-                    <!-- This Week -->
-                    <div class="flex items-center gap-2 bg-red-50 px-4 py-2 rounded-xl shadow-sm transition-transform hover:scale-105 group">
-                        <i class="lucide text-red-500" data-lucide="calendar-days"></i>
-                        <div class="flex flex-col items-start">
-                            <span class="text-xs text-gray-500">This Week</span>
-                            <span class="font-semibold text-red-800 flex items-center gap-1">
-                                18h 45m
-                                <span class="ml-1 text-green-500 flex items-center text-xs">
-                                    <i class="lucide text-green-500" data-lucide="arrow-up-right"></i>+1h
-                                </span>
-                            </span>
-                        </div>
-                    </div>
-                </div>
                 <!-- User Icon -->
                 <div class="mt-4 sm:mt-0">
                     <div class="w-10 h-10 bg-gradient-to-tr from-purple-300 to-indigo-400 rounded-full flex items-center justify-center text-white font-semibold" id="header-profile-circle"></div>

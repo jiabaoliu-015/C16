@@ -254,6 +254,144 @@ def validate_session_data(session_data):
     except Exception as e:
         return {'error': f'Validation error: {str(e)}'}
 
+@bp.route('/api/user-stats')
+@login_required
+def user_stats():
+    today = datetime.today().date()
+    yesterday = today - timedelta(days=1)
+    week_start = today - timedelta(days=6)
+    prev_week_start = week_start - timedelta(days=7)
+    prev_week_end = week_start - timedelta(days=1)
+
+    # Helper for durations
+    def get_total_duration(sessions):
+        total = 0
+        for s in sessions:
+            start = s.start_time
+            end = s.end_time
+            duration = (end.hour * 60 + end.minute) - (start.hour * 60 + start.minute) - (s.break_minutes or 0)
+            total += max(duration, 0)
+        return total
+
+    # Today & Yesterday
+    today_sessions = Session.query.filter_by(user_id=current_user.id, date=today).all()
+    yesterday_sessions = Session.query.filter_by(user_id=current_user.id, date=yesterday).all()
+    today_minutes = get_total_duration(today_sessions)
+    yesterday_minutes = get_total_duration(yesterday_sessions)
+    today_delta = (
+        ((today_minutes - yesterday_minutes) / yesterday_minutes * 100) if yesterday_minutes else None
+    )
+
+    # Trailing week & previous week
+    week_sessions = Session.query.filter(
+        Session.user_id == current_user.id,
+        Session.date >= week_start,
+        Session.date <= today
+    ).all()
+    prev_week_sessions = Session.query.filter(
+        Session.user_id == current_user.id,
+        Session.date >= prev_week_start,
+        Session.date <= prev_week_end
+    ).all()
+
+    # Sessions count
+    week_count = len(week_sessions)
+    prev_week_count = len(prev_week_sessions)
+    sessions_delta = (
+        ((week_count - prev_week_count) / prev_week_count * 100) if prev_week_count else None
+    )
+
+    # Avg duration
+    week_avg = (get_total_duration(week_sessions) / week_count) if week_count else 0
+    prev_week_avg = (get_total_duration(prev_week_sessions) / prev_week_count) if prev_week_count else 0
+    avg_duration_delta = (
+        ((week_avg - prev_week_avg) / prev_week_avg * 100) if prev_week_avg else None
+    )
+
+    # Avg productivity
+    week_prod = (
+        sum(s.productivity_rating for s in week_sessions) / week_count if week_count else 0
+    )
+    prev_week_prod = (
+        sum(s.productivity_rating for s in prev_week_sessions) / prev_week_count if prev_week_count else 0
+    )
+    # Normalize to percentage (scale 1-10 becomes 10-100%)
+    week_prod_pct = week_prod * 10
+    prev_week_prod_pct = prev_week_prod * 10
+    avg_prod_delta = (
+        ((week_prod_pct - prev_week_prod_pct) / prev_week_prod_pct * 100) if prev_week_prod_pct else None
+    )
+
+    # This week total
+    week_total_minutes = get_total_duration(week_sessions)
+    prev_week_total_minutes = get_total_duration(prev_week_sessions)
+    week_total_delta = (
+        ((week_total_minutes - prev_week_total_minutes) / prev_week_total_minutes * 100) if prev_week_total_minutes else None
+    )
+
+    def format_minutes(minutes):
+        h = minutes // 60
+        m = minutes % 60
+        return f"{h}h {m}m" if h else f"{m}m"
+
+    def format_delta(delta):
+        if delta is None:
+            return {"delta": "-", "deltaType": "neutral"}
+        elif delta > 0:
+            return {"delta": f"+{round(delta)}%", "deltaType": "positive"}
+        elif delta < 0:
+            return {"delta": f"{round(delta)}%", "deltaType": "negative"}
+        else:
+            return {"delta": "-", "deltaType": "neutral"}
+
+    return jsonify([
+        {
+            "label": "Today",
+            "icon": "clock",
+            "value": format_minutes(today_minutes),
+            **format_delta(today_delta),
+            "bgColor": "bg-blue-50",
+            "iconColor": "text-blue-500",
+            "textColor": "text-blue-800",
+        },
+        {
+            "label": "Sessions",
+            "icon": "play-circle",
+            "value": str(week_count),
+            **format_delta(sessions_delta),
+            "bgColor": "bg-green-50",
+            "iconColor": "text-green-500",
+            "textColor": "text-green-800",
+        },
+        {
+            "label": "Avg. Duration",
+            "icon": "timer",
+            "value": format_minutes(int(week_avg)),
+            **format_delta(avg_duration_delta),
+            "bgColor": "bg-yellow-50",
+            "iconColor": "text-yellow-500",
+            "textColor": "text-yellow-800",
+        },
+        {
+            "label": "Avg. Productivity",
+            "icon": "activity",
+            "value": f"{round(week_prod_pct)}%",
+            **format_delta(avg_prod_delta),
+            "bgColor": "bg-purple-50",
+            "iconColor": "text-purple-500",
+            "textColor": "text-purple-800",
+        },
+        {
+            "label": "This Week",
+            "icon": "calendar-days",
+            "value": format_minutes(week_total_minutes),
+            **format_delta(week_total_delta),
+            "bgColor": "bg-red-50",
+            "iconColor": "text-red-500",
+            "textColor": "text-red-800",
+        },
+    ])
+
 @bp.route('/upload/', methods=['GET', 'POST'])
 @login_required
 def upload_data():

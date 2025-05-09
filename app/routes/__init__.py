@@ -16,6 +16,8 @@ from app.forms import ResetRequestForm, ResetPasswordForm
 from flask_mail import Message
 from app import db, mail
 from flask_dance.contrib.google import make_google_blueprint, google
+from sqlalchemy import func, extract, and_
+from datetime import datetime, timedelta
 
 # Sample data
 from app.test.sessions_data import sessions
