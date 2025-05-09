@@ -24,12 +24,12 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('download-qr-btn').addEventListener('click', downloadQRCode);
 });
 
-// Initialize the share sessions checkbox
+// Initialize the share checkboxes
 function initShareSessionsCheckbox() {
-    const shareSessionsCheckbox = document.getElementById('share-sessions-checkbox');
+    const shareCheckboxes = document.querySelectorAll('.share-custom-checkbox');
     
-    if (shareSessionsCheckbox) {
-        shareSessionsCheckbox.addEventListener('click', function() {
+    shareCheckboxes.forEach(checkbox => {
+        checkbox.addEventListener('click', function() {
             // Toggle checked state
             this.classList.toggle('checked');
             
@@ -47,7 +47,7 @@ function initShareSessionsCheckbox() {
                 urlDisplay.style.display = 'none';
             }
         });
-    }
+    });
 }
 
 // Update date display
@@ -96,6 +96,7 @@ function initCheckboxes() {
 // Generate the sharing URL
 function generateShareUrl() {
     const shareSessionsCheckbox = document.getElementById('share-sessions-checkbox');
+    const shareProductivityCheckbox = document.getElementById('share-productivity-checkbox');
     const selectedItems = [];
     
     // Check if sessions are selected for sharing
@@ -108,6 +109,11 @@ function generateShareUrl() {
             alert('Please select at least one session to share');
             return;
         }
+    }
+    
+    // Check if productivity overview is selected for sharing
+    if (shareProductivityCheckbox && shareProductivityCheckbox.classList.contains('checked')) {
+        selectedItems.push('productivity=true');
     }
     
     // If nothing is selected, show an alert
@@ -378,8 +384,9 @@ function copyShareUrl() {
 function parseUrlAndShowContent() {
     const urlParams = new URLSearchParams(window.location.search);
     const sessionsParam = urlParams.get('sessions');
+    const productivityParam = urlParams.get('productivity');
     
-    if (sessionsParam) {
+    if (sessionsParam || productivityParam) {
         // Hide the navigation bar
         const navbar = document.querySelector('nav');
         if (navbar) {
@@ -433,27 +440,39 @@ function parseUrlAndShowContent() {
             }
         });
         
-        // Wait for sessions to load, then filter them
-        const checkSessionsLoaded = setInterval(() => {
-            const sessionRows = document.querySelectorAll('.notes-row');
-            if (sessionRows.length > 0) {
-                clearInterval(checkSessionsLoaded);
-                
-                // Get the shared session IDs
-                const sharedSessionIds = sessionsParam.split(',');
-                
-                // Hide sessions that are not in the shared list
-                sessionRows.forEach(row => {
-                    const sessionId = row.getAttribute('data-session-id');
-                    if (!sharedSessionIds.includes(sessionId)) {
-                        row.style.display = 'none';
-                    }
-                });
-                
-                // Hide the delete button
-                document.querySelector('#delete-selected').style.display = 'none';
+        // Handle sessions display if sessions parameter exists
+        if (sessionsParam) {
+            // Wait for sessions to load, then filter them
+            const checkSessionsLoaded = setInterval(() => {
+                const sessionRows = document.querySelectorAll('.notes-row');
+                if (sessionRows.length > 0) {
+                    clearInterval(checkSessionsLoaded);
+                    
+                    // Get the shared session IDs
+                    const sharedSessionIds = sessionsParam.split(',');
+                    
+                    // Hide sessions that are not in the shared list
+                    sessionRows.forEach(row => {
+                        const sessionId = row.getAttribute('data-session-id');
+                        if (!sharedSessionIds.includes(sessionId)) {
+                            row.style.display = 'none';
+                        }
+                    });
+                    
+                    // Hide the delete button
+                    document.querySelector('#delete-selected').style.display = 'none';
+                }
+            }, 100);
+        }
+        
+        // Handle productivity overview display if productivity parameter exists
+        if (productivityParam !== 'true') {
+            // Hide productivity overview section if not included in share URL
+            const productivitySection = document.querySelector('#productivity-overview').closest('.bg-white.rounded-lg.shadow-xl');
+            if (productivitySection) {
+                productivitySection.style.display = 'none';
             }
-        }, 100);
+        }
     }
 }
 
