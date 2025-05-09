@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // Calculate min and max dates dynamically (e.g., today - 7 days to today + 7 days)
+    // Calculate min and max dates dynamically (e.g., today - 1 days to today + 3 days)
     const today = new Date();
     const minDateObj = new Date(today);
     minDateObj.setDate(today.getDate() - 1);

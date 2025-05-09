@@ -266,8 +266,7 @@ def upload_data():
 
             try:
                 # Read and decode the CSV file
-                stream = TextIOWrapper(file.stream, encoding='utf-8')
-                reader = csv.DictReader(stream)
+                reader = csv.DictReader(TextIOWrapper(file, encoding='utf-8'))
                 added, errors = 0, []
                 for idx, row in enumerate(reader, start=1):
                     # Map CSV columns to standardized field names
@@ -305,7 +304,7 @@ def upload_data():
                 if errors:
                     msg += " Some rows failed: " + "; ".join(errors)
                 flash(msg if added else "Error uploading sessions.", 'success' if added else 'error')
-                return redirect(url_for('main.upload_data'))
+                return redirect(url_for('logged_in.upload_data'))
 
             except Exception as e:
                 db.session.rollback()

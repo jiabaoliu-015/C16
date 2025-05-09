@@ -48,6 +48,69 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     };
 
+    const showBreakMaxToast = (message) => {
+        let toast = document.getElementById('break-max-toast');
+        if (!toast) {
+            toast = document.createElement('div');
+            toast.id = 'break-max-toast';
+            toast.style.position = 'absolute';
+            toast.style.top = '0.5rem';
+            toast.style.right = '0.5rem';
+            toast.style.background = '#f87171';
+            toast.style.color = '#fff';
+            toast.style.padding = '0.5rem 1rem';
+            toast.style.borderRadius = '0.5rem';
+            toast.style.boxShadow = '0 2px 8px rgba(0,0,0,0.1)';
+            toast.style.fontWeight = 'bold';
+            toast.style.zIndex = 1000;
+            toast.style.transition = 'opacity 0.3s';
+            toast.style.opacity = '0';
+            document.body.appendChild(toast);
+        }
+        toast.textContent = message;
+        toast.style.opacity = '1';
+        setTimeout(() => {
+            toast.style.opacity = '0';
+        }, 2000);
+    };
+
+    const updateSessionDuration = () => {
+        const startInput = document.getElementById('new_start');
+        const endInput = document.getElementById('new_end');
+        const breakInput = document.getElementById('new_break'); // Added break input
+        const sessionDurationDisplay = document.getElementById('session-duration');
+        const sessionProgress = document.getElementById('session-progress');
+
+        let sessionMinutes = 0;
+        if (startInput.value && endInput.value) {
+            const [startHours, startMinutes] = startInput.value.split(':').map(Number);
+            const [endHours, endMinutes] = endInput.value.split(':').map(Number);
+
+            sessionMinutes = (endHours * 60 + endMinutes) - (startHours * 60 + startMinutes);
+            if (sessionMinutes < 0) {
+                sessionMinutes += 24 * 60; // Handle overnight sessions
+            }
+        }
+
+        let breakMinutes = parseInt(breakInput.value, 10) || 0; // Get break value
+        // Cap break at session duration
+        if (breakMinutes > sessionMinutes) {
+            breakMinutes = sessionMinutes;
+            breakInput.value = breakMinutes;
+            showBreakMaxToast('Break cannot exceed session duration');
+        }
+
+        let durationMinutes = Math.max(0, sessionMinutes - breakMinutes); // Subtract break and ensure non-negative
+
+        const hours = Math.floor(durationMinutes / 60);
+        const minutes = durationMinutes % 60;
+        sessionDurationDisplay.innerHTML = `Duration: <strong>${hours}h ${minutes}m</strong>`;
+
+        // Update progress bar
+        const progressPercentage = Math.min((durationMinutes / 75) * 100, 100);
+        sessionProgress.style.width = `${progressPercentage}%`;
+    };
+
     const adjustBreak = (inputId, dropdownId, durationId) => {
         const input = document.getElementById(inputId);
         const dropdown = document.getElementById(dropdownId);
@@ -61,6 +124,21 @@ document.addEventListener('DOMContentLoaded', () => {
                 currentBreak += adjustment;
                 currentBreak = Math.max(0, currentBreak); // Ensure break duration is not negative
 
+                // Get session duration
+                const startInput = document.getElementById('new_start');
+                const endInput = document.getElementById('new_end');
+                let sessionMinutes = 0;
+                if (startInput.value && endInput.value) {
+                    const [startHours, startMinutes] = startInput.value.split(':').map(Number);
+                    const [endHours, endMinutes] = endInput.value.split(':').map(Number);
+                    sessionMinutes = (endHours * 60 + endMinutes) - (startHours * 60 + startMinutes);
+                    if (sessionMinutes < 0) sessionMinutes += 24 * 60;
+                }
+                if (currentBreak > sessionMinutes) {
+                    currentBreak = sessionMinutes;
+                    showBreakMaxToast('Break cannot exceed session duration');
+                }
+
                 input.value = currentBreak; // Update the input field
                 durationDisplay.textContent = `${currentBreak}m`; // Update the duration display
                 updateSessionDuration(); // Update session duration dynamically
@@ -71,40 +149,28 @@ document.addEventListener('DOMContentLoaded', () => {
         input.addEventListener('input', () => {
             let currentBreak = parseInt(input.value, 10) || 0;
             if (currentBreak < 0) {
-                input.value = 0;
+                currentBreak = 0;
             }
-            durationDisplay.textContent = `${input.value}m`; // Update the duration display
+
+            // Get session duration
+            const startInput = document.getElementById('new_start');
+            const endInput = document.getElementById('new_end');
+            let sessionMinutes = 0;
+            if (startInput.value && endInput.value) {
+                const [startHours, startMinutes] = startInput.value.split(':').map(Number);
+                const [endHours, endMinutes] = endInput.value.split(':').map(Number);
+                sessionMinutes = (endHours * 60 + endMinutes) - (startHours * 60 + startMinutes);
+                if (sessionMinutes < 0) sessionMinutes += 24 * 60;
+            }
+            if (currentBreak > sessionMinutes) {
+                currentBreak = sessionMinutes;
+                showBreakMaxToast('Break cannot exceed session duration');
+            }
+
+            input.value = currentBreak;
+            durationDisplay.textContent = `${currentBreak}m`; // Update the duration display
             updateSessionDuration(); // Update session duration dynamically
         });
-    };
-
-    const updateSessionDuration = () => {
-        const startInput = document.getElementById('new_start');
-        const endInput = document.getElementById('new_end');
-        const breakInput = document.getElementById('new_break'); // Added break input
-        const sessionDurationDisplay = document.getElementById('session-duration');
-        const sessionProgress = document.getElementById('session-progress');
-
-        if (startInput.value && endInput.value) {
-            const [startHours, startMinutes] = startInput.value.split(':').map(Number);
-            const [endHours, endMinutes] = endInput.value.split(':').map(Number);
-
-            let durationMinutes = (endHours * 60 + endMinutes) - (startHours * 60 + startMinutes);
-            if (durationMinutes < 0) {
-                durationMinutes += 24 * 60; // Handle overnight sessions
-            }
-
-            const breakMinutes = parseInt(breakInput.value, 10) || 0; // Get break value
-            durationMinutes = Math.max(0, durationMinutes - breakMinutes); // Subtract break and ensure non-negative
-
-            const hours = Math.floor(durationMinutes / 60);
-            const minutes = durationMinutes % 60;
-            sessionDurationDisplay.innerHTML = `Duration: <strong>${hours}h ${minutes}m</strong>`;
-
-            // Update progress bar
-            const progressPercentage = Math.min((durationMinutes / 75) * 100, 100);
-            sessionProgress.style.width = `${progressPercentage}%`;
-        }
     };
 
     // Initialize dropdowns and time/break adjustment functionality
