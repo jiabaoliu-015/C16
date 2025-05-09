@@ -4,5 +4,27 @@
 <div class="max-w-xl mx-auto mt-10 p-6 bg-white rounded-xl shadow-lg">
   <h2 class="text-3xl font-bold text-center mb-4 text-gray-800">👤 Your Profile</h2>
   <p class="text-center text-gray-600">Welcome to your profile page!</p>
+
+  <!-- Account Creation Date -->
+  <div class="mt-6">
+    <h3 class="text-xl font-semibold text-gray-800">Account Created</h3>
+    <p class="text-gray-600">
+      {{ current_user.created_at.strftime('%B %d, %Y') }} <!-- Format the date -->
+    </p>
+  </div>
+
+  <!-- Friends List -->
+  <div class="mt-6">
+    <h3 class="text-xl font-semibold text-gray-800">Your Friends</h3>
+    {% if current_user.friends.count() > 0 %}
+      <ul class="list-disc pl-5">
+        {% for friend in current_user.friends %}
+          <li class="text-gray-600">{{ friend.email }}</li> <!-- Display each friend's email -->
+        {% endfor %}
+      </ul>
+    {% else %}
+      <p class="text-gray-600">You have no friends yet.</p>
+    {% endif %}
+  </div>
 </div>
 {% endblock %}
