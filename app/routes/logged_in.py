@@ -5,7 +5,7 @@ import csv
 from io import TextIOWrapper
 from app.models.reflection import Reflection
 from flask import jsonify, request
-from datetime import datetime
+from datetime import datetime, timedelta
 
 # Define blueprint for main routes
 bp = Blueprint('logged_in', __name__)
@@ -35,6 +35,62 @@ def profile():
 @login_required
 def share():
     return render_template('user/share.html')
+
+@bp.route('/api/study-streak', methods=['GET', 'POST'])
+@login_required
+def study_streak():
+    """
+    GET: Returns current streak, longest streak, and freeze info.
+    POST: Use a streak freeze if available.
+    """
+    from app.models.session import Session
+    from app.models.streak_freeze import StreakFreeze  # You may need to create this model
+
+    today = datetime.today().date()
+    sessions = Session.query.filter_by(user_id=current_user.id).order_by(Session.date.desc()).all()
+    dates = set(s.date for s in sessions)
+
+    # Calculate current streak
+    streak = 0
+    day = today
+    while day in dates:
+        streak += 1
+        day -= timedelta(days=1)
+
+    # Calculate longest streak
+    longest = 0
+    temp = 0
+    prev = None
+    for d in sorted(dates, reverse=True):
+        if prev is None or prev - timedelta(days=1) == d:
+            temp += 1
+        else:
+            longest = max(longest, temp)
+            temp = 1
+        prev = d
+    longest = max(longest, temp)
+
+    # Streak freeze logic (1 per month)
+    freeze_this_month = StreakFreeze.query.filter_by(user_id=current_user.id, month=today.month, year=today.year).first()
+    freeze_available = freeze_this_month is None
+
+    if request.method == 'POST':
+        # Use a freeze if available and streak was broken yesterday
+        yesterday = today - timedelta(days=1)
+        if freeze_available and yesterday not in dates and today in dates:
+            # Grant freeze
+            new_freeze = StreakFreeze(user_id=current_user.id, month=today.month, year=today.year, used_on=today)
+            db.session.add(new_freeze)
+            db.session.commit()
+            return jsonify({"success": True, "message": "Streak freeze used!"})
+        else:
+            return jsonify({"success": False, "message": "No freeze available or not eligible."}), 400
+
+    return jsonify({
+        "current_streak": streak,
+        "longest_streak": longest,
+        "freeze_available": freeze_available
+    })
 
 @bp.route('/api/reflections', methods=['GET', 'POST'])
 @login_required

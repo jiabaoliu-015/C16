@@ -15,6 +15,7 @@
 <script src="{{ url_for('static', filename='graphs/daily_timeline.js') }}"></script>
 <script src="{{ url_for('static', filename='graphs/course_insights.js') }}"></script>
 <script src="{{ url_for('static', filename='graphs/weekly_comparison.js') }}"></script>
+<script src="{{ url_for('static', filename='graphs/study_streak.js') }}"></script>
 
 <main class="flex-1 p-6 grid grid-cols-1 lg:grid-cols-3 gap-6 max-w-screen-xl mx-auto w-full">
   <!-- Productivity Overview -->
@@ -207,19 +208,50 @@
   </section>
 
   <!-- Study Streaks Section -->
-  <section class="bg-white p-4 rounded-lg shadow transition-transform duration-200 hover:scale-[1.02] hover:shadow-md">
-    <h2 class="text-xl font-semibold mb-4">Study Streak</h2>
-    <div class="flex items-center space-x-2 mb-2">
-      <div class="w-4 h-4 rounded-full bg-green-500"></div>
-      <div class="w-4 h-4 rounded-full bg-green-500"></div>
-      <div class="w-4 h-4 rounded-full bg-green-500"></div>
-      <div class="w-4 h-4 rounded-full bg-gray-300"></div>
-      <div class="w-4 h-4 rounded-full bg-gray-300"></div>
-      <div class="w-4 h-4 rounded-full bg-gray-300"></div>
-      <div class="w-4 h-4 rounded-full bg-gray-300"></div>
+  <section class="bg-white p-4 rounded-lg shadow transition-transform duration-200 hover:scale-[1.02] hover:shadow-md" id="study-streak-section">
+    <h2 class="text-xl font-semibold mb-4 flex items-center gap-2">
+      Study Streak
+      <span id="streak-fire" class="ml-2 text-orange-500 text-xl hidden" aria-label="On fire">🔥</span>
+      <button id="export-streak-btn" class="ml-auto px-2 py-1 bg-blue-50 text-blue-600 rounded-full text-xs font-semibold hover:bg-blue-100 transition flex items-center gap-1 focus:outline-none focus:ring-2 focus:ring-blue-400" title="Export your streak">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path d="M12 4v12m0 0l-4-4m4 4l4-4M4 20h16" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        Export
+      </button>
+    </h2>
+    <div id="streak-circles" class="flex items-center space-x-2 mb-2" aria-label="Current study streak">
+      <!-- Circles will be rendered by JS -->
+      <!-- Example static fallback: -->
+      <div class="w-4 h-4 rounded-full bg-gray-200 border"></div>
+      <div class="w-4 h-4 rounded-full bg-gray-200 border"></div>
+      <div class="w-4 h-4 rounded-full bg-gray-200 border"></div>
+      <div class="w-4 h-4 rounded-full bg-gray-200 border"></div>
+      <div class="w-4 h-4 rounded-full bg-gray-200 border"></div>
+      <div class="w-4 h-4 rounded-full bg-gray-200 border"></div>
+      <div class="w-4 h-4 rounded-full bg-gray-200 border"></div>
     </div>
-    <p class="text-gray-700">You're on a 3-day streak! Keep it up!</p>
+    <p class="text-gray-700" id="streak-message">Loading your streak...</p>
+    <div class="text-xs text-gray-400 mt-1" id="longest-streak"></div>
+    <button id="streak-freeze-btn" class="mt-2 px-3 py-1 bg-yellow-50 text-yellow-700 rounded-full text-xs font-semibold hover:bg-yellow-100 transition hidden" title="Use a streak freeze to keep your streak alive!">
+      🧊 Freeze Streak
+    </button>
+    <div id="streak-toast" class="fixed bottom-6 right-6 bg-green-600 text-white px-4 py-2 rounded-lg shadow-lg opacity-0 pointer-events-none transition-opacity z-50"></div>
   </section>
+  <style>
+    #streak-circles .rounded-full {
+      transition: background 0.2s, box-shadow 0.2s;
+      border: 2px solid #e5e7eb; /* subtle border for all */
+    }
+    #streak-circles .active {
+      background: linear-gradient(90deg, #34d399 60%, #10b981 100%);
+      border-color: #10b981;
+      box-shadow: 0 0 0 2px #a7f3d0;
+    }
+    /* Remove animate-pulse from circles */
+    #streak-circles .animate-pulse {
+      animation: none !important;
+    }
+  </style>
 
   <!-- Study Distribution by Day -->
   <section class="bg-white p-4 rounded-lg shadow transition-transform duration-200 hover:scale-[1.02] hover:shadow-md">

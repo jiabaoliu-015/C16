@@ -1,5 +1,6 @@
 from .user import User
 from .session import Session
+from .streak_freeze import StreakFreeze
 '''
 Database Relationships
     User ↔ Session: One-to-Many (A user can have multiple sessions).
