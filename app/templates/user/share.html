@@ -20,6 +20,29 @@
 <script src="{{ url_for('static', filename='js/shared_export.js') }}" defer></script>
 
 <main class="flex-1 p-6 max-w-screen-xl mx-auto w-full">
+    <!-- Export All Button -->
+    <div class="export-controls mb-8 p-4 bg-gray-50 rounded-lg shadow-md border border-gray-200">
+        <div class="flex items-center gap-4">
+            <button 
+                id="export-all"
+                class="btn-export-all bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors"
+            >
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+                </svg>
+                Export All Data
+            </button>
+            <span class="text-sm text-gray-600">
+                Download the complete analysis report that includes the following contents:
+                <ul class="list-disc list-inside mt-1">
+                    <li>Weekly Learning Intensity Analysis</li>
+                    <li>Course Learning Proportion</li>
+                    <li>Sessions </li>
+                </ul>
+            </span>
+        </div>
+    </div>
+
     <!-- date display -->
     <div class="header mb-4">
         <div class="date-display" id="current-date">
