@@ -3,6 +3,9 @@ from . import *
 from flask import flash, redirect, url_for
 import csv
 from io import TextIOWrapper
+from app.models.reflection import Reflection
+from flask import jsonify, request
+from datetime import datetime
 
 # Define blueprint for main routes
 bp = Blueprint('logged_in', __name__)
@@ -32,6 +35,96 @@ def profile():
 @login_required
 def share():
     return render_template('user/share.html')
+
+@bp.route('/api/reflections', methods=['GET', 'POST'])
+@login_required
+def reflections():
+    if request.method == 'GET':
+        reflections = Reflection.query.filter_by(user_id=current_user.id).order_by(Reflection.created_at.desc()).limit(10).all()
+        return jsonify([
+            {
+                "id": r.id,
+                "content": r.content,
+                "mood": r.mood,
+                "tags": r.tags,
+                "created_at": r.created_at.isoformat()  # includes timezone info if aware
+            } for r in reflections
+        ])
+    elif request.method == 'POST':
+        data = request.get_json()
+        content = data.get('content', '').strip()
+        mood = data.get('mood')
+        tags = data.get('tags')
+        if not content:
+            return jsonify({"error": "Reflection cannot be empty."}), 400
+        reflection = Reflection(user_id=current_user.id, content=content, mood=mood, tags=tags)
+        db.session.add(reflection)
+        db.session.commit()
+        return jsonify({"success": True, "id": reflection.id})
+
+@bp.route('/api/reflections/<int:reflection_id>', methods=['PUT', 'DELETE'])
+@login_required
+def reflection_detail(reflection_id):
+    reflection = Reflection.query.get_or_404(reflection_id)
+    if reflection.user_id != current_user.id:
+        return jsonify({"error": "Unauthorized"}), 403
+    if request.method == 'PUT':
+        data = request.get_json()
+        reflection.content = data.get('content', reflection.content)
+        reflection.mood = data.get('mood', reflection.mood)
+        reflection.tags = data.get('tags', reflection.tags)
+        db.session.commit()
+        return jsonify({"success": True})
+    elif request.method == 'DELETE':
+        db.session.delete(reflection)
+        db.session.commit()
+        return jsonify({"success": True})
+
+@bp.route('/api/course-insights')
+@login_required
+def course_insights():
+    # Support ?range=week|month|overall
+    from sqlalchemy import func
+    from datetime import datetime, timedelta
+
+    range_type = request.args.get('range', 'week')
+    today = datetime.today().date()
+    if range_type == "week":
+        cutoff = today - timedelta(days=6)
+    elif range_type == "month":
+        cutoff = today - timedelta(days=29)
+    elif range_type == "overall":
+        cutoff = None
+    else:
+        cutoff = today - timedelta(days=6)
+
+    query = Session.query.filter(Session.user_id == current_user.id)
+    if cutoff:
+        query = query.filter(Session.date >= cutoff)
+    sessions = query.all()
+
+    course_stats = {}
+    for s in sessions:
+        c = s.course
+        if c not in course_stats:
+            course_stats[c] = {"total_minutes": 0, "total_productivity": 0, "session_count": 0}
+        start = s.start_time
+        end = s.end_time
+        duration = (end.hour * 60 + end.minute) - (start.hour * 60 + start.minute) - (s.break_minutes or 0)
+        course_stats[c]["total_minutes"] += max(duration, 0)
+        course_stats[c]["total_productivity"] += s.productivity_rating
+        course_stats[c]["session_count"] += 1
+
+    result = []
+    for c, stats in course_stats.items():
+        avg_prod = stats["total_productivity"] / stats["session_count"] if stats["session_count"] else 0
+        result.append({
+            "course": c,
+            "total_minutes": stats["total_minutes"],
+            "avg_productivity": round(avg_prod, 2),
+            "session_count": stats["session_count"]
+        })
+    return jsonify(result)
 
 @bp.route('/api/sessions', methods=['GET', 'POST'])
 @login_required
