@@ -13,8 +13,11 @@
 <link rel="stylesheet" href="{{ url_for('static', filename='css/share.css') }}">
 <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js" integrity="sha512-CNgIRecGo7nphbeZ04Sc13ka07paqdeTu0WR1IM4kNcpmBAUSHSQX0FslNhTDadL4O5SAGapGt4FodqL8My0mA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="{{ url_for('static', filename='js/share.js') }}" defer></script>
 <script src="{{ url_for('static', filename='js/fetch_sessions.js') }}" defer></script>
+<script src="{{ url_for('static', filename='js/shared_export.js') }}" defer></script>
 
 <main class="flex-1 p-6 max-w-screen-xl mx-auto w-full">
     <!-- date display -->
@@ -26,10 +29,18 @@
     <!-- Study Performance Section -->
     <div class="study-performance mb-6 p-6 rounded-xl shadow-lg bg-gradient-to-br from-blue-50 to-purple-50 border-2 border-purple-100">
         <div class="flex items-center mb-4">
-            <svg class="w-8 h-8 mr-3 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path>
-            </svg>
-            <h2 class="text-2xl font-bold text-gray-800">Weekly Learning Intensity Analysis</h2>
+            <div class="flex justify-between items-center w-full">
+                <div class="flex items-center">
+                    <svg class="w-8 h-8 mr-3 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path>
+                    </svg>
+                    <h2 class="text-2xl font-bold text-gray-800">Weekly Learning Intensity Analysis</h2>
+                </div>
+                <button id="export-intensity" class="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm font-semibold hover:bg-blue-200 transition flex items-center gap-1 focus:outline-none focus:ring-2 focus:ring-blue-400" aria-label="Download chart as image">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 4v12m0 0l-4-4m4 4l4-4M4 20h16" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    Export
+                </button>
+            </div>
         </div>
         <div id="performance-message" class="message-container text-lg leading-relaxed p-4 bg-white rounded-lg"></div>
     </div>
@@ -38,9 +49,15 @@
     <div class="bg-white rounded-lg shadow-xl p-6 mb-6 transition-transform duration-200 hover:shadow-md">
         <!-- Header -->
         <div class="flex justify-between items-center mb-4">
-            <h2 class="text-2xl font-bold text-gray-900">
-                Course Learning Proportion
-            </h2>
+            <div class="flex justify-between items-center w-full">
+                <h2 class="text-2xl font-bold text-gray-900">
+                    Course Learning Proportion
+                </h2>
+                <button id="export-course" class="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm font-semibold hover:bg-blue-200 transition flex items-center gap-1 focus:outline-none focus:ring-2 focus:ring-blue-400" aria-label="Download chart as image">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 4v12m0 0l-4-4m4 4l4-4M4 20h16" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    Export
+                </button>
+            </div>
         </div>
         
         <!-- Charts Container -->
@@ -76,12 +93,20 @@
             <div class="bg-white rounded-lg shadow-xl p-6 flex flex-col justify-start space-y-8">
             <!-- Header -->
             <div class="flex justify-between items-center mb-4">
-                <h2 class="text-2xl font-bold text-gray-900">
-                    Sessions <span id="session-count" class="text-gray-500 font-medium">• 0</span>
-                </h2>
-                <button id="delete-selected" class="bg-red-500 text-white px-4 py-2 rounded-full shadow-md hover:bg-red-600 transition duration-300 hidden">
-                    Delete Selected
-                </button>
+                <div class="flex items-center">
+                    <h2 class="text-2xl font-bold text-gray-900">
+                        Sessions <span id="session-count" class="text-gray-500 font-medium">• 0</span>
+                    </h2>
+                </div>
+                <div class="flex items-center gap-2">
+                    <button id="export-sessions" class="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm font-semibold hover:bg-blue-200 transition flex items-center gap-1 focus:outline-none focus:ring-2 focus:ring-blue-400" aria-label="Download sessions as image">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 4v12m0 0l-4-4m4 4l4-4M4 20h16" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        Export
+                    </button>
+                    <button id="delete-selected" class="bg-red-500 text-white px-4 py-2 rounded-full shadow-md hover:bg-red-600 transition duration-300 hidden">
+                        Delete Selected
+                    </button>
+                </div>
             </div>
 
             <!-- Table Header -->
