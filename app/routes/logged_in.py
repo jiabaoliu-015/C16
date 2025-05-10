@@ -721,9 +721,3 @@ def study_time_data():
         {"date": "2025-04-03", "studyTime": 1.5},
     ]
     return jsonify(data)
-
-# Route for the leaderboard page
-@bp.route('/leaderboard/')
-@login_required
-def leaderboard():
-    return render_template('user/leaderboard.html')
