@@ -20,11 +20,11 @@ function analyzeStudyIntensity(sessions) {
     const messageBox = document.getElementById('performance-message');
     let message = '';
     
-    if (thisWeekTotal < 180) { // 3hours
+    if (thisWeekTotal < 240) { // 4hours
         message = `Classmate!!!!! According to this week's study records, your effective study time (cumulative total less than 3 hours) shows a significant gap compared to course requirements.  This level of learning intensity is insufficient for basic comprehension of knowledge points,  let alone ensuring the systematicity and completeness of the knowledge system. Of particular concern is that the current investment has formed a clear disconnection with course progress, `;
-    } else if (thisWeekTotal < 420) { // 7hours
+    } else if (thisWeekTotal < 600) { // 10hours
         message = `Classmate!! Your learning plan completion this week is commendable. The daily time arrangement demonstrates clear goal orientation and meets basic course requirements. However, it slightly falls below the recommended threshold for deep learning. While this pace ensures comfortable knowledge absorption, to achieve more solid mastery and grade breakthroughs, consider extending daily effective study time by 30-60 minutes with focused practice on weak areas.`;
-    } else if (thisWeekTotal < 900) { // 15hours
+    } else if (thisWeekTotal < 1500) { // 25hours
         message = `Classmate! Your study hours this week demonstrate remarkable perseverance. This investment level ensures timely digestion of new knowledge while allowing ample time for after-class exercises and internalization. Your current accumulation pace has laid a foundation for high-score Sprint! Maintain this focus level and expect surprise in final grades!`;
     } else {
         message = `Classmate! Your study hours this week are truly impressive! This level of investment not only meets course requirements but also sets a new benchmark for excellence. Your commitment to learning is commendable, and it’s clear that you are on the path to achieving outstanding results. Keep up the great work!`;
