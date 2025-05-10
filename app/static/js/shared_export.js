@@ -36,8 +36,32 @@
         };
     }
 
+    // Configuration for export all button
+    const exportAllConfig = {
+        elements: [
+            {
+                id: 'performance-message',
+                title: 'Weekly Learning Intensity Analysis',
+                orientation: 'portrait'
+            },
+            {
+                containerSelector: '.flex.flex-col.lg\\:flex-row',
+                title: 'Course Learning Proportion',
+                orientation: 'landscape'
+            },
+            {
+                id: 'session-list',
+                title: 'Sessions',
+                orientation: 'portrait',
+                includeHeader: true
+            }
+        ],
+        filename: 'complete_learning_report'
+    };
+
     // Initialize export buttons
     function initExportButtons() {
+        // Initialize individual export buttons
         exportConfigs.forEach(config => {
             const btn = document.getElementById(config.btnId);
             if (btn) {
@@ -46,6 +70,14 @@
                 }, 500));
             }
         });
+        
+        // Initialize export all button
+        const exportAllBtn = document.getElementById('export-all');
+        if (exportAllBtn) {
+            exportAllBtn.addEventListener('click', debounce(() => {
+                exportAllElements();
+            }, 1000));
+        }
     }
 
     // Export an element to PDF
@@ -361,6 +393,282 @@
             // Restore button state
             const btn = document.getElementById(config.btnId);
             btn.innerHTML = '<svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 4v12m0 0l-4-4m4 4l4-4M4 20h16" stroke-linecap="round" stroke-linejoin="round"/></svg> Export';
+            btn.disabled = false;
+            
+            // Show error message
+            showToast('Export failed. Please try again.', true);
+        }
+    }
+
+    // Helper function to check if content will overflow and add new page if needed
+    function checkAndAddNewPageIfNeeded(pdf, currentY, requiredHeight, margin = 14) {
+        const pageHeight = pdf.internal.pageSize.height;
+        const safeMargin = 20; // Bottom safety margin in mm
+        
+        if (currentY + requiredHeight > pageHeight - safeMargin) {
+            pdf.addPage();
+            
+            // Add page number
+            const totalPages = pdf.getNumberOfPages();
+            pdf.setFontSize(8);
+            pdf.setTextColor(150, 150, 150);
+            pdf.text(`Page ${totalPages}`, pdf.internal.pageSize.width - 20, pdf.internal.pageSize.height - 10);
+            
+            return 30; // Starting Y position on new page
+        }
+        return currentY;
+    }
+    
+    // Export all elements to a PDF with automatic pagination
+    async function exportAllElements() {
+        try {
+            // Show loading state on button
+            const btn = document.getElementById('export-all');
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path></svg> Exporting...';
+            btn.disabled = true;
+
+            // Initialize jsPDF with landscape orientation for more horizontal space
+            const { jsPDF } = window.jspdf;
+            const pdf = new jsPDF('l', 'mm', 'a4'); // Landscape orientation
+            
+            // Get page dimensions
+            const pageWidth = pdf.internal.pageSize.width;
+            const pageHeight = pdf.internal.pageSize.height;
+            
+            // Add report title and date
+            const date = new Date().toLocaleDateString();
+            pdf.setFontSize(16);
+            pdf.setTextColor(33, 33, 33);
+            pdf.text('Learning Analytics Report', 14, 15);
+            pdf.setFontSize(10);
+            pdf.setTextColor(100, 100, 100);
+            pdf.text(`Generated: ${date}`, 14, 22);
+            
+            // Add page number to first page
+            pdf.setFontSize(8);
+            pdf.setTextColor(150, 150, 150);
+            pdf.text('Page 1', pageWidth - 20, pageHeight - 10);
+            
+            // Define vertical positions and scaling
+            let currentY = 30; // Starting Y position after title
+            const margin = 14; // Left margin
+            const spacing = 8; // Reduced space between elements
+            
+            // 1. Weekly Learning Intensity Analysis
+            const intensityElement = document.getElementById('performance-message');
+            if (intensityElement) {
+                // Add section title
+                pdf.setFontSize(12);
+                pdf.setTextColor(33, 33, 33);
+                pdf.text('Weekly Learning Intensity Analysis', margin, currentY);
+                currentY += 6;
+                
+                // Capture element
+                const canvas = await html2canvas(intensityElement, {
+                    scale: 2,
+                    backgroundColor: '#ffffff',
+                    logging: false,
+                    useCORS: true,
+                    allowTaint: true
+                });
+                
+                const imgData = canvas.toDataURL('image/png');
+                
+                // Calculate dimensions with reduced width to fit in page
+                const imgWidth = pageWidth - (margin * 2);
+                const imgHeight = canvas.height * imgWidth / canvas.width;
+                
+                // Add image to PDF
+                pdf.addImage(imgData, 'PNG', margin, currentY, imgWidth, imgHeight);
+                
+                // Update current Y position for next element
+                currentY += imgHeight + spacing;
+            }
+            
+            // 2. Course Learning Proportion
+            const courseContainer = document.querySelector('.bg-white.rounded-lg.shadow-xl.p-6.mb-6');
+            if (courseContainer) {
+                // Add section title
+                pdf.setFontSize(12);
+                pdf.setTextColor(33, 33, 33);
+                pdf.text('Course Learning Proportion', margin, currentY);
+                currentY += 6;
+                
+                // Get individual elements
+                const pieChart = courseContainer.querySelector('#course-pie-chart');
+                const barChart = courseContainer.querySelector('#weekly-bar-chart');
+                const legend = courseContainer.querySelector('#course-legend');
+                
+                if (pieChart && barChart && legend) {
+                    // Capture elements
+                    const pieCanvas = await html2canvas(pieChart.parentNode, {
+                        scale: 2,
+                        backgroundColor: '#ffffff',
+                        logging: false,
+                        useCORS: true,
+                        allowTaint: true
+                    });
+                    
+                    const barCanvas = await html2canvas(barChart.parentNode, {
+                        scale: 2,
+                        backgroundColor: '#ffffff',
+                        logging: false,
+                        useCORS: true,
+                        allowTaint: true
+                    });
+                    
+                    const legendCanvas = await html2canvas(legend, {
+                        scale: 2,
+                        backgroundColor: '#ffffff',
+                        logging: false,
+                        useCORS: true,
+                        allowTaint: true
+                    });
+                    
+                    // Convert to image data
+                    const pieImgData = pieCanvas.toDataURL('image/png');
+                    const barImgData = barCanvas.toDataURL('image/png');
+                    const legendImgData = legendCanvas.toDataURL('image/png');
+                    
+                    // Calculate dimensions for horizontal layout with smaller size
+                    const elementWidth = (pageWidth - (margin * 2) - (spacing * 2)) / 3;
+                    
+                    // Calculate heights maintaining aspect ratio
+                    const pieHeight = pieCanvas.height * elementWidth / pieCanvas.width;
+                    const barHeight = barCanvas.height * elementWidth / barCanvas.width;
+                    const legendHeight = legendCanvas.height * elementWidth / legendCanvas.width;
+                    
+                    // Use the maximum height to ensure alignment
+                    const maxHeight = Math.max(pieHeight, barHeight, legendHeight);
+                    
+                    // Add images to PDF side by side
+                    pdf.addImage(pieImgData, 'PNG', margin, currentY, elementWidth, pieHeight);
+                    pdf.addImage(barImgData, 'PNG', margin + elementWidth + spacing, currentY, elementWidth, barHeight);
+                    pdf.addImage(legendImgData, 'PNG', margin + (elementWidth * 2) + (spacing * 2), currentY, elementWidth, legendHeight);
+                    
+                    // Update current Y position for next element
+                    currentY += maxHeight + spacing;
+                }
+            }
+            
+            // 3. Sessions - Check if we need a new page
+            const sessionsElement = document.getElementById('session-list');
+            if (sessionsElement) {
+                // Estimate the height needed for sessions
+                // Get the table header
+                const tableHeader = document.querySelector('.flex.items-center.text-gray-700.font-bold.text-sm.border-b.border-gray-300.pb-2.justify-center');
+                
+                // Capture table header for measurement
+                let headerCanvas = null;
+                let headerHeight = 0;
+                if (tableHeader) {
+                    headerCanvas = await html2canvas(tableHeader, {
+                        scale: 1, // Lower scale for measurement
+                        backgroundColor: '#ffffff',
+                        logging: false,
+                        useCORS: true,
+                        allowTaint: true
+                    });
+                    const imgWidth = pageWidth - (margin * 2);
+                    headerHeight = headerCanvas.height * imgWidth / headerCanvas.width;
+                }
+                
+                // Capture sessions list for measurement
+                const sessionsCanvas = await html2canvas(sessionsElement, {
+                    scale: 1, // Lower scale for measurement
+                    backgroundColor: '#ffffff',
+                    logging: false,
+                    useCORS: true,
+                    allowTaint: true
+                });
+                
+                const imgWidth = pageWidth - (margin * 2);
+                const sessionsHeight = sessionsCanvas.height * imgWidth / sessionsCanvas.width;
+                
+                // Total height needed for sessions section
+                const totalSessionsHeight = 6 + headerHeight + sessionsHeight + 10; // title + header + content + extra space
+                
+                // Check if we need a new page
+                const remainingSpace = pageHeight - currentY - 20; // 20mm safety margin
+                
+                // Force a new page for sessions to ensure it's fully visible
+                if (remainingSpace < totalSessionsHeight || remainingSpace < 60) { // If less than 60mm left, add new page
+                    pdf.addPage();
+                    currentY = 30;
+                    
+                    // Add title and date to new page
+                    pdf.setFontSize(16);
+                    pdf.setTextColor(33, 33, 33);
+                    pdf.text('Learning Analytics Report (continued)', 14, 15);
+                    pdf.setFontSize(10);
+                    pdf.setTextColor(100, 100, 100);
+                    pdf.text(`Generated: ${date}`, 14, 22);
+                    
+                    // Add page number
+                    pdf.setFontSize(8);
+                    pdf.setTextColor(150, 150, 150);
+                    pdf.text('Page 2', pageWidth - 20, pageHeight - 10);
+                }
+                
+                // Add section title
+                pdf.setFontSize(12);
+                pdf.setTextColor(33, 33, 33);
+                pdf.text('Sessions', margin, currentY);
+                currentY += 6;
+                
+                // Recapture with higher quality for actual rendering
+                if (tableHeader) {
+                    headerCanvas = await html2canvas(tableHeader, {
+                        scale: 2,
+                        backgroundColor: '#ffffff',
+                        logging: false,
+                        useCORS: true,
+                        allowTaint: true
+                    });
+                }
+                
+                // Recapture sessions list with higher quality
+                const canvas = await html2canvas(sessionsElement, {
+                    scale: 2,
+                    backgroundColor: '#ffffff',
+                    logging: false,
+                    useCORS: true,
+                    allowTaint: true
+                });
+                
+                // Calculate dimensions
+                const finalImgWidth = pageWidth - (margin * 2);
+                
+                // Add table header to PDF if available
+                if (headerCanvas) {
+                    const headerImgData = headerCanvas.toDataURL('image/png');
+                    headerHeight = headerCanvas.height * finalImgWidth / headerCanvas.width;
+                    pdf.addImage(headerImgData, 'PNG', margin, currentY, finalImgWidth, headerHeight);
+                    currentY += headerHeight;
+                }
+                
+                // Add sessions list
+                const imgData = canvas.toDataURL('image/png');
+                const imgHeight = canvas.height * finalImgWidth / canvas.width;
+                pdf.addImage(imgData, 'PNG', margin, currentY, finalImgWidth, imgHeight);
+            }
+            
+            // Save the PDF
+            pdf.save(`${exportAllConfig.filename}.pdf`);
+            
+            // Restore button state
+            btn.innerHTML = originalText;
+            btn.disabled = false;
+            
+            // Show success message
+            showToast('Full report exported successfully!');
+        } catch (error) {
+            console.error('Export all failed:', error);
+            
+            // Restore button state
+            const btn = document.getElementById('export-all');
+            btn.innerHTML = '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg> Export Full Report';
             btn.disabled = false;
             
             // Show error message
