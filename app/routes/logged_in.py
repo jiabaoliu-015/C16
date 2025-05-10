@@ -36,6 +36,42 @@ def profile():
 def share():
     return render_template('user/share.html')
 
+@bp.route('/api/study-distribution')
+@login_required
+def study_distribution():
+    """
+    Returns study minutes per weekday for the current week (Mon-Sun).
+    Output: [{"day": "Monday", "minutes": 120}, ...]
+    """
+    from app.models.session import Session
+    from datetime import datetime, timedelta
+
+    today = datetime.today().date()
+    # Find this week's Monday
+    monday = today - timedelta(days=today.weekday())
+    week_days = [monday + timedelta(days=i) for i in range(7)]
+    day_names = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
+
+    # Query all sessions for this week
+    sessions = Session.query.filter(
+        Session.user_id == current_user.id,
+        Session.date >= monday,
+        Session.date <= monday + timedelta(days=6)
+    ).all()
+
+    # Aggregate minutes per day
+    minutes_per_day = {d: 0 for d in day_names}
+    for s in sessions:
+        idx = (s.date - monday).days
+        if 0 <= idx < 7:
+            start = s.start_time
+            end = s.end_time
+            duration = (end.hour * 60 + end.minute) - (start.hour * 60 + start.minute) - (s.break_minutes or 0)
+            minutes_per_day[day_names[idx]] += max(duration, 0)
+
+    result = [{"day": d, "minutes": minutes_per_day[d]} for d in day_names]
+    return jsonify(result)
+
 @bp.route('/api/study-streak', methods=['GET', 'POST'])
 @login_required
 def study_streak():
