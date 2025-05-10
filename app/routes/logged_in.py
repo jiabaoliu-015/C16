@@ -6,6 +6,7 @@ from io import TextIOWrapper
 from app.models.reflection import Reflection
 from flask import jsonify, request
 from datetime import datetime, timedelta
+from app.templates.auth.forms import AddFriendForm
 
 # Define blueprint for main routes
 bp = Blueprint('logged_in', __name__)
@@ -23,12 +24,6 @@ def home_logged_in():
         return redirect(url_for('logged_out.home_not_logged_in'))  # Redirect to the home page
     
     return render_template('user/dashboard.html', form=form)  # Pass the form to the template
-
-# Route for the user's profile page
-@bp.route('/profile/')
-@login_required
-def profile():
-    return render_template('user/profile.html')
 
 # Route for the share page
 @bp.route('/share/')
@@ -721,3 +716,51 @@ def study_time_data():
         {"date": "2025-04-03", "studyTime": 1.5},
     ]
     return jsonify(data)
+
+@bp.route('/profile/remove_friend/<int:friend_id>', methods=['POST'], endpoint='logged_in_remove_friend')
+@login_required
+def remove_friend(friend_id):
+    # Get the friend from the database
+    friend = User.query.get_or_404(friend_id)
+    
+    # Remove each other from their friend lists
+    if friend in current_user.friends:
+        current_user.friends.remove(friend)
+    if current_user in friend.friends:
+        friend.friends.remove(current_user)
+    
+    # Commit the changes to the database
+    db.session.commit()
+    
+    flash('Friend removed successfully!', 'success')
+    return redirect(url_for('logged_in.profile'))
+
+@bp.route('/profile/', methods=['GET', 'POST'])
+@login_required
+def profile():
+    form = AddFriendForm()
+
+    if form.validate_on_submit():
+        friend_email = form.email.data
+        friend = User.query.filter_by(email=friend_email).first()
+
+        if friend:
+            if friend.id != current_user.id:
+                add_friend(friend)
+                flash('Friend added successfully!', 'success')
+            else:
+                flash('You cannot add yourself as a friend.', 'warning')
+        else:
+            flash('User not found.', 'danger')
+
+        return redirect(url_for('logged_in.profile'))
+
+    all_friends = current_user.friends  # this is now safe
+    return render_template('user/profile.html', form=form, all_friends=all_friends)
+
+def add_friend(user_to_add):
+    if not current_user.friends.filter_by(id=user_to_add.id).first():
+        current_user.friends.append(user_to_add)
+    if not user_to_add.friends.filter_by(id=current_user.id).first():
+        user_to_add.friends.append(current_user)
+    db.session.commit()
