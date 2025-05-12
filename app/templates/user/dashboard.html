@@ -25,6 +25,27 @@
     <h2 class="text-2xl font-bold mb-4 flex items-center justify-between relative z-10">
       Productivity Overview
       <div class="flex items-center gap-2">
+        <!-- Flash Messages Section -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+              <div class="mt-4 flash-message">
+                  {% for category, message in messages %}
+                      <div class="alert alert-{{ category }} p-3 mb-2 text-center text-white {{ 'bg-green-500' if category == 'success' else 'bg-red-500' }}">
+                          {{ message }}
+                      </div>
+                  {% endfor %}
+              </div>
+              <script>
+                  setTimeout(function() {
+                      const flashMessage = document.querySelector('.flash-message');
+                      flashMessage.classList.add('fade-out');
+                      setTimeout(function() {
+                          flashMessage.remove();  // Remove the flash message from the DOM after it fades out
+                      }, 1000); // Wait for the fade-out transition to finish before removing the element
+                  }, 3000);
+              </script>
+          {% endif %}
+        {% endwith %}
         <div id="prodRangeToggle" class="flex items-center gap-2 bg-gray-100/80 rounded-full px-2 py-1 shadow-inner">
           <button data-range="day" class="prod-range-btn px-3 py-1 rounded-full text-sm font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-blue-400">Day</button>
           <button data-range="week" class="prod-range-btn px-3 py-1 rounded-full text-sm font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-blue-400">Week</button>
@@ -91,7 +112,7 @@
       animation: fade-in 0.3s ease-out both;
     }
   </style>
-
+  
   <!-- Course Insights -->
   <section class="bg-white p-4 rounded-lg shadow transition-transform duration-200 hover:scale-[1.02] hover:shadow-md">
     <h2 class="text-xl font-semibold mb-4 flex items-center justify-between">

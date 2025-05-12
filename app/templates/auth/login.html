@@ -55,6 +55,28 @@
                     <a href="{{ url_for('logged_out.forgot_password') }}" class="text-blue-500 hover:text-blue-600 text-sm">Forgot password?</a>
                 </div>
                 
+                <!-- Flash Messages Section -->
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        <div class="mt-4 flash-message">
+                            {% for category, message in messages %}
+                                <div class="alert alert-{{ category }} p-3 mb-2 text-center text-white {{ 'bg-green-500' if category == 'success' else 'bg-red-500' }}">
+                                    {{ message }}
+                                </div>
+                            {% endfor %}
+                        </div>
+                        <script>
+                            setTimeout(function() {
+                                const flashMessage = document.querySelector('.flash-message');
+                                flashMessage.classList.add('fade-out');
+                                setTimeout(function() {
+                                    flashMessage.remove();  // Remove the flash message from the DOM after it fades out
+                                }, 1000); // Wait for the fade-out transition to finish before removing the element
+                            }, 3000);
+                        </script>
+                    {% endif %}
+                {% endwith %}
+                
                 <!-- Submit login button -->
                 <button type="submit" class="w-full bg-gray-800 hover:bg-gray-900 text-white font-medium py-2 px-4 rounded-md transition duration-200">
                     Log In →

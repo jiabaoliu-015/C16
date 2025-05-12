@@ -13,3 +13,7 @@ class SignupForm(FlaskForm):
 
 class LogoutForm(FlaskForm):
     submit = SubmitField('Logout')  # Button to submit the logout request
+
+class AddFriendForm(FlaskForm):
+    email = StringField('Friend\'s Email', validators=[InputRequired(), Email()])
+    submit = SubmitField('Add Friend')
