@@ -107,12 +107,6 @@
     <!-- Sessions Section -->
     <div class="bg-white rounded-lg shadow-xl p-6 mb-6 transition-transform duration-200 hover:shadow-md">
         <div class="sessions-container">
-            <div class="share-checkbox-container mb-4">
-                <div class="share-custom-checkbox" id="share-sessions-checkbox" data-content-type="sessions">
-                    <div class="checkbox-ripple"></div>
-                    <div class="checkbox-inner"></div>
-                </div>
-            </div>
             <div class="bg-white rounded-lg shadow-xl p-6 flex flex-col justify-start space-y-8">
             <!-- Header -->
             <div class="flex justify-between items-center mb-4">
@@ -178,34 +172,6 @@
         </div>
     </div>
 
-    <!-- URL generator -->
-    <div class="bg-white rounded-lg shadow-xl p-6 transition-transform duration-200 hover:shadow-md">
-        <h2>Generate Share URL</h2>
-        <p>Select the content you want to share above, then click the button below to generate a shareable URL.</p>
-        
-        <button id="generate-url-btn" class="generate-btn">Generate Share URL</button>
-        
-        <div class="url-display" id="share-url-display">
-            <!--  URL show here -->
-        </div>
-        
-        <div class="flex justify-center mt-4">
-            <button id="copy-url-btn" class="copy-btn">Copy URL</button>
-        </div>
-        
-        <div class="qr-code-section mt-6">
-            <h3>QR Code</h3>
-            <p>Generate a QR code for your share link</p>
-            <button id="generate-qr-btn" class="generate-btn mt-2">Generate QR Code</button>
-            <div id="qr-code-container" class="flex justify-center mt-4">
-                <!-- QR code show here -->
-            </div>
-            <div class="flex justify-center mt-4" id="qr-code-actions" style="display: none;">
-                <button id="copy-qr-btn" class="copy-btn">Copy QR Code</button>
-                <button id="download-qr-btn" class="copy-btn ml-2">Download QR Code</button>
-            </div>
-        </div>
-    </div>
 </div>
 </main>
 {% endblock %}
