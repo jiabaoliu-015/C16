@@ -9,7 +9,7 @@ from functools import wraps
 from app.static.py.email import send_email
 
 from app.templates.auth.forms import LoginForm, SignupForm, LogoutForm
-from app.test import sessions_data
+from app.tests import sessions_data
 from app.models import *
 from datetime import datetime
 from app.forms import ResetRequestForm, ResetPasswordForm
@@ -20,7 +20,7 @@ from sqlalchemy import func, extract, and_
 from datetime import datetime, timedelta
 
 # Sample data
-from app.test.sessions_data import sessions
+from app.tests.sessions_data import sessions
 from app import db
 
 # Optional: inline form class definition (if used elsewhere)
