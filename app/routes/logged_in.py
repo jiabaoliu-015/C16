@@ -4,6 +4,7 @@ from flask import flash, redirect, url_for
 import csv
 from io import TextIOWrapper
 from app.models.reflection import Reflection
+from app.models.shared_data import SharedData
 from flask import jsonify, request
 from datetime import datetime, timedelta
 from app.templates.auth.forms import AddFriendForm
@@ -30,6 +31,110 @@ def home_logged_in():
 @login_required
 def share():
     return render_template('user/share.html')
+
+# API endpoint for user search by email
+@bp.route('/api/users/search', methods=['GET'])
+@login_required
+def search_users():
+    """Search users by email (partial match)"""
+    query = request.args.get('query', '')
+    if len(query) < 3:
+        return jsonify([]), 200
+    
+    # Search for users with email containing the query string
+    users = User.query.filter(
+        User.email.like(f'%{query}%'),
+        User.id != current_user.id  # Exclude current user
+    ).limit(10).all()
+    
+    return jsonify([{
+        'id': user.id,
+        'email': user.email
+    } for user in users]), 200
+
+# API endpoint for sharing data with another user
+@bp.route('/api/share', methods=['POST'])
+@login_required
+def share_data():
+    """Share data with another user"""
+    print("Received request data:", request.get_json())  # Debug print
+    data = request.get_json()
+    recipient_id = data.get('recipient_id')
+    session_id = data.get('session_id')  # Default to 1 if not provided
+    
+    if not recipient_id:
+        return jsonify({'error': 'Recipient ID is required'}), 400
+    
+    # Check if recipient exists
+    recipient = User.query.get(recipient_id)
+    if not recipient:
+        return jsonify({'error': 'Recipient not found'}), 404
+    
+    # Skip session validation for now
+    # We'll just use the default session_id value
+    print(f"Using session_id: {session_id}")
+    print(f"Recipient ID: {recipient_id}")
+    print(f"Current user ID: {current_user.id}")
+    
+    # Create shared data record
+    shared_data = SharedData(
+        session_id=session_id,
+        shared_by_user_id=current_user.id,
+        shared_with_user_id=recipient_id,  
+        shared_content=20,  # Fixed value as per requirement
+        status='pending'
+    )
+    
+    try:
+        db.session.add(shared_data)
+        db.session.commit()
+        return jsonify({
+            'success': True,
+            'message': f'Data shared with {recipient.email}'
+        }), 201
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'error': str(e)}), 500
+
+# API endpoint for getting received shares
+@bp.route('/api/shares/received', methods=['GET'])
+@login_required
+def get_received_shares():
+    """Get all shares received by the current user"""
+    shares = SharedData.query.filter_by(
+        shared_with_user_id=current_user.id
+    ).order_by(SharedData.shared_on.desc()).all()
+    
+    return jsonify([{
+        'id': share.id,
+        'shared_by': share.shared_by_user.email,
+        'shared_content': share.shared_content,
+        'shared_on': share.shared_on.isoformat(),
+        'status': share.status
+    } for share in shares]), 200
+
+# API endpoint for accepting a share
+@bp.route('/api/shares/accept/<int:share_id>', methods=['POST'])
+@login_required
+def accept_share(share_id):
+    """Accept a shared data item"""
+    share = SharedData.query.get_or_404(share_id)
+    
+    # Verify the share is for the current user
+    if share.shared_with_user_id != current_user.id:
+        return jsonify({'error': 'Unauthorized'}), 403
+    
+    share.status = 'accepted'
+    
+    try:
+        db.session.commit()
+        return jsonify({
+            'success': True,
+            'message': 'Share accepted'
+        }), 200
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'error': str(e)}), 500
 
 @bp.route('/api/study-distribution')
 @login_required

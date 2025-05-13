@@ -378,11 +378,8 @@
                 }
             }
             
-            // Generate formatted filename
-            const today = new Date();
-            const dateStr = `${today.getFullYear()}${String(today.getMonth()+1).padStart(2,'0')}${String(today.getDate()).padStart(2,'0')}`;
-            const randomNum = Math.floor(10000 + Math.random() * 90000);
-            pdf.save(`learning_report_${dateStr}_${randomNum}.pdf`);
+            // Save the PDF
+            pdf.save(`${config.filename}.pdf`);
             
             // Restore button state
             btn.innerHTML = originalText;
@@ -657,11 +654,8 @@
                 pdf.addImage(imgData, 'PNG', margin, currentY, finalImgWidth, imgHeight);
             }
             
-            // Generate formatted filename
-            const today = new Date();
-            const dateStr = `${today.getFullYear()}${String(today.getMonth()+1).padStart(2,'0')}${String(today.getDate()).padStart(2,'0')}`;
-            const randomNum = Math.floor(10000 + Math.random() * 90000);
-            pdf.save(`learning_report_${dateStr}_${randomNum}.pdf`);
+            // Save the PDF
+            pdf.save(`${exportAllConfig.filename}.pdf`);
             
             // Restore button state
             btn.innerHTML = originalText;
