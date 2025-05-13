@@ -60,12 +60,13 @@ def share_data():
     print("Received request data:", request.get_json())  # Debug print
     data = request.get_json()
     recipient_id = data.get('recipient_id')
-    session_id = data.get('session_id')  # Default to 1 if not provided
-    
-    if not recipient_id:
-        return jsonify({'error': 'Recipient ID is required'}), 400
-    
-    # Check if recipient exists
+    session_id = data.get('session_id') or 1
+    shared_content = data.get('shared_content', 20)
+
+    if not recipient_id or not session_id:
+        return jsonify({'error': 'Recipient ID and session ID are required'}), 400
+
+    # check recipient
     recipient = User.query.get(recipient_id)
     if not recipient:
         return jsonify({'error': 'Recipient not found'}), 404
@@ -76,22 +77,18 @@ def share_data():
     print(f"Recipient ID: {recipient_id}")
     print(f"Current user ID: {current_user.id}")
     
-    # Create shared data record
     shared_data = SharedData(
         session_id=session_id,
         shared_by_user_id=current_user.id,
-        shared_with_user_id=recipient_id,  
-        shared_content=20,  # Fixed value as per requirement
+        shared_with_user_id=recipient_id,
+        shared_content=shared_content,
         status='pending'
     )
-    
+
     try:
         db.session.add(shared_data)
         db.session.commit()
-        return jsonify({
-            'success': True,
-            'message': f'Data shared with {recipient.email}'
-        }), 201
+        return jsonify({'success': True, 'message': f'Data shared with {recipient.email}'}), 201
     except Exception as e:
         db.session.rollback()
         return jsonify({'error': str(e)}), 500
