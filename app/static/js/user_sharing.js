@@ -73,39 +73,74 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
     
-    // Share button click handler
+    // Modify the share button click handler in user_sharing.js
     shareButton.addEventListener('click', function() {
         if (!selectedUser) return;
         
-        // Share data with selected user - explicitly send all required fields
+        // Get selected sessions or use default if none are selected
+        const selectedSessions = getSelectedSessions();
+        const sessionId = selectedSessions.length > 0 ? selectedSessions[0] : null;
+        
+        if (!sessionId) {
+            shareStatus.innerHTML = '<div class="text-red-600">Please select at least one session to share</div>';
+            return;
+        }
+        
+        // Share data with selected user with proper parameters
         fetch('/api/share', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
+                'X-CSRFToken': document.querySelector('meta[name="csrf-token"]')?.getAttribute('content')
             },
             body: JSON.stringify({
                 recipient_id: selectedUser.id,
-                session_id: 1, // 默认值
-                shared_content: 20 // 固定值
+                session_id: sessionId,
+                shared_content: 20 // This can be customized based on what you're sharing
             })
         })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    shareStatus.innerHTML = `<div class="text-green-600">${data.message}</div>`;
-                    // Reset selection
-                    selectedUser = null;
-                    userSearchInput.value = '';
-                    shareButton.disabled = true;
-                } else {
-                    shareStatus.innerHTML = `<div class="text-red-600">Error: ${data.error}</div>`;
-                }
-            })
-            .catch(error => {
-                console.error('Error sharing data:', error);
-                shareStatus.innerHTML = '<div class="text-red-600">Error sharing data</div>';
-            });
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.success) {
+                shareStatus.innerHTML = `<div class="text-green-600">${data.message}</div>`;
+                // Reset selection
+                selectedUser = null;
+                userSearchInput.value = '';
+                shareButton.disabled = true;
+            } else {
+                shareStatus.innerHTML = `<div class="text-red-600">Error: ${data.error}</div>`;
+            }
+        })
+        .catch(error => {
+            console.error('Error sharing data:', error);
+            shareStatus.innerHTML = '<div class="text-red-600">Error sharing data: ' + error.message + '</div>';
+        });
     });
+
+    // // Add this function to get selected sessions (based on your share.js implementation)
+    // function getSelectedSessions() {
+    //     const selectedSessions = [];
+    //     const sessionRows = document.querySelectorAll('.notes-row');
+        
+    //     if (sessionRows.length > 0) {
+    //         sessionRows.forEach(row => {
+    //             const checkbox = row.querySelector('.entry-checkbox');
+    //             if (checkbox && checkbox.checked) {
+    //                 const sessionId = row.getAttribute('data-session-id');
+    //                 if (sessionId) {
+    //                     selectedSessions.push(sessionId);
+    //                 }
+    //             }
+    //         });
+    //     }
+        
+    //     return selectedSessions;
+    // }
     
     // Function to load received shares
     function loadReceivedShares() {
