@@ -73,6 +73,19 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
     
+    // Function to generate learning intensity evaluation
+    function getLearningIntensityEvaluation(totalMinutes) {
+        if (totalMinutes < 240) {
+            return "Critical Alert: Learning Deficit Detected";
+        } else if (totalMinutes >= 240 && totalMinutes < 600) {
+            return "Positive Progress: Room for Growth";
+        } else if (totalMinutes >= 600 && totalMinutes < 1500) {
+            return "Excellent Commitment: On Track for Success";
+        } else {
+            return "Elite Performance: Academic Excellence Achieved";
+        }
+    }
+
     // Function to get total study time from all sessions
     async function getWeeklyLearningTime() {
         try {
@@ -229,6 +242,12 @@ document.addEventListener('DOMContentLoaded', function() {
             sharedContent = hours * 60 + minutes;
             const dayName = getDayName(0);
             sharedContent3 = `This ${dayName} my study time is ${hours} hours.`;
+        } else if (selectedOption === 'intensity') {
+            const { hours, minutes } = await getWeeklyLearningTime();
+            const totalMinutes = hours * 60 + minutes;
+            const evaluation = getLearningIntensityEvaluation(totalMinutes);
+            sharedContent = totalMinutes;
+            sharedContent3 = `My study evaluation this week is: ${evaluation}`;
         } else {
             sharedContent = parseInt(document.querySelector('input[type="number"]').value) || 20;
         }
