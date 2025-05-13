@@ -73,17 +73,164 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
     
+    // Function to get total study time from all sessions
+    async function getWeeklyLearningTime() {
+        try {
+            const response = await fetch('/api/total-study-time');
+            const data = await response.json();
+            return { 
+                hours: data.hours, 
+                minutes: data.minutes 
+            };
+        } catch (error) {
+            console.error('Error fetching total study time:', error);
+            return { hours: 0, minutes: 0 };
+        }
+    }
+
+    // Function to get study time by day of week
+    async function getStudyTimeByDay(day) {
+        try {
+            const response = await fetch('/api/sessions');
+            if (!response.ok) {
+                console.error('Failed to fetch sessions:', response.status);
+                return { hours: 0, minutes: 0 };
+            }
+            
+            const sessions = await response.json();
+            console.log('Raw sessions data:', sessions);
+            
+            // Filter sessions for the specified day
+            const daySessions = sessions.filter(session => {
+                if (!session || !session.date || !session.duration) {
+                    console.log('Invalid session:', session);
+                    return false;
+                }
+                
+                // Handle both YYYY-MM-DD and DD/MM/YYYY formats
+                let date;
+                try {
+                    if (session.date.includes('/')) {
+                        const parts = session.date.split('/');
+                        if (parts.length !== 3) return false;
+                        date = new Date(`${parts[2]}-${parts[1]}-${parts[0]}`);
+                    } else {
+                        date = new Date(session.date);
+                    }
+                    
+                    if (isNaN(date.getTime())) {
+                        console.log('Invalid date:', session.date);
+                        return false;
+                    }
+                    
+                    return date.getDay() === day; // 0=Sunday, 1=Monday, etc.
+                } catch (e) {
+                    console.log('Date parsing error:', e);
+                    return false;
+                }
+            });
+
+            console.log('Filtered day sessions:', daySessions);
+            
+            // Calculate total minutes
+            const totalMinutes = daySessions.reduce((sum, session) => {
+                try {
+                    let minutes = 0;
+                    // Handle both "HH:MM" and decimal hours formats
+                    if (typeof session.duration === 'string') {
+                        if (session.duration.includes(':')) {
+                            const parts = session.duration.split(':');
+                            const h = parseInt(parts[0]) || 0;
+                            const m = parseInt(parts[1]) || 0;
+                            minutes = h * 60 + m;
+                            console.log(`HH:MM format ${session.duration} converted to ${minutes} minutes`);
+                        } else {
+                            // Handle decimal hours format (e.g. 8.67 hours)
+                            const totalHours = parseFloat(session.duration) || 0;
+                            minutes = Math.round(totalHours * 60);
+                            console.log(`Decimal hours ${totalHours} converted to ${minutes} minutes`);
+                        }
+                    } else if (typeof session.duration === 'number') {
+                        minutes = Math.floor(session.duration * 60);
+                    }
+                    console.log(`Session ${session.id} duration:`, session.duration, '=>', minutes, 'minutes');
+                    return sum + minutes;
+                } catch (e) {
+                    console.log('Duration parsing error:', e);
+                    return sum;
+                }
+            }, 0);
+
+            const hours = Math.floor(totalMinutes / 60);
+            const minutes = totalMinutes % 60;
+            const result = { hours, minutes };
+            console.log('Total minutes:', totalMinutes, '=>', hours, 'hours', minutes, 'minutes');
+            console.log('Final result for day', day, 'sessions:', daySessions);
+            console.log('Final time calculation for day', day, ':', result);
+            return result;
+        } catch (error) {
+            console.error('Error fetching sessions:', error);
+            return { hours: 0, minutes: 0 };
+        }
+    }
+
+    // Helper function to format day name
+    function getDayName(dayNum) {
+        const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+        return days[dayNum];
+    }
+
     // Modify the share button click handler in user_sharing.js
-    shareButton.addEventListener('click', function() {
+    shareButton.addEventListener('click', async function() {
         if (!selectedUser) return;
         
-        // Get selected sessions or use default if none are selected
-        const selectedSessions = getSelectedSessions();
-        const sessionId = selectedSessions.length > 0 ? selectedSessions[0] : null;
+        const shareSelect = document.getElementById('share-select');
+        const selectedOption = shareSelect.value;
         
-        if (!sessionId) {
-            shareStatus.innerHTML = '<div class="text-red-600">Please select at least one session to share</div>';
-            return;
+        let sharedContent = 20;
+        let sharedContent3 = 'YOU RECEIVE A SHARE';
+        
+        if (selectedOption === 'weekly') {
+            const { hours, minutes } = await getWeeklyLearningTime();
+            sharedContent = hours * 60 + minutes;
+            sharedContent3 = `This week my study time is ${hours} hours ${minutes}.`;
+        } else if (selectedOption === 'monday') {
+            const { hours, minutes } = await getStudyTimeByDay(1);
+            sharedContent = hours * 60 + minutes;
+            const dayName = getDayName(1);
+            sharedContent3 = `This ${dayName} my study time is ${hours} hours.`;
+        } else if (selectedOption === 'tuesday') {
+            const { hours, minutes } = await getStudyTimeByDay(2);
+            sharedContent = hours * 60 + minutes;
+            const dayName = getDayName(2);
+            sharedContent3 = `This ${dayName} my study time is ${hours} hours.`;
+        } else if (selectedOption === 'wednesday') {
+            const { hours, minutes } = await getStudyTimeByDay(3);
+            sharedContent = hours * 60 + minutes;
+            const dayName = getDayName(3);
+            sharedContent3 = `This ${dayName} my study time is ${hours} hours.`;
+        } else if (selectedOption === 'thursday') {
+            const { hours, minutes } = await getStudyTimeByDay(4);
+            sharedContent = hours * 60 + minutes;
+            const dayName = getDayName(4);
+            sharedContent3 = `This ${dayName} my study time is ${hours} hours`;
+        } else if (selectedOption === 'friday') {
+            const { hours, minutes } = await getStudyTimeByDay(5);
+            sharedContent = hours * 60 + minutes;
+            const dayName = getDayName(5);
+            sharedContent3 = `This ${dayName} my study time is ${hours} hours.`;
+        } else if (selectedOption === 'saturday') {
+            const { hours, minutes } = await getStudyTimeByDay(6);
+            sharedContent = hours * 60 + minutes;
+            const dayName = getDayName(6);
+            sharedContent3 = `This ${dayName} my study time is ${hours} hours.`;
+        } else if (selectedOption === 'sunday') {
+            const { hours, minutes } = await getStudyTimeByDay(0);
+            sharedContent = hours * 60 + minutes;
+            const dayName = getDayName(0);
+            sharedContent3 = `This ${dayName} my study time is ${hours} hours.`;
+        } else {
+            sharedContent = parseInt(document.querySelector('input[type="number"]').value) || 20;
         }
         
         // Share data with selected user with proper parameters
@@ -95,8 +242,9 @@ document.addEventListener('DOMContentLoaded', function() {
             },
             body: JSON.stringify({
                 recipient_id: selectedUser.id,
-                session_id: sessionId,
-                shared_content: 20 // This can be customized based on what you're sharing
+                session_id: 1, // Default session ID
+                shared_content: sharedContent,
+                shared_content3: sharedContent3
             })
         })
         .then(response => {
@@ -159,7 +307,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     
                     const shareInfo = document.createElement('div');
                     shareInfo.innerHTML = `
-                        <p class="font-medium">${share.shared_by} shared: <span class="text-indigo-600 font-bold">${share.shared_content}</span></p>
+                        <p class="font-medium">${share.shared_by} shared: ${share.shared_content3 || 'there have some error'}</p>
                         <p class="text-xs text-gray-500">${new Date(share.shared_on).toLocaleString()}</p>
                     `;
                     

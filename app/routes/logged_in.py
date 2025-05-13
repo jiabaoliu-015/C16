@@ -62,6 +62,7 @@ def share_data():
     recipient_id = data.get('recipient_id')
     session_id = data.get('session_id') or 1
     shared_content = data.get('shared_content', 20)
+    shared_content3 = data.get('shared_content3', 'YOU RECEIVE A SHARE')
 
     if not recipient_id or not session_id:
         return jsonify({'error': 'Recipient ID and session ID are required'}), 400
@@ -82,6 +83,7 @@ def share_data():
         shared_by_user_id=current_user.id,
         shared_with_user_id=recipient_id,
         shared_content=shared_content,
+        shared_content3=shared_content3,
         status='pending'
     )
 
@@ -106,6 +108,7 @@ def get_received_shares():
         'id': share.id,
         'shared_by': share.shared_by_user.email,
         'shared_content': share.shared_content,
+        'shared_content3': share.shared_content3,
         'shared_on': share.shared_on.isoformat(),
         'status': share.status
     } for share in shares]), 200
@@ -809,6 +812,27 @@ def dashboard():
     return render_template('user/dashboard.html')
 
 # API route to return study time data as JSON
+@bp.route('/api/total-study-time')
+@login_required
+def total_study_time():
+    """Calculate total study time from all sessions"""
+    sessions = Session.query.filter_by(user_id=current_user.id).all()
+    
+    total_minutes = 0
+    for s in sessions:
+        start = s.start_time
+        end = s.end_time
+        duration = (end.hour * 60 + end.minute) - (start.hour * 60 + start.minute) - (s.break_minutes or 0)
+        total_minutes += max(duration, 0)
+    
+    hours = total_minutes // 60
+    minutes = total_minutes % 60
+    
+    return jsonify({
+        "hours": hours,
+        "minutes": minutes
+    })
+
 @bp.route('/api/study-time-data')
 @login_required
 def study_time_data():
@@ -865,4 +889,3 @@ def add_friend(user_to_add):
         current_user.friends.append(user_to_add)
     if not user_to_add.friends.filter_by(id=current_user.id).first():
         user_to_add.friends.append(current_user)
-    db.session.commit()
