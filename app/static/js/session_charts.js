@@ -14,17 +14,9 @@ document.addEventListener('DOMContentLoaded', () => {
 // newly added function to analyze study intensity
 function analyzeStudyIntensity(sessions) {
     const thisWeekTotal = sessions
-        .filter(session => {
-            if (!session.date) return false;
-            // Parse date in DD/MM/YYYY format
-            const [day, month, year] = session.date.split('/');
-            const sessionDate = new Date(year, month-1, day);
-            return isThisWeek(sessionDate);
-        })
+        .filter(session => isThisWeek(new Date(session.date)))
         .reduce((sum, session) => sum + parseDuration(session.duration), 0);
 
-    console.log("This week's total study time:", thisWeekTotal, "minutes");
-    
     const messageBox = document.getElementById('performance-message');
     let message = '';
     
@@ -69,16 +61,9 @@ function getStatusTitle(minutes) {
 }
 
 function isThisWeek(date) {
-    const currentDate = new Date();
-    const firstDayOfWeek = new Date(currentDate);
-    firstDayOfWeek.setDate(currentDate.getDate() - currentDate.getDay());
-    firstDayOfWeek.setHours(0, 0, 0, 0);
-    
-    const lastDayOfWeek = new Date(firstDayOfWeek);
-    lastDayOfWeek.setDate(firstDayOfWeek.getDate() + 6);
-    lastDayOfWeek.setHours(23, 59, 59, 999);
-    
-    return date >= firstDayOfWeek && date <= lastDayOfWeek;
+    const today = new Date();
+    const firstDayOfWeek = new Date(today.setDate(today.getDate() - today.getDay()));
+    return date >= firstDayOfWeek;
 }
 
 // Process course data
@@ -110,29 +95,11 @@ function processWeeklyData(sessions) {
 
 // Parse duration
 function parseDuration(durationStr) {
-    if (!durationStr) return 0;
-    
     let minutes = 0;
-    
-    // Handle different formats
-    if (typeof durationStr === 'number') {
-        // If it's already a number, assume it's minutes
-        minutes = durationStr;
-    } else if (typeof durationStr === 'string') {
-        // Format: "Xh Ym" or variations
-        const hours = durationStr.match(/(\d+)h/);
-        const mins = durationStr.match(/(\d+)m/);
-        
-        if (hours) minutes += parseInt(hours[1]) * 60;
-        if (mins) minutes += parseInt(mins[1]);
-        
-        // If no pattern matched but it's a numeric string, try parsing it directly
-        if (!hours && !mins && !isNaN(durationStr)) {
-            minutes = parseInt(durationStr);
-        }
-    }
-    
-    console.log("Parsed duration:", durationStr, "->", minutes, "minutes");
+    const hours = durationStr.match(/(\d+)h/);
+    const mins = durationStr.match(/(\d+)m/);
+    if (hours) minutes += parseInt(hours[1]) * 60;
+    if (mins) minutes += parseInt(mins[1]);
     return minutes;
 }
 

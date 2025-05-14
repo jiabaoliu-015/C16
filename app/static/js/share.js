@@ -426,15 +426,9 @@ function parseUrlAndShowContent() {
             contentSection.style.margin = '0';
         }
         
-        // Make sure the Weekly Learning Intensity Analysis section is visible
-        const studyPerformance = document.querySelector('.study-performance');
-        if (studyPerformance) {
-            studyPerformance.style.display = 'block';
-        }
-        
-        // Hide other elements except content-section and study-performance
-        document.querySelectorAll('.share-container > *:not(.content-section):not(.study-performance)').forEach(element => {
-            if (element !== contentSection && !element.classList.contains('study-performance')) {
+        // Hide other elements
+        document.querySelectorAll('.share-container > *:not(.content-section)').forEach(element => {
+            if (element !== contentSection) {
                 element.style.display = 'none';
             }
         });
