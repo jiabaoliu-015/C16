@@ -7,6 +7,7 @@ from instance.config import Config
 from app.templates.auth.forms import LogoutForm
 from app.routes import register_blueprints
 # from flask_dance.contrib.google import make_google_blueprint, google
+from app.routes.test_routes import test_seed
 
 def create_app(testing=False):
     app = Flask(__name__, instance_relative_config=True)
@@ -46,6 +47,10 @@ def create_app(testing=False):
     login_manager.init_app(app)
     mail.init_app(app)
     CORS(app)
+
+    if app.config.get("TESTING") or app.config.get("ENV") == "development":
+        app.register_blueprint(test_seed)
+
     login_manager.login_view = "logged_out.login"
 
     from app.models.user import User
