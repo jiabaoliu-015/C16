@@ -719,7 +719,8 @@ def upload_data():
         if 'data_file' in request.files and request.files['data_file'].filename != '':
             file = request.files['data_file']
             if not file.filename.endswith('.csv'):
-                return render_template('user/upload.html', error="Please upload a CSV file.")
+                flash("Please upload a CSV file.", "error")
+                return redirect(url_for("logged_in.upload_data"))
 
             try:
                 # Read and decode the CSV file
@@ -765,7 +766,8 @@ def upload_data():
 
             except Exception as e:
                 db.session.rollback()
-                return render_template('user/upload.html', error=f"Error processing CSV: {str(e)}")
+                flash(f"Error processing CSV: {str(e)}", "error")
+                return redirect(url_for("logged_in.upload_data"))
         else:
             # Manual form entry (existing logic)
             form_data = request.form.to_dict()
@@ -780,7 +782,8 @@ def upload_data():
             }
             validated_data = validate_session_data(session_data)
             if 'error' in validated_data:
-                return render_template('user/upload.html', error=validated_data['error'])
+                flash(validated_data['error'], "error")
+                return redirect(url_for("logged_in.upload_data"))
 
             try:
                 new_session = Session(
@@ -795,10 +798,12 @@ def upload_data():
                 )
                 db.session.add(new_session)
                 db.session.commit()
-                return render_template('user/upload.html', success="Session successfully added!")
+                flash("Session successfully added!", "success")
+                return redirect(url_for("logged_in.upload_data"))
             except Exception as e:
                 db.session.rollback()
-                return render_template('user/upload.html', error=f"Error: {str(e)}")
+                flash(f"Error: {str(e)}", "error")
+                return redirect(url_for("logged_in.upload_data"))
 
     # GET Request - Retrieve all sessions for the current user
     sessions = Session.query.filter_by(user_id=current_user.id).all()
