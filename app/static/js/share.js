@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', function() {
-    // Display the current date 
+    // Display the current date
     updateDateDisplay();
     
     // Initialize the checkbox
