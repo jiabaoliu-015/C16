@@ -29,19 +29,26 @@
                     </button>
                 </div>
 
-                <!-- Feedback Message -->
-                <div id="feedback-message" class="{% if success or error %}block{% else %}hidden{% endif %}">
-                    {% if success %}
-                        <div class="bg-green-100 text-green-800 p-4 rounded-lg mb-4 shadow">
-                            {{ success }}
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        <div class="mt-4 flash-message">
+                            {% for category, message in messages %}
+                                <div class="alert alert-{{ category }} p-3 mb-2 text-center text-white {{ 'bg-green-500' if category == 'success' else 'bg-red-500' }}">
+                                    {{ message }}
+                                </div>
+                            {% endfor %}
                         </div>
+                        <script>
+                            setTimeout(function() {
+                                const flashMessage = document.querySelector('.flash-message');
+                                flashMessage.classList.add('fade-out');
+                                setTimeout(function() {
+                                    flashMessage.remove();  // Remove the flash message from the DOM after it fades out
+                                }, 1000); // Wait for the fade-out transition to finish before removing the element
+                            }, 3000);
+                        </script>
                     {% endif %}
-                    {% if error %}
-                        <div class="bg-red-100 text-red-800 p-4 rounded-lg mb-4 shadow">
-                            {{ error }}
-                        </div>
-                    {% endif %}
-                </div>
+                {% endwith %}
 
                 <form method="POST" action="{{ url_for('logged_in.upload_data') }}" class="space-y-6">
                     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
