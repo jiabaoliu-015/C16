@@ -105,13 +105,13 @@
             pdf.text(`Generated on ${date}`, 20, 27);
             
             // Handle different export configurations
-            if (config.containerSelector) {
-                // For elements with container selector (like course learning proportion)
-                const btn = document.getElementById(config.btnId);
-                // Find the closest parent container that contains the charts
-                const container = btn.closest('.bg-white.rounded-lg.shadow-xl.p-6.mb-6');
-                
-                if (container) {
+if (config.containerSelector) {
+    // For elements with container selector (like course learning proportion)
+    const btn = document.getElementById(config.btnId);
+    // Find the course analytics container that contains the charts
+    const container = document.querySelector('.course-analytics');
+    
+    if (container) {
                     // Use landscape orientation for wider elements
                     pdf.deletePage(1);
                     pdf.addPage('a4', 'landscape');
@@ -487,7 +487,7 @@
             }
             
             // 2. Course Learning Proportion
-            const courseContainer = document.querySelector('.bg-white.rounded-lg.shadow-xl.p-6.mb-6');
+            const courseContainer = document.querySelector('.course-analytics');
             if (courseContainer) {
                 // Add section title
                 pdf.setFontSize(12);
