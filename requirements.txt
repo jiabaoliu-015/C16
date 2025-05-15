@@ -13,3 +13,4 @@ flask-wtf
 python-dotenv
 flask-mail
 flask-cors
+pytz

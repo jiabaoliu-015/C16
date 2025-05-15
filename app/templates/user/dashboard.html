@@ -131,23 +131,26 @@
         <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </button>
       <h3 class="section-title">Add Reflection</h3>
-      <div class="mb-2 relative">
-        <textarea id="reflection-content" rows="3" maxlength="500" class="modal-input" placeholder="What did you learn, struggle with, or feel today?"></textarea>
-        <span class="char-count" id="char-count">0/500</span>
-      </div>
-      <div class="flex gap-2 mb-2">
-        <select id="reflection-mood" class="modal-select">
-          <option value="">Mood</option>
-          <option value="😊">😊 Focused</option>
-          <option value="😐">😐 Neutral</option>
-          <option value="😔">😔 Tired</option>
-          <option value="😠">😠 Frustrated</option>
-          <option value="🤩">🤩 Motivated</option>
-        </select>
-        <input id="reflection-tags" type="text" class="modal-input flex-1" placeholder="Tags (comma separated)">
-      </div>
-      <div id="reflection-error" class="modal-error"></div>
-      <button id="save-reflection" class="add-button w-full">Save</button>
+      <form id="reflection-form" class="space-y-4">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <div class="mb-2 relative">
+          <textarea id="reflection-content" name="content" rows="3" maxlength="500" class="modal-input" placeholder="What did you learn, struggle with, or feel today?"></textarea>
+          <span class="char-count" id="char-count">0/500</span>
+        </div>
+        <div class="flex gap-2 mb-2">
+          <select id="reflection-mood" name="mood" class="modal-select">
+            <option value="">Mood</option>
+            <option value="😊">😊 Focused</option>
+            <option value="😐">😐 Neutral</option>
+            <option value="😔">😔 Tired</option>
+            <option value="😠">😠 Frustrated</option>
+            <option value="🤩">🤩 Motivated</option>
+          </select>
+          <input id="reflection-tags" name="tags" type="text" class="modal-input flex-1" placeholder="Tags (comma separated)">
+        </div>
+        <div id="reflection-error" class="modal-error"></div>
+        <button type="submit" id="save-reflection" class="add-button w-full">Save</button>
+      </form>
     </div>
   </div>
   <script src="{{ url_for('static', filename='graphs/reflections.js') }}"></script>

@@ -30,7 +30,7 @@
 }
 
 .animate-fade-in {
-  animation: fade-in 0.3s ease-out both;
+  animation: fadeIn 0.3s ease-out both;
 }
 
 /* Main Layout with Animation */

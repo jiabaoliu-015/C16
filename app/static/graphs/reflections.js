@@ -3,7 +3,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const addBtn = document.getElementById('add-reflection-btn');
     const modal = document.getElementById('reflection-modal');
     const closeModal = document.getElementById('close-modal');
-    const saveBtn = document.getElementById('save-reflection');
+    const reflectionForm = document.getElementById('reflection-form');
     const contentInput = document.getElementById('reflection-content');
     const charCount = document.getElementById('char-count');
     contentInput.addEventListener('input', () => {
@@ -49,24 +49,24 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function openModal(editing = false) {
-        modal.classList.add('show'); // <-- use 'show' instead of removing 'hidden'
+        modal.classList.add('show');
         if (!editing) {
-            contentInput.value = '';
-            moodInput.value = '';
-            tagsInput.value = '';
+            reflectionForm.reset();
             editingId = null;
         }
         errorMsg.textContent = '';
     }
+
     function closeModalFn() {
-        modal.classList.remove('show'); // <-- use 'show' instead of adding 'hidden'
+        modal.classList.remove('show');
         editingId = null;
     }
 
     addBtn.onclick = () => openModal(false);
     closeModal.onclick = closeModalFn;
 
-    saveBtn.onclick = function () {
+    reflectionForm.onsubmit = function(e) {
+        e.preventDefault();
         const content = contentInput.value.trim();
         const mood = moodInput.value;
         const tags = tagsInput.value;
@@ -77,7 +77,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const payload = JSON.stringify({ content, mood, tags });
         const url = editingId ? `/api/reflections/${editingId}` : '/api/reflections';
         const method = editingId ? 'PUT' : 'POST';
-        const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+        const csrfToken = document.querySelector('input[name="csrf_token"]').value;
         fetch(url, {
             method: method,
             headers: {
@@ -113,7 +113,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function deleteReflection(id) {
         if (!confirm("Delete this reflection?")) return;
-        const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+        const csrfToken = document.querySelector('input[name="csrf_token"]').value;
         fetch(`/api/reflections/${id}`, {
             method: 'DELETE',
             headers: {

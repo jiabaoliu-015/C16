@@ -2,6 +2,7 @@ from app.extensions import db
 from flask_login import current_user
 from datetime import datetime
 from zoneinfo import ZoneInfo
+import pytz
 
 class Reflection(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -11,7 +12,7 @@ class Reflection(db.Model):
     tags = db.Column(db.String(100), nullable=True)  # comma-separated tags
     created_at = db.Column(
         db.DateTime,
-        default=lambda: datetime.now(ZoneInfo("Australia/Perth"))
+        default=lambda: datetime.now(pytz.timezone('Australia/Perth'))
     )
 
     user = db.relationship('User', backref=db.backref('reflections', lazy='dynamic'))
