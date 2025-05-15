@@ -1,15 +1,49 @@
-# Placeholder for requirements.txt
-# This file is used to specify the dependencies for the project.
+# Project dependencies for Study Habit Tracker & Analysis Tool
 
-
+# Core framework
 flask==2.0.1
 
-# additional plugins that need to be installed to run the website properly
+# Flask extensions
 flask_sqlalchemy
 flask_login
-email_validator
 flask-migrate
 flask-wtf
-python-dotenv
 flask-mail
 flask-cors
+
+# OAuth
+flask-dance
+
+# Forms
+wtforms
+
+# Other backend dependencies
+email_validator
+python-dotenv
+sqlalchemy
+
+# Testing
+pytest
+
+# (Optional) For CSV parsing and data analysis if used in backend
+pandas
+
+# (Optional) For password hashing if used
+werkzeug
+
+# (Optional) For API requests if used
+requests
+
+# (Optional) For time zone handling if used
+pytz
+
+# (Optional) For advanced date/time parsing if used
+python-dateutil
+
+# (Optional) For frontend development (not installed via pip, but used in templates)
+# - tailwindcss (CDN)
+# - chart.js / plotly.js (CDN)
+# - lucide icons (CDN)
+# - html2canvas (CDN)
+# - jspdf (CDN)
+# - qrcodejs (CDN)
