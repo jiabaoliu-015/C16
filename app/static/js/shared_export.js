@@ -676,27 +676,24 @@
         }
     }
 
-    // Show toast notification
+    // Show flash message
     function showToast(message, isError = false) {
-        // Create toast element if it doesn't exist
-        let toast = document.getElementById('export-toast');
-        if (!toast) {
-            toast = document.createElement('div');
-            toast.id = 'export-toast';
-            toast.className = 'fixed bottom-6 right-6 px-4 py-2 rounded-lg shadow-lg transition-opacity duration-300 z-50 opacity-0';
-            document.body.appendChild(toast);
-        }
-        
-        // Set toast style based on type
-        toast.className = `fixed bottom-6 right-6 px-4 py-2 rounded-lg shadow-lg transition-opacity duration-300 z-50 ${isError ? 'bg-red-600 text-white' : 'bg-green-600 text-white'}`;
-        
-        // Set message and show toast
-        toast.textContent = message;
-        toast.style.opacity = '1';
-        
-        // Hide toast after 3 seconds
+        const flashContainer = document.querySelector('.flash-container');
+        const flashMessage = document.createElement('div');
+        flashMessage.className = 'flash-message';
+        flashMessage.innerHTML = `
+            <div class="alert ${isError ? 'bg-red-100 text-red-800' : 'bg-violet-100 text-black'} border ${isError ? 'border-red-200' : 'border-violet-200'} shadow-lg rounded-lg p-4 max-w-md mx-auto" style="color: ${isError ? 'rgb(153, 27, 27)' : 'black'} !important;">
+                ${message}
+            </div>
+        `;
+        flashContainer.appendChild(flashMessage);
+
+        // Remove the message after 3 seconds
         setTimeout(() => {
-            toast.style.opacity = '0';
+            flashMessage.classList.add('fade-out');
+            setTimeout(() => {
+                flashMessage.remove();
+            }, 500);
         }, 3000);
     }
 

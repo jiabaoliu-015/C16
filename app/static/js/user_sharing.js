@@ -274,18 +274,21 @@ document.addEventListener('DOMContentLoaded', function() {
         })
         .then(data => {
             if (data.success) {
-                shareStatus.innerHTML = `<div class="text-green-600">${data.message}</div>`;
                 // Reset selection
                 selectedUser = null;
                 userSearchInput.value = '';
                 shareButton.disabled = true;
+                // Reload page to show server-side flash message
+                window.location.reload();
             } else {
-                shareStatus.innerHTML = `<div class="text-red-600">Error: ${data.error}</div>`;
+                // Reload page to show server-side flash message
+                window.location.reload();
             }
         })
         .catch(error => {
             console.error('Error sharing data:', error);
-            shareStatus.innerHTML = '<div class="text-red-600">Error sharing data: ' + error.message + '</div>';
+            // Reload page to show server-side flash message
+            window.location.reload();
         });
     });
 
@@ -366,14 +369,43 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (data.success) {
                     // Reload shares to update UI
                     loadReceivedShares();
+                    // The server will handle the flash message
+                    window.location.reload();
                 } else {
-                    alert(`Error: ${data.error}`);
+                    // The server will handle the flash message
+                    window.location.reload();
                 }
             })
             .catch(error => {
                 console.error('Error accepting share:', error);
-                alert('Error accepting share');
+                // The server will handle the flash message
+                window.location.reload();
             });
+    }
+
+    // Function to show flash messages
+    function showFlashMessage(message, category) {
+        const flashContainer = document.querySelector('header .flash-container');
+        if (!flashContainer) {
+            console.error('Flash container not found');
+            return;
+        }
+        const flashMessage = document.createElement('div');
+        flashMessage.className = 'flash-message';
+        flashMessage.innerHTML = `
+            <div class="alert alert-${category}">
+                ${message}
+            </div>
+        `;
+        flashContainer.appendChild(flashMessage);
+
+        // Remove the message after 3 seconds
+        setTimeout(() => {
+            flashMessage.classList.add('fade-out');
+            setTimeout(() => {
+                flashMessage.remove();
+            }, 500);
+        }, 3000);
     }
     
     // Load received shares on page load

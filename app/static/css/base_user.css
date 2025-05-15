@@ -1,0 +1,41 @@
+/* Base User Template Styles */
+
+/* Sidebar Styles */
+#sidebar.collapsed {
+    width: 5rem;
+}
+
+#sidebar.collapsed .sidebar-title {
+    display: none;
+}
+
+#sidebar.collapsed nav a {
+    justify-content: center;
+}
+
+#toggleSidebar {
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.sidebar-link {
+    height: 3rem;
+}
+
+#sidebar.collapsed .sidebar-title {
+    display: none;
+}
+
+#sidebar.collapsed nav a,
+#sidebar.collapsed #toggleSidebar {
+    justify-content: center;
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+}
+
+/* Background Styles */
+body {
+    background-size: cover;
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+    background-position: center;
+} 

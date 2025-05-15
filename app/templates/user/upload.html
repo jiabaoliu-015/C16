@@ -1,12 +1,9 @@
-<!-- app/templates/upload.html -->
 {% extends "base_user.html" %}
 {% block title %}Upload | StudyTrackr{% endblock %}
 {% block subtitle %}Upload Sessions{% endblock %}
 {% block tooltip %}
-<div class="tooltip">
-    <div class="tooltip-content">
-        <strong>Upload Sessions</strong> lets you track study sessions (timed or manual). Add, edit, or remove entries to manage your study log.
-    </div>
+<div class="absolute top-full left-0 mt-2 w-64 bg-white p-3 rounded-lg shadow-lg text-sm text-gray-800 hidden group-hover:block z-10">
+    <strong>Upload Sessions</strong> lets you track study sessions (timed or manual). Add, edit, or remove entries to manage your study log.
 </div>
 {% endblock %}
 {% block background %}
@@ -32,35 +29,14 @@
                     </button>
                 </div>
 
-                {% with messages = get_flashed_messages(with_categories=true) %}
-                    {% if messages %}
-                        <div class="flash-message">
-                            {% for category, message in messages %}
-                                <div class="alert alert-{{ category }}">
-                                    {{ message }}
-                                </div>
-                            {% endfor %}
-                        </div>
-                        <script>
-                            setTimeout(function() {
-                                const flashMessage = document.querySelector('.flash-message');
-                                flashMessage.classList.add('fade-out');
-                                setTimeout(function() {
-                                    flashMessage.remove();
-                                }, 1000);
-                            }, 3000);
-                        </script>
-                    {% endif %}
-                {% endwith %}
-
-                <form method="POST" action="{{ url_for('logged_in.upload_data') }}" class="space-y-6">
+                <form id="upload-form" method="POST" action="{{ url_for('logged_in.upload_data') }}" class="space-y-4">
                     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
 
                     <!-- Date Picker -->
                     <div>
                         <label for="new_date" class="block text-sm font-semibold text-gray-700 mb-1">Date *</label>
                         <div class="flex flex-wrap items-center gap-3">
-                            <input type="date" name="date" id="new_date" class="form-input">
+                            <input type="date" name="date" id="new_date" class="form-input" required>
                             <div class="flex gap-2">
                                 <button type="button" class="btn bg-gray-200 hover:bg-gray-300 text-gray-700" id="prev-day">
                                     <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -192,12 +168,6 @@
             <div class="create-session-card">
                 <h2 class="text-2xl font-bold text-gray-900 mb-6 flex justify-between items-center">
                     <span>Upload Session CSV</span>
-                    <span class="tooltip">
-                        <span class="w-6 h-6 bg-gray-200 text-gray-700 rounded-full flex items-center justify-center text-xs font-semibold cursor-default">?</span>
-                        <div class="tooltip-content">
-                            Upload your study sessions to track progress and visualise study patterns.
-                        </div>
-                    </span>
                 </h2>
 
                 <div class="mb-6">
@@ -316,9 +286,6 @@
     </div>
 </div>
 
-<!-- Feedback Message -->
-<div id="feedback-message" class="feedback-message"></div>
-
 <script>
     function resetForm() {
         // Reset input values to defaults
@@ -430,95 +397,5 @@
             notice.classList.add('hidden');
         }
     }
-
-    document.addEventListener('DOMContentLoaded', function() {
-        const feedback = document.getElementById('feedback-message');
-    
-        if (feedback && feedback.classList.contains('block')) {
-            autoHideFeedback();
-        }
-        
-    
-        document.getElementById('submit-btn').addEventListener('click', async function(event) {
-            event.preventDefault();
-            
-            const date = document.getElementById('new_date').value;
-            const start_time = document.getElementById('new_start').value;
-            const end_time = document.getElementById('new_end').value;
-            const break_time = document.getElementById('new_break').value;
-            const course = document.getElementById('new_course').value;
-            const activity = document.getElementById('new_activity').value;
-            const productivity = document.getElementById('new_productivity').value;
-            
-            // Correct field names to match Flask expectations
-            const sessionData = {
-                date: date,
-                start_time: start_time,
-                end_time: end_time,
-                break_minutes: break_time,  // <- match backend
-                course: course,
-                notes: activity,            // <- match backend
-                productivity: productivity
-            };
-    
-            const csrfToken = document.querySelector('input[name="csrf_token"]')?.value ||
-                              document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
-            
-            try {
-                const response = await fetch('/upload/', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRFToken': csrfToken
-                    },
-                    body: JSON.stringify(sessionData),
-                });
-    
-                const result = await response.json();
-                
-                if (response.ok) {
-                    showFeedbackMessage('Session added successfully!', 'success');
-                    resetForm();
-                } else {
-                    showFeedbackMessage(`Error: ${result.error || 'An error occurred'}`, 'error');
-                }
-            } catch (error) {
-                console.error('Error submitting form:', error);
-                showFeedbackMessage('Failed to submit session data', 'error');
-            }
-        });
-    
-        function showFeedbackMessage(message, type) {
-            const feedback = document.getElementById('feedback-message');
-            feedback.textContent = message;
-            feedback.style.opacity = "1"; // Reset opacity
-            feedback.style.display = 'block';
-    
-            if (type === 'success') {
-                feedback.style.color = 'green';
-                feedback.style.backgroundColor = '#d4edda';
-            } else {
-                feedback.style.color = 'red';
-                feedback.style.backgroundColor = '#f8d7da';
-            }
-    
-            autoHideFeedback(); // Hide after 3 seconds
-        }
-    
-        function autoHideFeedback() {
-            const feedback = document.getElementById('feedback-message');
-            setTimeout(() => {
-                feedback.style.transition = "opacity 0.5s ease";
-                feedback.style.opacity = "0";
-                setTimeout(() => {
-                    feedback.style.display = "none";
-                }, 500); // Wait for fade-out before hiding
-            }, 3000); // Show for 3 seconds
-        }
-    
-        function resetForm() {
-            document.getElementById('upload-form').reset();
-        }
-    });
-    </script>
+</script>
 {% endblock %}

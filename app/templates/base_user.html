@@ -14,6 +14,10 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Updated Lucide Icons CDN -->
     <script src="https://cdn.jsdelivr.net/npm/lucide@latest/dist/umd/lucide.min.js"></script>
+    <!-- Base User CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/base_user.css') }}">
+    <!-- Flash Messages CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/flash.css') }}">
     <script>
         document.addEventListener("DOMContentLoaded", function() {
             lucide.createIcons(); // Ensure icons are initialized after DOM is loaded
@@ -67,42 +71,9 @@
             });
         });
     </script>
-    <style>
-        /* Tailwind CSS overrides for collapsed sidebar */
-        #sidebar.collapsed {
-            width: 5rem;
-        }
-        #sidebar.collapsed .sidebar-title {
-            display: none;
-        }
-        #sidebar.collapsed nav a {
-            justify-content: center;
-        }
-        #toggleSidebar {
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-        .sidebar-link {
-            height: 3rem;
-        }
-        #sidebar.collapsed .sidebar-title {
-            display: none;
-        }
-        #sidebar.collapsed nav a,
-        #sidebar.collapsed #toggleSidebar {
-            justify-content: center;
-            padding-left: 0.75rem;
-            padding-right: 0.75rem;
-        }
-        body {
-            background-size: cover;
-            background-attachment: fixed;
-            background-repeat: no-repeat;
-            background-position: center;
-            /* Optional: adjust opacity using a pseudo-element if needed */
-        }
-    </style>
 </head>
 <body class="font-sans bg-transparent" data-user-email="{{ current_user.email }}">
+
 <div class="min-h-screen flex">
     <!-- Sidebar -->
     <aside id="sidebar" class="w-64 bg-gray-900 text-white flex flex-col justify-between transition-all duration-300">
@@ -147,7 +118,7 @@
     </aside>
 
     <div class="flex-1 flex flex-col">
-        <header class="bg-white shadow px-6 py-4 flex flex-col sm:flex-row sm:items-start sm:justify-between space-y-4 sm:space-y-0">
+        <header class="bg-white shadow px-6 py-5 flex flex-col sm:flex-row sm:items-start sm:justify-between space-y-4 sm:space-y-0">
             <!-- Left Section: Date, Email, and Dashboard Title -->
             <div>
                 <div class="flex items-center text-sm text-gray-600 space-x-2">
@@ -163,6 +134,33 @@
                     </span>
                 </h1>
             </div>
+            
+            <!-- Flash Messages Container -->
+            <div class="flash-container">
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        {% for category, message in messages %}
+                            <div class="flash-message">
+                                <div class="alert alert-{{ category }}">
+                                    {{ message }}
+                                </div>
+                            </div>
+                        {% endfor %}
+                        <script>
+                            setTimeout(function() {
+                                const flashMessages = document.querySelectorAll('.flash-message');
+                                flashMessages.forEach(function(message) {
+                                    message.classList.add('fade-out');
+                                    setTimeout(function() {
+                                        message.remove();
+                                    }, 500);
+                                });
+                            }, 3000);
+                        </script>
+                    {% endif %}
+                {% endwith %}
+            </div>
+            
             <!-- Right Section: Stats and User Avatar -->
             <div class="flex flex-col sm:flex-row sm:items-start sm:space-x-4 sm:ml-auto">
                 <!-- Stats (hidden on small screens) -->

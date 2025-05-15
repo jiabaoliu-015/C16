@@ -1,6 +1,11 @@
 {% extends "base_user.html" %}
 {% block title %}Profile | StudyTrackr{% endblock %}
 {% block subtitle %}Profile{% endblock %}
+{% block tooltip %}
+<div class="absolute top-full left-0 mt-2 w-64 bg-white p-3 rounded-lg shadow-lg text-sm text-gray-800 hidden group-hover:block z-10">
+    Manage your profile settings, add friends, and view your account information.
+</div>
+{% endblock %}
 {% block content %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/profile.css') }}">
 
@@ -9,28 +14,6 @@
         <h2 class="profile-title">👤 Your Profile</h2>
         <p class="profile-subtitle">Welcome to your profile page!</p>
     </div>
-
-    <!-- Flash Messages Section -->
-    {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
-            <div class="flash-message">
-                {% for category, message in messages %}
-                    <div class="alert alert-{{ category }}">
-                        {{ message }}
-                    </div>
-                {% endfor %}
-            </div>
-            <script>
-                setTimeout(function() {
-                    const flashMessage = document.querySelector('.flash-message');
-                    flashMessage.classList.add('fade-out');
-                    setTimeout(function() {
-                        flashMessage.remove();
-                    }, 1000);
-                }, 3000);
-            </script>
-        {% endif %}
-    {% endwith %}
 
     <!-- Account Creation Date -->
     <div class="account-info">

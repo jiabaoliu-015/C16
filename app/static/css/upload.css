@@ -77,30 +77,15 @@
     }
 }
 
-/* Flash message styles */
+/* Flash Message Styles */
 .flash-message {
-    margin-top: 1rem;
+    transition: opacity 0.3s ease-out;
+    animation: fadeIn 0.3s ease-out;
+    animation-fill-mode: both;
 }
 
-.flash-message .alert {
-    padding: 0.75rem;
-    margin-bottom: 0.5rem;
-    text-align: center;
-    color: white;
-    border-radius: 0.5rem;
-}
-
-.flash-message .alert-success {
-    background-color: #10B981;
-}
-
-.flash-message .alert-error {
-    background-color: #EF4444;
-}
-
-.fade-out {
+.flash-message.fade-out {
     opacity: 0;
-    transition: opacity 1s ease-out;
 }
 
 /* Form input styles */
@@ -163,6 +148,7 @@
     animation: fadeIn 0.5s ease-out forwards;
     opacity: 0;
     animation-delay: 0.8s;
+    z-index: 1;
 }
 
 .session-list {
@@ -231,30 +217,6 @@
     z-index: 50;
     display: none;
     transition: all 0.5s ease-in-out;
-}
-
-/* Tooltip styles */
-.tooltip {
-    position: relative;
-}
-
-.tooltip-content {
-    position: absolute;
-    left: 0;
-    margin-top: 0.5rem;
-    width: 18rem;
-    background-color: white;
-    color: #1F2937;
-    font-size: 0.875rem;
-    border-radius: 0.75rem;
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-    padding: 1rem;
-    z-index: 50;
-    display: none;
-}
-
-.tooltip:hover .tooltip-content {
-    display: block;
 }
 
 /* Progress bar styles */

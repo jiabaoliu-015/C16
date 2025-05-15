@@ -26,27 +26,6 @@
     <h2 class="productivity-header">
       Productivity Overview
       <div class="section-header">
-        <!-- Flash Messages Section -->
-        {% with messages = get_flashed_messages(with_categories=true) %}
-          {% if messages %}
-              <div class="flash-message">
-                  {% for category, message in messages %}
-                      <div class="alert alert-{{ category }} p-3 mb-2 text-center text-white {{ 'bg-green-500' if category == 'success' else 'bg-red-500' }}">
-                          {{ message }}
-                      </div>
-                  {% endfor %}
-              </div>
-              <script>
-                  setTimeout(function() {
-                      const flashMessage = document.querySelector('.flash-message');
-                      flashMessage.classList.add('fade-out');
-                      setTimeout(function() {
-                          flashMessage.remove();
-                      }, 1000);
-                  }, 3000);
-              </script>
-          {% endif %}
-        {% endwith %}
         <div id="prodRangeToggle" class="range-toggle">
           <button data-range="day" class="range-btn">Day</button>
           <button data-range="week" class="range-btn">Week</button>

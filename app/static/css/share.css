@@ -10,6 +10,17 @@
     }
 }
 
+/* Flash Message Styles */
+.flash-message {
+    transition: opacity 0.3s ease-out;
+    animation: fadeIn 0.3s ease-out;
+    animation-fill-mode: both;
+}
+
+.flash-message.fade-out {
+    opacity: 0;
+}
+
 /* Apply animations to all major sections */
 .user-sharing,
 .export-controls,

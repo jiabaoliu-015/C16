@@ -49,28 +49,22 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     const showBreakMaxToast = (message) => {
-        let toast = document.getElementById('break-max-toast');
-        if (!toast) {
-            toast = document.createElement('div');
-            toast.id = 'break-max-toast';
-            toast.style.position = 'absolute';
-            toast.style.top = '0.5rem';
-            toast.style.right = '0.5rem';
-            toast.style.background = '#f87171';
-            toast.style.color = '#fff';
-            toast.style.padding = '0.5rem 1rem';
-            toast.style.borderRadius = '0.5rem';
-            toast.style.boxShadow = '0 2px 8px rgba(0,0,0,0.1)';
-            toast.style.fontWeight = 'bold';
-            toast.style.zIndex = 1000;
-            toast.style.transition = 'opacity 0.3s';
-            toast.style.opacity = '0';
-            document.body.appendChild(toast);
-        }
-        toast.textContent = message;
-        toast.style.opacity = '1';
+        const flashContainer = document.querySelector('.flash-container');
+        const flashMessage = document.createElement('div');
+        flashMessage.className = 'flash-message';
+        flashMessage.innerHTML = `
+            <div class="alert bg-violet-100 text-black border border-violet-200 shadow-lg rounded-lg p-4 max-w-md mx-auto" style="color: black !important;">
+                ${message}
+            </div>
+        `;
+        flashContainer.appendChild(flashMessage);
+
+        // Remove the message after 2 seconds
         setTimeout(() => {
-            toast.style.opacity = '0';
+            flashMessage.classList.add('fade-out');
+            setTimeout(() => {
+                flashMessage.remove();
+            }, 500);
         }, 2000);
     };
 
