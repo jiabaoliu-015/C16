@@ -1,222 +1,309 @@
-# StudyTrackr — CITS3403 Agile Web Development Project 2025
+<!-- Banner/Logo -->
+<p align="center">
+  <img src="screenshots/banner.png" alt="StudyTrackr Banner" width="600"/>
+</p>
+
+# StudyTrackr
+
+<p align="center">
+  <b>Track, analyse, and improve your study habits. Built for students, by students.</b>
+</p>
+
+<!-- Badges -->
+<p align="center">
+  <img src="https://img.shields.io/badge/build-passing-brightgreen" alt="Build Status"/>
+  <img src="https://img.shields.io/badge/python-3.9%2B-blue" alt="Python Version"/>
+  <img src="https://img.shields.io/badge/license-Educational-lightgrey" alt="License"/>
+</p>
+
+---
 
 ## Table of Contents
 
-- [StudyTrackr — CITS3403 Agile Web Development Project 2025](#studytrackr--cits3403-agile-web-development-project-2025)
+<details>
+<summary>Click to expand</summary>
+
+- [StudyTrackr](#studytrackr)
   - [Table of Contents](#table-of-contents)
-  - [Project Overview](#project-overview)
-  - [Features](#features)
-  - [Screenshots](#screenshots)
-  - [Group Members](#group-members)
-  - [Technology Stack](#technology-stack)
+  - [Overview](#overview)
+  - [Screenshots \& Demo](#screenshots--demo)
+  - [Feature Highlights](#feature-highlights)
+  - [Quick Start (60 Seconds)](#quick-start-60-seconds)
   - [System Architecture](#system-architecture)
   - [Database Schema](#database-schema)
+    - [**User Table**](#user-table)
+    - [**Session Table**](#session-table)
+    - [**Course Table** (optional/normalized)](#course-table-optionalnormalized)
+    - [**Reflection Table**](#reflection-table)
+    - [**SharedData Table**](#shareddata-table)
+    - [**StreakFreeze Table**](#streakfreeze-table)
+    - [**Friends Table** (association table for User ↔ User)](#friends-table-association-table-for-user--user)
   - [Setup \& Installation](#setup--installation)
-  - [Running the Application](#running-the-application)
-  - [Running Tests](#running-tests)
-  - [Usage Guide](#usage-guide)
-  - [Design Decisions](#design-decisions)
-  - [Known Issues \& Limitations](#known-issues--limitations)
-  - [Future Improvements](#future-improvements)
+  - [Usage Examples](#usage-examples)
+    - [1. Uploading Study Sessions](#1-uploading-study-sessions)
+    - [2. Viewing Analytics](#2-viewing-analytics)
+    - [3. Sharing Progress](#3-sharing-progress)
+  - [FAQ](#faq)
+  - [Contact \& Support](#contact--support)
   - [License](#license)
+  - [References \& AI Use](#references--ai-use)
+</details>
 
 ---
 
-## Project Overview
+## Overview
 
-**StudyTrackr** is a modern web application designed to help students track, analyze, and improve their study habits. Users can log study sessions, visualize productivity trends, and share progress with friends. The platform encourages effective study practices and peer collaboration through insightful analytics and sharing features.
-
-**Design:**
-
-- **Engaging:** Modern UI with Tailwind CSS, interactive charts (Chart.js), and clear navigation.
-- **Effective:** Automated analytics, personalised insights, and sharing features.
-- **Intuitive:** Simple upload forms, dashboard visualisations, and clear sharing workflows.  
-  
----
-
-## Features
-
-- **Manual & CSV Data Upload:** Log sessions individually or import in bulk.
-- **Automated Analytics:** Visualise trends (daily/weekly), subject focus, and productivity correlations.
-- **Interactive Visualizations:** Bar charts, pie charts, and scatterplots powered by Chart.js.
-- **Study Streaks & Leaderboards:** Motivate users with streak tracking and weekly consistency leaderboards.
-- **Data Sharing:** Share stats and streaks with friends via QR code or shareable links.
-- **PDF Export:** Download personalised study reports.
-- **Responsive UI:** Built with Tailwind CSS for a seamless experience on all devices.
+**StudyTrackr** is a web app for university students to log, visualise, and share their study sessions.  
+It helps you build better study habits, track productivity, and collaborate with friends—all in a modern, intuitive interface.
 
 ---
 
-## Screenshots
+## Screenshots & Demo
 
 | Dashboard | Upload Sessions | Share Progress | Login | Home |
-|-----------|----------------|-----------|---------------|-----------|
+|-----------|----------------|---------------|-------|------|
 | ![Dashboard](screenshots/dashboard.png) | ![Upload](screenshots/upload.png) | ![Share](screenshots/share.png) | ![Login](screenshots/login.png) | ![Home](screenshots/home.png) |
 
----
-
-## Group Members
-
-| UWA ID     | Name                   | GitHub Username   |
-|------------|------------------------|-------------------|
-| 23954936   | Jiabao Liu             | jiabaoliu-015     |
-| 23857377   | Marc Labouchardiere     | marc-la           |
-| 23706774   | Joshua Chin            | Jaecheonz         |
+**See it in action:**  
+![Demo GIF](screenshots/demo.gif)
 
 ---
 
-## Technology Stack
+## Feature Highlights
 
-- **Frontend:** HTML, CSS (Tailwind), JavaScript, Chart.js, Lucide Icons
-- **Backend:** Python (Flask), Flask-Login, Flask-SQLAlchemy, Flask-WTF, Flask-Migrate
-- **Database:** SQLite (via SQLAlchemy ORM)
-- **Testing:** Unittest, Selenium
-- **Other:** AJAX, QRCode.js, html2canvas, jsPDF
+- 📥 **Manual & CSV Upload:** Log sessions one-by-one or import in bulk.
+- 📊 **Automated Analytics:** Visualise trends, subject focus, and productivity.
+- 🖼️ **Interactive Charts:** Bar, pie, and scatter plots (Chart.js).
+- 🔥 **Study Streaks & Leaderboards:** Motivate yourself and compete with friends.
+- 🤝 **Data Sharing:** Share stats via QR code or links.
+- 📝 **Reflections:** Add notes and moods to your sessions.
+- 📄 **PDF Export:** Download personalised study reports.
+- 📱 **Responsive UI:** Works on all devices.
+
+---
+
+## Quick Start (60 Seconds)
+
+```bash
+git clone https://github.com/marc-la/agile-web-group-85.git
+cd agile-web-group-85
+python -m venv venv
+venv\Scripts\activate  # or source venv/bin/activate
+pip install -r requirements.txt
+flask db upgrade
+flask run
+```
+Open [http://127.0.0.1:5000](http://127.0.0.1:5000) in your browser.
 
 ---
 
 ## System Architecture
 
-- **MVC Pattern:**  
-  - **Models:** SQLAlchemy models for `User`, `StudySession`, and `SharedData`.
-  - **Views:** Flask templates (Jinja2) for rendering all pages (intro, dashboard, upload, share).
-  - **Controllers:** Flask routes and blueprints handle logic and API endpoints.
+<p align="center">
+  <img src="screenshots/logic_flow.svg" alt="System Architecture" width="700"/>
+</p>
 
-- **Views:**
-  - **Introductory View:**  
-    `/` or `/info` — Describes app, login/register (info.html, home.html, login.html)
-  - **Upload Data View:**  
-    `/upload` — Manual entry and CSV upload (upload.html)
-  - **Visualise Data View:**  
-    `/dashboard` or `/visualise` — Analytics, charts, insights (dashboard.html)
-  - **Share Data View:**  
-    `/share` — Selectively share data with other users (share.html)
-
-- **AJAX & API**
-  - **AJAX:**  
-    Used for dynamic updates (charts, stats, sharing) without page reloads.
-  - **API Endpoints:**
-    - `/api/sessions` — Get/add study sessions
-    - `/api/analytics` — Get analytics data for charts
-    - `/api/course-insights` — For advanced analytics and sharing
-    - `/api/user-stats` — For user statistics
-    - `/api/share` — For sharing data with other *StudyTrackr* users
-
-- **Data Flow**
-
-  - User interacts via browser (HTML, Tailwind, Chart.js, JS)
-  - Browser submits forms to Flask (traditional HTTP) and fetches data via AJAX (REST API)
-  - Flask routes requests to blueprints (auth, dashboard, sessions, api)
-  - All persistent data is managed via SQLAlchemy ORM with SQLite
-
-- **Data Flow Diagram:**  
-  
-> The diagram below illustrates how StudyTrackr separates concerns using Flask blueprints (auth, dashboard, sessions, api) and how the frontend interacts with the backend via both traditional HTTP and AJAX/REST calls. All persistent data is managed through SQLAlchemy ORM with SQLite.
-
-![StudyTrackr Logic Flow](screenshots/logic_flow.svg)
+- **MVC Pattern:** Flask blueprints for auth, dashboard, sessions, and API.
+- **AJAX & REST:** Dynamic updates for charts and sharing.
+- **ORM:** SQLAlchemy with SQLite for all persistent data.
 
 ---
 
 ## Database Schema
 
-<!-- Provide an ER diagram or table definitions -->
-- **User Table:** id, email, password_hash, ...
-- **StudySession Table:** id, user_id, date, start_time, end_time, break_minutes, course, notes, productivity, ...
+<p align="center">
+  <img src="screenshots/erd.svg" alt="ER Diagram" width="600"/>
+</p>
+
+**Main Tables:**  
+User, Session, Course, Reflection, SharedData, StreakFreeze, Friends
+
+<details>
+<summary>Click for schema details</summary>
+
+### **User Table**
+
+| Column         | Type             | Constraints                | Description                    |
+|----------------|------------------|----------------------------|--------------------------------|
+| id             | Integer          | Primary Key, Unique        | User ID                        |
+| email          | String(150)      | Unique, Not Null           | User email address             |
+| password       | String(200)      | Not Null                   | Hashed password                |
+| google_id      | String(200)      | Unique, Nullable           | Google OAuth ID (optional)     |
+| created_at     | DateTime         | Default=now                | Account creation timestamp     |
+
+- **Relationships:**  
+  - Has many [`Session`](app/models/session.py) (One-to-Many)
+  - Has many [`Reflection`](app/models/reflection.py) (One-to-Many)
+  - Many-to-many with other users as friends (self-referential)
+  - Can send/receive [`SharedData`](app/models/shared_data.py)
+
+### **Session Table**
+
+| Column            | Type         | Constraints                | Description                      |
+|-------------------|--------------|----------------------------|----------------------------------|
+| session_id        | Integer      | Primary Key, Unique        | Session ID                       |
+| user_id           | Integer      | Foreign Key (User.id)      | Owner of the session             |
+| date              | Date         | Not Null                   | Date of the session              |
+| start_time        | Time         | Not Null                   | Start time                       |
+| end_time          | Time         | Not Null                   | End time                         |
+| break_minutes     | Integer      | Nullable                   | Break duration in minutes        |
+| course            | String(100)  | Not Null                   | Course name                      |
+| productivity_rating| Integer     | Not Null                   | Productivity rating (0-10)       |
+| notes             | String(500)  | Nullable                   | Notes about the session          |
+
+- **Relationships:**  
+  - Belongs to [`User`](app/models/user.py)
+  - Can be linked to [`Course`](app/models/course.py) (optional)
+  - Can be shared via [`SharedData`](app/models/shared_data.py)
+
+### **Course Table** (optional/normalized)
+
+| Column   | Type         | Constraints                | Description        |
+|----------|--------------|----------------------------|--------------------|
+| id       | Integer      | Primary Key, Unique        | Course ID          |
+| name     | String(100)  | Unique, Not Null           | Course name        |
+
+- **Relationships:**  
+  - Has many [`Session`](app/models/session.py)
+
+### **Reflection Table**
+
+| Column     | Type         | Constraints                | Description                  |
+|------------|--------------|----------------------------|------------------------------|
+| id         | Integer      | Primary Key, Unique        | Reflection ID                |
+| user_id    | Integer      | Foreign Key (User.id)      | Owner of the reflection      |
+| content    | Text         | Not Null                   | Reflection content           |
+| mood       | String(20)   | Nullable                   | Mood emoji or description    |
+| tags       | String(100)  | Nullable                   | Comma-separated tags         |
+| created_at | DateTime     | Default=now                | Timestamp                    |
+
+### **SharedData Table**
+
+| Column              | Type         | Constraints                        | Description                       |
+|---------------------|--------------|------------------------------------|-----------------------------------|
+| id                  | Integer      | Primary Key, Unique                | SharedData ID                     |
+| session_id          | Integer      | Foreign Key (Session.session_id)   | Session being shared              |
+| shared_with_user_id | Integer      | Foreign Key (User.id)              | Recipient user                    |
+| shared_by_user_id   | Integer      | Foreign Key (User.id)              | Sender user                       |
+| shared_content      | Integer      | Default=20                         | Shared value (e.g., minutes)      |
+| shared_content3     | String(100)  | Default='YOU RECEIVE A SHARE'      | Description/message               |
+| status              | Enum         | Default='pending'                  | Share status (pending/accepted)   |
+| shared_on           | DateTime     | Default=now                        | Timestamp                         |
+
+### **StreakFreeze Table**
+
+| Column   | Type     | Constraints                | Description                  |
+|----------|----------|----------------------------|------------------------------|
+| id       | Integer  | Primary Key, Unique        | StreakFreeze ID              |
+| user_id  | Integer  | Not Null                   | User who used the freeze     |
+| month    | Integer  | Not Null                   | Month of freeze              |
+| year     | Integer  | Not Null                   | Year of freeze               |
+| used_on  | Date     | Not Null                   | Date freeze was used         |
+
+### **Friends Table** (association table for User ↔ User)
+
+| Column    | Type     | Constraints                | Description                  |
+|-----------|----------|----------------------------|------------------------------|
+| user_id   | Integer  | Foreign Key (User.id)      | User                         |
+| friend_id | Integer  | Foreign Key (User.id)      | Friend                       |
+
+</details>
 
 ---
 
 ## Setup & Installation
 
-1. **Clone the repository:**
+**Requirements:**  
+- Python 3.9+  
+- `git` and `pip`  
+- (Optional) Visual Studio Code
+
+<details>
+<summary>Full Setup Instructions</summary>
+
+1. **Clone the Repository**
     ```bash
-    git clone https://github.com/your-private-repo-url.git
+    git clone https://github.com/marc-la/agile-web-group-85.git
     cd agile-web-group-85
     ```
-
-2. **Set up a virtual environment:**
+2. **Create & Activate a Virtual Environment**
     ```bash
     python -m venv venv
-    venv\Scripts\activate  # On Windows
-    # or
-    source venv/bin/activate  # On Mac/Linux
+    venv\Scripts\activate  # or source venv/bin/activate
     ```
-
-3. **Install dependencies:**
+3. **Install Dependencies**
     ```bash
     pip install -r requirements.txt
     ```
-
-4. **Set up the database:**
+4. **Initialise the Database**
     ```bash
     flask db upgrade
     ```
-
----
-
-## Running the Application
-
-1. **Start the Flask server:**
+5. **Run the Application**
     ```bash
     flask run
-    # or
-    python run.py
     ```
-
-2. **Open your browser:**  
-   Visit [http://127.0.0.1:5000](http://127.0.0.1:5000)
-
----
-
-## Running Tests
-
-1. **Activate your virtual environment.**
-2. **Run the test suite:**
+6. **Run Tests**
     ```bash
     pytest
     ```
-3. **Review the results in your terminal.**
+</details>
 
 ---
 
-## Usage Guide
+## Usage Examples
 
-- **Uploading Sessions:**  
-  Navigate to the Upload page to add sessions manually or upload a CSV file (see sample format on the page).
-- **Viewing Analytics:**  
-  Go to the Dashboard or Visualise page for interactive charts and insights.
-- **Sharing Progress:**  
-  Use the Share page to generate QR codes or shareable links for your stats.
-- **Profile & Settings:**  
-  Update your profile and manage sharing preferences from the Profile page.
+### 1. Uploading Study Sessions
 
----
+![Upload GIF](screenshots/upload_demo.gif)
 
-## Design Decisions
+- Go to **Upload**.
+- Fill out the form or upload a CSV.
+- Click **Create** to add sessions.
 
-- **Why Flask & Tailwind:**  
-  Chosen for rapid development, flexibility, and modern UI.
-- **Data Model:**  
-  Simple, extensible schema for easy analytics and future features.
-- **Security:**  
-  CSRF protection, password hashing, and user authentication via Flask-Login.
-- **Accessibility:**  
-  Color contrast, keyboard navigation, and responsive design considered throughout.
+### 2. Viewing Analytics
 
----
+![Dashboard GIF](screenshots/dashboard_demo.gif)
 
-## Known Issues & Limitations
+- Visit **Dashboard** for charts and insights.
+- Filter by day, week, or course.
 
-- Only supports CSV uploads in the specified format.
-- No email verification for sign-up (future work).
-- Analytics are limited to the data uploaded/logged by the user.
+### 3. Sharing Progress
+
+![Share GIF](screenshots/share_demo.gif)
+
+- Go to **Share**.
+- Search for a friend or generate a QR code.
+- Accept or view shared stats.
 
 ---
 
-## Future Improvements
+## FAQ
 
-- Add push notifications and reminders.
-- Integrate calendar sync (Google Calendar, Outlook).
-- Expand leaderboard and social features.
-- Add more export options (Excel, PNG).
+**Q: I can't log in or register.**  
+A: Check your email and password. If you forgot your password, contact a group member.
+
+**Q: CSV upload fails.**  
+A: Ensure your CSV matches the sample format shown on the Upload page.
+
+**Q: Charts aren't updating.**  
+A: Try refreshing the page. If the problem persists, check your browser console for errors.
+
+**Q: Selenium tests fail.**  
+A: Make sure ChromeDriver or GeckoDriver is installed and on your PATH.
+
+---
+
+## Contact & Support
+
+- **Group Members:**
+  | UWA ID     | Name                   | GitHub Username   |
+  |------------|------------------------|-------------------|
+  | 23954936   | Jiabao Liu             | jiabaoliu-015     |
+  | 23857377   | Marc Labouchardiere    | marc-la           |
+  | 23706774   | Joshua Chin            | Jaecheonz         |
+
+- For help, open an issue or email a group member.
 
 ---
 
@@ -224,3 +311,19 @@
 
 This project is for educational purposes only.  
 © 2025 StudyTrackr Team
+
+---
+
+## References & AI Use
+
+This project was developed with significant assistance from AI tools, including OpenAI's ChatGPT and GitHub Copilot. These tools were used for code generation, debugging, documentation, and architectural suggestions throughout the development of StudyTrackr.
+
+**References:**
+- OpenAI ChatGPT (https://chat.openai.com/)
+- GitHub Copilot (https://github.com/features/copilot)
+- Flask Documentation (https://flask.palletsprojects.com/)
+- SQLAlchemy Documentation (https://docs.sqlalchemy.org/)
+- Chart.js Documentation (https://www.chartjs.org/docs/)
+- Other resources as cited in code comments
+
+All AI-generated content was reviewed and adapted by the project team to ensure correctness and suitability for educational purposes.
