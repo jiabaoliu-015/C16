@@ -2,12 +2,12 @@
 {% block title %}Share | StudyTrackr{% endblock %}
 {% block subtitle %}Share With Friends{% endblock %}
 {% block tooltip %}
-<div class="tooltip">
+<div class="absolute top-full left-0 mt-2 w-64 bg-white p-3 rounded-lg shadow-lg text-sm text-gray-800 hidden group-hover:block z-10">
     Share your study progress with others using QR codes or directly with other users.
 </div>
 {% endblock %}
 {% block background %}
-<div class="fixed inset-0 -z-10 w-full h-full bg-polygon-luminary"></div>
+<div class="background-polygon"></div>
 {% endblock %}
 {% block content %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/share.css') }}">
@@ -20,34 +20,34 @@
 <script src="{{ url_for('static', filename='js/shared_export.js') }}" defer></script>
 <script src="{{ url_for('static', filename='js/user_sharing.js') }}" defer></script>
 
-<main>
+<main class="main-container">
     <!-- User Sharing Section -->
     <div class="user-sharing">
-        <div class="section-header">
-            <div class="flex justify-between items-center w-full">
-                <div class="flex items-center">
-                    <svg class="section-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <div class="user-sharing-header">
+            <div class="user-sharing-header-content">
+                <div class="user-sharing-title">
+                    <svg class="user-sharing-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path>
                     </svg>
-                    <h2 class="section-title">Share With Users</h2>
+                    <h2 class="user-sharing-heading">Share With Users</h2>
                 </div>
             </div>
         </div>
         
         <!-- Share Form -->
         <div class="share-form">
-            <h3 class="form-title">Share Data</h3>
-            <div class="form-group">
-                <div class="form-input-group">
-                    <label for="user-search" class="form-label">Find User by Email</label>
+            <h3 class="share-form-title">Share Data</h3>
+            <div class="share-form-content">
+                <div class="share-form-input-group">
+                    <label for="user-search" class="share-form-label">Find User by Email</label>
                     <div class="relative">
-                        <input type="text" id="user-search" class="form-input" placeholder="Enter email address...">
+                        <input type="text" id="user-search" class="share-form-input" placeholder="Enter email address...">
                         <div id="user-search-results" class="absolute z-10 w-full mt-1 bg-white shadow-lg rounded-md hidden"></div>
                     </div>
                 </div>
                 <div class="w-full md:w-1/4">
-                    <label class="form-label">Select to share</label>
-                    <select id="share-select" class="form-select">
+                    <label class="share-form-label">Select to share</label>
+                    <select id="share-select" class="share-form-select">
                         <option value="weekly" selected>Weekly Learning Time</option>
                         <option value="monday">Monday study time hours</option>
                         <option value="tuesday">Tuesday study hours</option>
@@ -63,12 +63,12 @@
                     <button id="share-button" class="share-button" disabled>Share</button>
                 </div>
             </div>
-            <div id="share-status" class="text-sm"></div>
+            <div id="share-status" class="mt-2 text-sm"></div>
         </div>
         
         <!-- Received Shares -->
         <div class="received-shares">
-            <h3 class="form-title">Received Shares</h3>
+            <h3 class="received-shares-title">Received Shares</h3>
             <button id="refresh-shares" class="refresh-button">
                 <svg class="refresh-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
@@ -105,54 +105,50 @@
     </div>
 
     <!-- date display -->
-    <div class="header">
+    <div class="header mb-4">
         <div class="date-display" id="current-date">
         </div>
     </div>
 
     <!-- Study Performance Section -->
     <div class="study-performance">
-        <div class="section-header">
-            <div class="flex justify-between items-center w-full">
-                <div class="flex items-center">
-                    <svg class="section-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path>
-                    </svg>
-                    <h2 class="section-title">Weekly Learning Intensity Analysis</h2>
-                </div>
-                <button id="export-intensity" class="export-intensity" aria-label="Download chart as image">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 4v12m0 0l-4-4m4 4l4-4M4 20h16" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                    Export
-                </button>
+        <div class="performance-header">
+            <div class="performance-title">
+                <svg class="performance-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path>
+                </svg>
+                <h2 class="performance-heading">Weekly Learning Intensity Analysis</h2>
             </div>
+            <button id="export-intensity" class="export-intensity-button" aria-label="Download chart as image">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 4v12m0 0l-4-4m4 4l4-4M4 20h16" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                Export
+            </button>
         </div>
-        <div id="performance-message" class="message-container"></div>
+        <div id="performance-message" class="message-container text-lg leading-relaxed p-4 bg-white rounded-lg"></div>
     </div>
 
     <!-- Course Learning Analytics Section -->
     <div class="course-analytics">
         <!-- Header -->
-        <div class="section-header">
-            <div class="flex justify-between items-center w-full">
-                <h2 class="section-title">
-                    Course Learning Proportion
-                </h2>
-                <button id="export-course" class="export-intensity" aria-label="Download chart as image">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 4v12m0 0l-4-4m4 4l4-4M4 20h16" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                    Export
-                </button>
-            </div>
+        <div class="course-header">
+            <h2 class="course-heading">
+                Course Learning Proportion
+            </h2>
+            <button id="export-course" class="export-intensity-button" aria-label="Download chart as image">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 4v12m0 0l-4-4m4 4l4-4M4 20h16" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                Export
+            </button>
         </div>
         
         <!-- Charts Container -->
         <div class="charts-container">
             <!-- Pie Chart -->
-            <div class="chart-section">
+            <div class="chart-wrapper">
                 <canvas id="course-pie-chart" height="220"></canvas>
             </div>
             
             <!-- Bar Chart -->
-            <div class="chart-section">
+            <div class="chart-wrapper">
                 <canvas id="weekly-bar-chart" height="220"></canvas>
             </div>
             
@@ -167,19 +163,18 @@
 
     <!-- Sessions Section -->
     <div class="sessions-container">
-        <!-- Header -->
         <div class="sessions-header">
-            <div class="flex items-center">
-                <h2 class="sessions-title">
-                    Sessions <span id="session-count" class="session-count">• 0</span>
+            <div class="sessions-title">
+                <h2 class="sessions-heading">
+                    Sessions <span id="session-count" class="sessions-count">• 0</span>
                 </h2>
             </div>
-            <div class="sessions-controls">
-                <button id="export-sessions" class="export-intensity" aria-label="Download sessions as image">
+            <div class="sessions-actions">
+                <button id="export-sessions" class="export-sessions-button" aria-label="Download sessions as image">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 4v12m0 0l-4-4m4 4l4-4M4 20h16" stroke-linecap="round" stroke-linejoin="round"/></svg>
                     Export
                 </button>
-                <button id="delete-selected" class="delete-selected">
+                <button id="delete-selected" class="delete-selected-button">
                     Delete Selected
                 </button>
             </div>
@@ -187,27 +182,27 @@
 
         <!-- Table Header -->
         <div class="table-header">
-            <div class="table-column column-date">
-                <span class="font-bold">Date</span>
+            <div class="table-column table-column-date">
+                <span class="font-extrabold">Date</span>
                 <button class="sort-button sort-active" id="date-toggle" data-sort="desc" aria-label="Sort by date">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <svg class="sort-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                     </svg>
                 </button>
             </div>
-            <div class="table-column column-time">
+            <div class="table-column table-column-time">
                 <span>Time</span>
             </div>
-            <div class="table-column column-duration">
+            <div class="table-column table-column-duration">
                 <span>Duration</span>
             </div>
-            <div class="table-column column-course">
+            <div class="table-column table-column-course">
                 <span>Course</span>
             </div>
-            <div class="table-column column-productivity">
+            <div class="table-column table-column-productivity">
                 <span>Productivity</span>
             </div>
-            <div class="table-column column-notes">
+            <div class="table-column table-column-notes">
                 <span>Notes</span>
             </div>
         </div>
@@ -216,14 +211,14 @@
         
         <!-- Pagination -->
         <div class="pagination">
-            <button id="prev-page" class="page-button" aria-label="Previous page" disabled>
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <button id="prev-page" class="pagination-button" aria-label="Previous page" disabled>
+                <svg class="pagination-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
                 </svg>
             </button>
-            <div id="page-info" class="page-info">Page 1 (1-10)</div>
-            <button id="next-page" class="page-button" aria-label="Next page" disabled>
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <div id="page-info" class="pagination-info">Page 1 (1-10)</div>
+            <button id="next-page" class="pagination-button" aria-label="Next page" disabled>
+                <svg class="pagination-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
                 </svg>
             </button>
