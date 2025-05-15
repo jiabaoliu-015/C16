@@ -1,0 +1,236 @@
+/* Upload page styles */
+.upload-container {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 3rem 1rem;
+}
+
+.upload-content {
+    display: flex;
+    flex-direction: column;
+    max-width: 80rem;
+    width: 100%;
+    gap: 2.5rem;
+}
+
+@media (min-width: 768px) {
+    .upload-content {
+        flex-direction: row;
+    }
+}
+
+/* Form section styles */
+.form-section {
+    flex: 1;
+    max-width: 36rem;
+    display: flex;
+    flex-direction: column;
+    gap: 2.5rem;
+}
+
+.create-session-card {
+    width: 100%;
+    max-width: 36rem;
+    margin: 0 auto;
+    background-color: white;
+    border-radius: 1rem;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    padding: 1.5rem;
+}
+
+@media (min-width: 640px) {
+    .create-session-card {
+        padding: 2.5rem;
+    }
+}
+
+/* Flash message styles */
+.flash-message {
+    margin-top: 1rem;
+}
+
+.flash-message .alert {
+    padding: 0.75rem;
+    margin-bottom: 0.5rem;
+    text-align: center;
+    color: white;
+    border-radius: 0.5rem;
+}
+
+.flash-message .alert-success {
+    background-color: #10B981;
+}
+
+.flash-message .alert-error {
+    background-color: #EF4444;
+}
+
+.fade-out {
+    opacity: 0;
+    transition: opacity 1s ease-out;
+}
+
+/* Form input styles */
+.form-input {
+    width: 100%;
+    background-color: #F3F4F6;
+    border: 1px solid #D1D5DB;
+    border-radius: 0.5rem;
+    padding: 0.5rem 1rem;
+    color: #1F2937;
+}
+
+.form-input:focus {
+    outline: none;
+    ring: 2px;
+    ring-color: #3B82F6;
+}
+
+/* Button styles */
+.btn {
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    font-weight: 600;
+    transition: all 0.2s;
+}
+
+.btn-primary {
+    background: linear-gradient(to right, #10B981, #059669);
+    color: white;
+}
+
+.btn-primary:hover {
+    background: linear-gradient(to right, #059669, #047857);
+}
+
+.btn-primary:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Sessions view styles */
+.sessions-view {
+    flex: 1;
+    background-color: white;
+    border-radius: 1rem;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    overflow: hidden;
+    position: relative;
+    min-height: 600px;
+}
+
+.session-list {
+    flex: 1;
+    overflow-y: auto;
+    padding-right: 0.25rem;
+    scroll-behavior: smooth;
+    margin-bottom: 1rem;
+}
+
+.session-item {
+    background-color: #F9FAFB;
+    border-radius: 0.75rem;
+    padding: 1.25rem 1.5rem;
+    display: grid;
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+    gap: 1rem;
+    align-items: center;
+    font-size: 1rem;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    transition: all 0.2s;
+    margin-bottom: 1rem;
+}
+
+.session-item:hover {
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    transform: translateY(-1px);
+}
+
+.session-item .text-center {
+    padding: 0.5rem 0;
+}
+
+.session-item .inline-block {
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+}
+
+@media (min-width: 768px) {
+    .session-item {
+        grid-template-columns: repeat(7, minmax(0, 1fr));
+    }
+}
+
+/* Feedback message styles */
+.feedback-message {
+    position: fixed;
+    top: 1.5rem;
+    right: 1.5rem;
+    padding: 1rem 1.5rem;
+    border-radius: 0.75rem;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    font-size: 0.875rem;
+    font-weight: 600;
+    z-index: 50;
+    display: none;
+    transition: all 0.5s ease-in-out;
+}
+
+/* Tooltip styles */
+.tooltip {
+    position: relative;
+}
+
+.tooltip-content {
+    position: absolute;
+    left: 0;
+    margin-top: 0.5rem;
+    width: 18rem;
+    background-color: white;
+    color: #1F2937;
+    font-size: 0.875rem;
+    border-radius: 0.75rem;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    padding: 1rem;
+    z-index: 50;
+    display: none;
+}
+
+.tooltip:hover .tooltip-content {
+    display: block;
+}
+
+/* Progress bar styles */
+.progress-bar {
+    width: 100%;
+    background-color: #D1D5DB;
+    border-radius: 9999px;
+    height: 0.5rem;
+    overflow: hidden;
+}
+
+.progress-bar-fill {
+    background: linear-gradient(to right, #34D399, #059669);
+    height: 100%;
+    border-radius: 9999px;
+    transition: all 0.5s ease-in-out;
+}
+
+/* Pagination styles */
+.pagination-container {
+    position: sticky;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: white;
+    padding-top: 1rem;
+    border-top: 1px solid #E5E7EB;
+    margin-top: auto;
+}
