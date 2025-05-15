@@ -18,7 +18,7 @@ class SharedData(db.Model):
     shared_with_user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     shared_by_user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     shared_content = db.Column(db.Integer,default=20)  # Update type if necessary
-    shared_content3 = db.Column(db.String(100), default='YOU RECEIVE A SHARE') 
+    shared_content3 = db.Column(db.String(100), default='YOU RECEIVE A SHARE')
     status = db.Column(Enum(StatusEnum.PENDING, StatusEnum.ACCEPTED), default=StatusEnum.PENDING)  # Pass enum values
     shared_on = db.Column(db.DateTime, default=db.func.now())
     
