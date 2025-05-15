@@ -316,11 +316,14 @@ This project is for educational purposes only.
 
 ## References & AI Use
 
-This project was developed with significant assistance from AI tools, including OpenAI's ChatGPT and GitHub Copilot. These tools were used for code generation, debugging, documentation, and architectural suggestions throughout the development of StudyTrackr.
+This project was developed with significant assistance from AI tools, including OpenAI's ChatGPT, GitHub Copilot, and other large language models. These tools were used for code generation, debugging, documentation, and architectural suggestions throughout the development of StudyTrackr.
 
 **References:**
 - OpenAI ChatGPT (https://chat.openai.com/)
 - GitHub Copilot (https://github.com/features/copilot)
+- Claude (Anthropic) (https://claude.ai/)
+- Qwen3 (Alibaba Cloud) (https://qwen3.opencompass.org/)
+- Deepseek (https://deepseek.com/)
 - Flask Documentation (https://flask.palletsprojects.com/)
 - SQLAlchemy Documentation (https://docs.sqlalchemy.org/)
 - Chart.js Documentation (https://www.chartjs.org/docs/)
