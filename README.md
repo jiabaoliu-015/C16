@@ -316,8 +316,8 @@ pytest app/tests/selenium
 ### 3. Sharing Progress
 
 - Go to **Share**.
-- Search for a friend or generate a QR code.
-- Accept or view shared stats.
+- Search for a friend to send data to.
+- Target friend can then accept or view shared stats.
 
 ---
 
@@ -333,7 +333,7 @@ A: Ensure your CSV matches the sample format shown on the Upload page.
 A: Try refreshing the page. If the problem persists, check your browser console for errors.
 
 **Q: Selenium tests fail.**  
-A: Make sure ChromeDriver or GeckoDriver is installed and on your PATH.
+A: Make sure ChromeDriver or GeckoDriver is installed and on your PATH, and all dependencies are installed.
 
 ---
 

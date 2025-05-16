@@ -4,10 +4,10 @@
 {% block title %}Welcome | StudyTrackr{% endblock %}
 
 {% block content %}
-<section id="section1" class="snap-section section-layout bg-gradient-to-br from-yellow-300 via-orange-400 to-orange-600 text-white">
+<section id="section1" class="snap-section section-layout bg-gradient-to-br from-pink-300 via-purple-300 to-indigo-400 text-white">
     
     <div class="absolute inset-0 z-0 overflow-hidden">
-        <img src="/static/images/book.png" alt="Book Image" class="absolute top-10 left-20 h-32 w-32 rounded-full animate-pulse" />
+        <img src="/static/images/book.png" alt="Book Image" class="absolute top-[5%] left-[5%] h-[15%] w-auto min-h-24 min-w-24 max-h-48 max-w-48 rounded-full animate-pulse" />
         <div class="absolute bottom-20 right-20 w-32 h-32 rounded-full bg-indigo-400 animate-ping opacity-20"></div>
         <div class="absolute top-10 right-10 w-12 h-12 rounded-full bg-green-300 animate-bounce opacity-20"></div>
     </div>
@@ -146,4 +146,70 @@
         </div>
     </div>
 </section>
+
+<style>
+.fade-slide {
+    transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
+}
+
+.slider-slide {
+    opacity: 0;
+    transform: translateX(20px);
+}
+
+.slider-slide.active {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+.slider-dot {
+    transition: all 0.3s ease-in-out;
+}
+
+.slider-dot:hover {
+    transform: scale(1.25);
+}
+
+.slider-dot-active {
+    transform: scale(1.25);
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const slides = document.querySelectorAll('.slider-slide');
+    const dots = document.querySelectorAll('.slider-dot');
+    let currentSlide = 0;
+
+    function showSlide(index) {
+        slides.forEach(slide => {
+            slide.classList.remove('active');
+            slide.style.opacity = '0';
+            slide.style.transform = 'translateX(20px)';
+        });
+        dots.forEach(dot => dot.classList.remove('slider-dot-active'));
+
+        slides[index].classList.add('active');
+        slides[index].style.opacity = '1';
+        slides[index].style.transform = 'translateX(0)';
+        dots[index].classList.add('slider-dot-active');
+    }
+
+    function nextSlide() {
+        currentSlide = (currentSlide + 1) % slides.length;
+        showSlide(currentSlide);
+    }
+
+    dots.forEach((dot, index) => {
+        dot.addEventListener('click', () => {
+            currentSlide = index;
+            showSlide(currentSlide);
+        });
+    });
+
+    // Auto-advance slides every 5 seconds
+    setInterval(nextSlide, 5000);
+    showSlide(0);
+});
+</script>
 {% endblock %}
