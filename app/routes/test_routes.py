@@ -1,12 +1,11 @@
-from flask import Blueprint, redirect, url_for
-from flask_login import login_user
-from app import db
-from app.models.user import User
-from app.models.session import Session
-from werkzeug.security import generate_password_hash
-from app.models.reflection import Reflection
-from app.models.shared_data import SharedData
+"""
+FOR TESTING PURPOSES ONLY
+This file contains routes for testing and seeding the database.
+These routes should not be used in production.
+Ensure routes are only accessible in testing mode.
+"""
 
+from . import *
 bp = Blueprint('test_seed', __name__)
 
 @bp.route('/test-seed')
