@@ -99,18 +99,8 @@ def test_upload_study_data(auto_logged_in_driver):
     # Wait a bit for any animations to complete
     driver.implicitly_wait(1)
 
-    # Debug: Print more of the page source to see the actual HTML structure
-    print("\nPage source after submission:")
-    print(driver.page_source)  # Print full page source
-
-    # Try different selectors for the notes
-    print("\nTrying different selectors:")
-    
     # Try finding by text content
     session_notes = driver.find_elements(By.CSS_SELECTOR, ".session-notes")
-    print(f"Elements with class 'session-notes': {len(session_notes)}")
-    for note in session_notes:
-        print(f"Found element: {note.get_attribute('outerHTML')}")
 
     try:
         # Use the more reliable selector based on the debug output
@@ -118,7 +108,6 @@ def test_upload_study_data(auto_logged_in_driver):
         assert any("Selenium test" in note.text for note in session_notes), "Selenium test not found in the notes"
     except AssertionError as e:
         driver.save_screenshot("failed_test_screenshot.png")
-        print("Screenshot saved to failed_test_screenshot.png")
         raise e
 
 def test_add_reflection(auto_logged_in_driver):
@@ -251,9 +240,6 @@ def test_share_data_weekly_learning_time(auto_logged_in_driver):
     share_button = driver.find_element(By.ID, "share-button")
     share_button.click()
     
-    # Consider the test successful if the share button was clicked
-    print("Share button was clicked successfully")
-    
     # Add a small delay to ensure the click event is processed
     driver.implicitly_wait(2)
 
@@ -299,10 +285,7 @@ def test_share_monday_study_hours(auto_logged_in_driver):
     # Click the share button
     share_button = driver.find_element(By.ID, "share-button")
     share_button.click()
-    
-    # Consider the test successful if the share button was clicked
-    print("Share button was clicked successfully for Monday study hours")
-    
+
     # Add a small delay to ensure the click event is processed
     driver.implicitly_wait(2)
 
@@ -348,10 +331,7 @@ def test_share_tuesday_study_hours(auto_logged_in_driver):
     # Click the share button
     share_button = driver.find_element(By.ID, "share-button")
     share_button.click()
-    
-    # Consider the test successful if the share button was clicked
-    print("Share button was clicked successfully for Tuesday study hours")
-    
+
     # Add a small delay to ensure the click event is processed
     driver.implicitly_wait(2)
 
@@ -397,10 +377,7 @@ def test_share_wednesday_study_hours(auto_logged_in_driver):
     # Click the share button
     share_button = driver.find_element(By.ID, "share-button")
     share_button.click()
-    
-    # Consider the test successful if the share button was clicked
-    print("Share button was clicked successfully for Wednesday study hours")
-    
+
     # Add a small delay to ensure the click event is processed
     driver.implicitly_wait(2)
 
@@ -446,10 +423,7 @@ def test_share_thursday_study_hours(auto_logged_in_driver):
     # Click the share button
     share_button = driver.find_element(By.ID, "share-button")
     share_button.click()
-    
-    # Consider the test successful if the share button was clicked
-    print("Share button was clicked successfully for Thursday study hours")
-    
+
     # Add a small delay to ensure the click event is processed
     driver.implicitly_wait(2)
 
@@ -495,10 +469,7 @@ def test_share_friday_study_hours(auto_logged_in_driver):
     # Click the share button
     share_button = driver.find_element(By.ID, "share-button")
     share_button.click()
-    
-    # Consider the test successful if the share button was clicked
-    print("Share button was clicked successfully for Friday study hours")
-    
+
     # Add a small delay to ensure the click event is processed
     driver.implicitly_wait(2)
 
@@ -544,10 +515,7 @@ def test_share_saturday_study_hours(auto_logged_in_driver):
     # Click the share button
     share_button = driver.find_element(By.ID, "share-button")
     share_button.click()
-    
-    # Consider the test successful if the share button was clicked
-    print("Share button was clicked successfully for Saturday study hours")
-    
+
     # Add a small delay to ensure the click event is processed
     driver.implicitly_wait(2)
 
@@ -593,10 +561,7 @@ def test_share_sunday_study_hours(auto_logged_in_driver):
     # Click the share button
     share_button = driver.find_element(By.ID, "share-button")
     share_button.click()
-    
-    # Consider the test successful if the share button was clicked
-    print("Share button was clicked successfully for Sunday study hours")
-    
+
     # Add a small delay to ensure the click event is processed
     driver.implicitly_wait(2)
 
@@ -642,9 +607,6 @@ def test_share_learning_intensity_analysis(auto_logged_in_driver):
     # Click the share button
     share_button = driver.find_element(By.ID, "share-button")
     share_button.click()
-    
-    # Consider the test successful if the share button was clicked
-    print("Share button was clicked successfully for Learning Intensity Analysis")
-    
+
     # Add a small delay to ensure the click event is processed
     driver.implicitly_wait(2)

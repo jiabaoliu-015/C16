@@ -49,7 +49,6 @@ def search_users():
 @login_required
 def share_data():
     """Share data with another user"""
-    print("Received request data:", request.get_json())  # Debug print
     data = request.get_json()
     recipient_id = data.get('recipient_id')
     session_id = data.get('session_id') or 1
@@ -65,12 +64,6 @@ def share_data():
     if not recipient:
         flash('Recipient not found', 'error')
         return jsonify({'error': 'Recipient not found'}), 404
-    
-    # Skip session validation for now
-    # We'll just use the default session_id value
-    print(f"Using session_id: {session_id}")
-    print(f"Recipient ID: {recipient_id}")
-    print(f"Current user ID: {current_user.id}")
     
     shared_data = SharedData(
         session_id=session_id,
@@ -354,7 +347,6 @@ def api_sessions():
                 
             return jsonify(session_list), 200
         except Exception as e:
-            print(f"Error fetching sessions: {e}")
             return jsonify({'error': 'Failed to fetch sessions'}), 500
 
     elif request.method == 'POST':
