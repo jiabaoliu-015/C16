@@ -11,13 +11,13 @@
 {% endblock %}
 {% block content %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script src="{{ url_for('static', filename='graphs/productivity_overview.js') }}"></script>
-<script src="{{ url_for('static', filename='graphs/daily_timeline.js') }}"></script>
-<script src="{{ url_for('static', filename='graphs/course_insights.js') }}"></script>
-<script src="{{ url_for('static', filename='graphs/weekly_comparison.js') }}"></script>
-<script src="{{ url_for('static', filename='graphs/study_streak.js') }}"></script>
-<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>
+<script src="{{ url_for('static', filename='graphs/productivity_overview.js') }}" defer></script>
+<script src="{{ url_for('static', filename='graphs/daily_timeline.js') }}" defer></script>
+<script src="{{ url_for('static', filename='graphs/course_insights.js') }}" defer></script>
+<script src="{{ url_for('static', filename='graphs/weekly_comparison.js') }}" defer></script>
+<script src="{{ url_for('static', filename='graphs/study_streak.js') }}" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels" defer></script>
 
 <main class="dashboard-main">
   <!-- Productivity Overview -->
@@ -132,7 +132,7 @@
       </form>
     </div>
   </div>
-  <script src="{{ url_for('static', filename='graphs/reflections.js') }}"></script>
+  <script src="{{ url_for('static', filename='graphs/reflections.js') }}" defer></script>
 
   <!-- Weekly Comparison -->
   <section class="dashboard-section" id="weekly-comparison">
@@ -221,6 +221,6 @@
       <canvas id="studyDistChart" class="w-full h-full relative z-10" aria-label="Study distribution chart" role="img"></canvas>
     </div>
   </section>
-  <script src="{{ url_for('static', filename='graphs/study_distribution.js') }}"></script>
+  <script src="{{ url_for('static', filename='graphs/study_distribution.js') }}" defer></script>
 </main>
 {% endblock %}
