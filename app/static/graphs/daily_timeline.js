@@ -43,10 +43,12 @@ document.addEventListener("DOMContentLoaded", async () => {
             <span class="text-sm font-medium text-gray-700">${course}</span>
             <span class="text-xs text-gray-500 flex items-center">${iconBreaks()}${breaks}m break${breaks === 1 ? "" : "s"}</span>
           </div>
+          <div class="mt-1 flex">
+            <span class="inline-flex items-center text-xs px-2 py-0.5 rounded-full bg-purple-100 text-purple-700 font-semibold shadow-sm w-auto max-w-fit">
+              ${iconProd()}${prod}/10
+            </span>
+          </div>
           ${notes ? `<p class="text-xs text-gray-500 mt-1 italic">"${notes}"</p>` : ""}
-          <span class="absolute top-2 right-3 text-xs px-2 py-0.5 rounded-full bg-purple-100 text-purple-700 font-semibold flex items-center shadow-sm">
-            ${iconProd()}${prod}/10
-          </span>
         </div>
       </article>`;
   };
