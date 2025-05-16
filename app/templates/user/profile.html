@@ -8,6 +8,7 @@
 {% endblock %}
 {% block content %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/profile.css') }}">
+<script src="{{ url_for('static', filename='js/profile.js') }}"></script>
 
 <div class="profile-container">
     <div class="profile-header">
@@ -26,20 +27,13 @@
     <!-- Add Friend Form -->
     <div class="friend-form">
         <h3 class="form-title">Add a Friend</h3>
-        <form action="{{ url_for('logged_in.profile') }}" method="POST">
+        <form id="add-friend-form">
             {{ form.hidden_tag() }}
             
             <!-- Email Field -->
             <div class="form-group">
                 <label for="email" class="form-label">{{ form.email.label }}</label>
-                <input type="email" name="email" id="email" class="form-input" placeholder="Enter friend's email">
-                {% if form.email.errors %}
-                    <div class="error-message">
-                        {% for error in form.email.errors %}
-                            <p>{{ error }}</p>
-                        {% endfor %}
-                    </div>
-                {% endif %}
+                <input type="email" name="email" id="email" class="form-input" placeholder="Enter friend's email" required>
             </div>
             
             <!-- Submit Button -->
@@ -52,21 +46,20 @@
     <!-- Friends List -->
     <div class="friends-list">
         <h3 class="friends-title">Your Friends</h3>
-        {% if current_user.friends.count() > 0 %}
-            <ul class="friends-list-items">
-                {% for friend in current_user.friends.all() %}
-                    <li class="friend-item">
-                        <span>{{ friend.email }}</span>
-                        <form action="{{ url_for('logged_in.logged_in_remove_friend', friend_id=friend.id) }}" method="POST" class="inline">
-                            {{ form.hidden_tag() }}
-                            <button type="submit" class="remove-friend-button">Remove</button>
-                        </form>
-                    </li>
-                {% endfor %}
-            </ul>
-        {% else %}
-            <p class="friends-empty">You have no friends yet.</p>
-        {% endif %}
+        <div id="friends-list-container">
+            {% if current_user.friends.count() > 0 %}
+                <ul class="friends-list-items" id="friends-list">
+                    {% for friend in current_user.friends.all() %}
+                        <li class="friend-item" data-friend-id="{{ friend.id }}">
+                            <span>{{ friend.email }}</span>
+                            <button class="remove-friend-button" data-friend-id="{{ friend.id }}">Remove</button>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p class="friends-empty">You have no friends yet.</p>
+            {% endif %}
+        </div>
     </div>
 </div>
 {% endblock %}

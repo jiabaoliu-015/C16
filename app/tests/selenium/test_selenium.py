@@ -152,10 +152,6 @@ def test_add_reflection(auto_logged_in_driver):
         EC.visibility_of_element_located((By.CLASS_NAME, "flash-message"))
     )
     
-    # Debug: Print the actual flash message content
-    print("\nFlash message HTML:", flash_message.get_attribute('outerHTML'))
-    print("Flash message text:", flash_message.text)
-    
     # Wait a moment for any animations
     driver.implicitly_wait(1)
     
@@ -176,86 +172,37 @@ def test_add_reflection(auto_logged_in_driver):
     assert any("test" in tag.text for tag in tags)
     assert any("selenium" in tag.text for tag in tags)
 
-# def test_upload_study_data(driver):
-#     # Log in
-#     driver.get(f"{BASE_URL}/login")
-#     email_field = driver.find_element(By.NAME, "email")
-#     password_field = driver.find_element(By.NAME, "password")
-#     submit_button = driver.find_element(By.CSS_SELECTOR, "button[type='submit']")
-#     email_field.send_keys("testuser@example.com")
-#     password_field.send_keys("password123")
-#     driver.execute_script("arguments[0].scrollIntoView();", submit_button)
-#     WebDriverWait(driver, 10).until(
-#         EC.element_to_be_clickable((By.CSS_SELECTOR, "button[type='submit']"))
-#     )
-#     submit_button.click()
-#     WebDriverWait(driver, 10).until(
-#         EC.presence_of_element_located((By.TAG_NAME, "h1"))
-#     )
-#     body_text = driver.find_element(By.TAG_NAME, "body").text
-#     assert "Welcome" in body_text or "Dashboard" in body_text
-
-#     # Now go to upload page
-#     driver.get(f"{BASE_URL}/upload/")
-#     WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, "new_date")))
-
-#     # Fill out the form
-#     driver.find_element(By.ID, "new_date").send_keys("2025-05-14")
-#     driver.find_element(By.ID, "new_start").send_keys("09:00")
-#     driver.find_element(By.ID, "new_end").send_keys("10:00")
-#     driver.find_element(By.ID, "new_break").send_keys("10")
-#     driver.find_element(By.ID, "new_course").send_keys("Math")
-#     driver.find_element(By.ID, "new_activity").send_keys("Selenium test")
-#     driver.find_element(By.ID, "new_productivity").send_keys("4")
-
-#     # Wait for the submit button to be enabled
-#     submit_btn = driver.find_element(By.ID, "create-session-btn")
-#     WebDriverWait(driver, 10).until(lambda d: submit_btn.is_enabled())
-#     submit_btn.click()
-
-#     # Wait for success message
-#     WebDriverWait(driver, 10).until(
-#         EC.presence_of_element_located((By.CLASS_NAME, "bg-green-100"))
-#     )
-#     success_element = driver.find_element(By.CLASS_NAME, "bg-green-100")
-#     assert "Session successfully added" in success_element.text
-
-# def test_upload_study_data(driver, cookies):
-#     # Use cookies to maintain logged-in state
-#     driver.get(f"{BASE_URL}/")
-#     for cookie in cookies:
-#         driver.add_cookie(cookie)
-#     driver.refresh()
-
-#     # Now proceed with your test steps on the upload page
-#     driver.get(f"{BASE_URL}/upload/")
+def test_add_self_as_friend(auto_logged_in_driver):
+    driver = auto_logged_in_driver
+    driver.get(f"{BASE_URL}/profile/")
     
-#     # Debug: print the current URL and page source
-#     print("Current URL:", driver.current_url)
-#     print("Page Title:", driver.title)
+    # Wait for page to load
+    WebDriverWait(driver, 10).until(
+        EC.presence_of_element_located((By.CLASS_NAME, "profile-container"))
+    )
     
-#     # Save a screenshot for debugging
-#     driver.save_screenshot("debug_upload_page.png")
+    # Find the email input and submit button
+    email_input = WebDriverWait(driver, 10).until(
+        EC.presence_of_element_located((By.ID, "friend-email"))
+    )
+    submit_btn = driver.find_element(By.CSS_SELECTOR, "#add-friend-form button[type='submit']")
     
-#     # Print some page source to see what's actually loaded
-#     print("Page source excerpt:", driver.page_source[:500])
+    # Enter own email and submit
+    email_input.clear()
+    email_input.send_keys("testuser@example.com")
+    submit_btn.click()
     
-#     # Try waiting for any element to make sure page is loaded
-#     try:
-#         WebDriverWait(driver, 5).until(EC.presence_of_element_located((By.TAG_NAME, "body")))
-#         print("Body element found")
-#     except:
-#         print("Couldn't even find body element")
+    # Wait for the AJAX response and page update
+    WebDriverWait(driver, 10).until(
+        EC.presence_of_element_located((By.CLASS_NAME, "message"))
+    )
     
-#     # Now try to find the specific element
-#     try:
-#         WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, "new_date")))
-#         print("Found the new_date element")
-#     except Exception as e:
-#         print(f"Error finding new_date: {e}")
-        
-#         # Let's see what elements ARE on the page
-#         elements = driver.find_elements(By.XPATH, "//*[@id]")
-#         print("Elements with IDs on the page:")
-#         for element in elements[:10]:  # Show first 10 elements
-#             print(f"  - {element.get_attribute('id')}")
+    # Verify the error message
+    message = driver.find_element(By.CLASS_NAME, "message")
+    assert "You cannot add yourself as a friend" in message.text
+    assert "error" in message.get_attribute("class")
+    
+    # Verify the form is still visible and input is cleared
+    assert driver.find_element(By.CLASS_NAME, "friend-form").is_displayed()
+    assert driver.find_element(By.ID, "friend-email").get_attribute("value") == ""
+
