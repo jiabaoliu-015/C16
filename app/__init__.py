@@ -4,7 +4,7 @@ from app.extensions import db, migrate, csrf, login_manager, mail
 import os
 from flask_cors import CORS
 from instance.config import Config
-from app.templates.auth.forms import LogoutForm
+from app.forms import LogoutForm
 from app.routes import register_blueprints
 # from flask_dance.contrib.google import make_google_blueprint, google
 from app.routes.test_routes import bp
