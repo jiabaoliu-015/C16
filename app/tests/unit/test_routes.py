@@ -12,6 +12,7 @@ from app.models import User
 import pytest
 from app.extensions import db
 from app.models import User
+from instance.config import TestingConfig
 
 @pytest.fixture
 def seed_user(app):
@@ -21,6 +22,8 @@ def seed_user(app):
     return user
 
 def seed_data():
+    User.query.delete()
+    db.session.commit()
     user = User(
         email="testuser@example.com",
         password="testpassword"  # Make sure the password is hashed as needed
@@ -30,7 +33,7 @@ def seed_data():
 
 class LoggedOutRoutesTestCase(unittest.TestCase):
     def setUp(self):
-        self.app = create_app(testing=True)  # Pass test config if needed
+        self.app = create_app(TestingConfig)  # Use the correct config
         self.client = self.app.test_client()
         self.ctx = self.app.app_context()
         self.ctx.push()
