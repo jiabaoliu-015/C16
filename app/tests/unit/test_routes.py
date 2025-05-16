@@ -9,6 +9,16 @@ from app import create_app  # adjust if your factory function is named different
 from flask_login import current_user
 from app import db
 from app.models import User
+import pytest
+from app.extensions import db
+from app.models import User
+
+@pytest.fixture
+def seed_user(app):
+    user = User(email="testuser@example.com", password="testpassword")
+    db.session.add(user)
+    db.session.commit()
+    return user
 
 def seed_data():
     user = User(
@@ -113,3 +123,16 @@ class LoggedOutRoutesTestCase(unittest.TestCase):
         
         self.assertEqual(response.status_code, 200)
         self.assertIn(b'Email is already registered.', response.data)
+
+def test_home_route(client):
+    response = client.get('/')
+    assert response.status_code == 200
+    assert b'home' in response.data.lower()
+
+def test_login_post_valid(client, seed_user):
+    response = client.post('/login', data={
+        "email": "testuser@example.com",
+        "password": "testpassword"
+    }, follow_redirects=True)
+    assert response.status_code == 200
+    assert b'Welcome' in response.data
