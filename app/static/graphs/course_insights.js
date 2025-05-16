@@ -62,6 +62,10 @@ document.addEventListener("DOMContentLoaded", function () {
     skeleton.style.display = "";
     ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 
+    // Add this line to get the empty state div
+    const emptyDiv = document.getElementById("courseInsightsEmpty");
+    if (emptyDiv) emptyDiv.style.display = "none";
+
     let url = "/api/course-insights";
     if (range !== "overall") url += "?range=" + range;
 
@@ -72,11 +76,13 @@ document.addEventListener("DOMContentLoaded", function () {
         setTimeout(() => (skeleton.style.display = "none"), 300);
 
         if (!data.length) {
-          ctx.font = "14px 'Inter', 'Manrope', sans-serif";
-          ctx.fillStyle = "#888";
-          ctx.fillText("No data yet. Start studying to see insights!", 24, 60);
+          // Hide canvas, show empty state
+          ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+          if (emptyDiv) emptyDiv.style.display = "";
           return;
         }
+        // Hide empty state if data exists
+        if (emptyDiv) emptyDiv.style.display = "none";
 
         // Sort by total_minutes descending and take top 4
         const topSubjects = data
