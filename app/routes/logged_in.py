@@ -60,7 +60,7 @@ def share_data():
         return jsonify({'error': 'Recipient ID and session ID are required'}), 400
 
     # check recipient
-    recipient = User.query.get(recipient_id)
+    recipient = db.session.get(User, recipient_id)
     if not recipient:
         flash('Recipient not found', 'error')
         return jsonify({'error': 'Recipient not found'}), 404
