@@ -163,39 +163,36 @@ def test_add_reflection(auto_logged_in_driver):
     assert any("test" in tag.text for tag in tags)
     assert any("selenium" in tag.text for tag in tags)
 
-# def test_add_self_as_friend(auto_logged_in_driver):
-#     driver = auto_logged_in_driver
-#     driver.get(f"{BASE_URL}/profile/")
+def test_add_self_as_friend(auto_logged_in_driver):
+    driver = auto_logged_in_driver
+    driver.get(f"{BASE_URL}/profile/")
     
-#     # Wait for page to load
-#     WebDriverWait(driver, 10).until(
-#         EC.presence_of_element_located((By.CLASS_NAME, "profile-container"))
-#     )
+    # Wait for page to load
+    WebDriverWait(driver, 10).until(
+        EC.presence_of_element_located((By.CLASS_NAME, "profile-container"))
+    )
 
-#     # Find the email input and submit button
-#     email_input = WebDriverWait(driver, 10).until(
-#         EC.presence_of_element_located((By.ID, "email"))
-#     )
-#     submit_btn = driver.find_element(By.CSS_SELECTOR, "#add-friend-form button[type='submit']")
+    # Find the email input and submit button
+    email_input = WebDriverWait(driver, 10).until(
+        EC.presence_of_element_located((By.ID, "email"))
+    )
+    submit_btn = driver.find_element(By.CSS_SELECTOR, "#add-friend-form button[type='submit']")
 
-#     # Enter own email and submit
-#     email_input.clear()
-#     email_input.send_keys("testuser@example.com")
-#     submit_btn.click()
+    # Enter own email and submit
+    email_input.clear()
+    email_input.send_keys("testuser@example.com")
+    submit_btn.click()
 
-#     # Wait for the AJAX response and page update
-#     WebDriverWait(driver, 10).until(
-#         EC.presence_of_element_located((By.CLASS_NAME, "flash-message"))
-#     )
+    # Wait for the AJAX response and page update
+    WebDriverWait(driver, 10).until(
+        EC.presence_of_element_located((By.CLASS_NAME, "flash-message"))
+    )
 
-#     # Verify the error message
-#     message = driver.find_element(By.CLASS_NAME, "flash-message")
-#     assert "You cannot add yourself as a friend" in message.text
-#     alert_div = message.find_element(By.CLASS_NAME, "alert")
-#     assert "error" in alert_div.get_attribute("class")
-    
-#     # Verify the form is still visible and input is cleared
-#     assert driver.find_element(By.CLASS_NAME, "friend-form").is_displayed()
+    # Verify the error message
+    message = driver.find_element(By.CLASS_NAME, "flash-message")
+    assert "You cannot add yourself as a friend" in message.text
+    alert_div = message.find_element(By.CLASS_NAME, "alert")
+    assert "error" in alert_div.get_attribute("class")
 
 def test_share_data_weekly_learning_time(auto_logged_in_driver):
     driver = auto_logged_in_driver
