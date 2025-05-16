@@ -36,10 +36,6 @@ def create_app(testing=False):
     # )
     # app.register_blueprint(google_bp, url_prefix="/login")
 
-    @login_manager.user_loader
-    def load_user(user_id):
-        return User.query.get(int(user_id))
-
     # Initialize extensions
     db.init_app(app)
     migrate.init_app(app, db)
