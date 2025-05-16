@@ -13,56 +13,39 @@
     </div>
 
     <!-- Right Side -->
-    <div class="flex-1 flex items-center justify-center bg-gray-100">
-        <div class="w-full max-w-md bg-white rounded-lg shadow-lg p-8">
-            <div class="flex flex-col items-center mb-6">
-                <img src="{{ url_for('static', filename='images/study_cap.png') }}" alt="Study Cap" class="w-16 h-16 mb-4 transition-transform transform hover:scale-110 hover:shadow-[0_0_20px_rgba(0,0,255,0.6)]">
-                <h1 class="text-2xl font-bold text-gray-800">Log In</h1>
-                <p class="text-gray-500">Welcome back!</p>
+    <div class="flex-1 flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100">
+        <div class="w-full max-w-md bg-white rounded-2xl shadow-2xl p-8 transform transition-all duration-300 hover:shadow-3xl">
+            <div class="flex flex-col items-center mb-8 animate__animated animate__fadeInDown">
+                <img src="{{ url_for('static', filename='images/study_cap.png') }}" alt="Study Cap" class="w-20 h-20 mb-4 transition-all duration-300 transform hover:scale-110 hover:rotate-3 hover:shadow-[0_0_20px_rgba(0,0,255,0.6)]">
+                <h1 class="text-3xl font-bold text-gray-800 bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent">Welcome Back!</h1>
+                <p class="text-gray-500 mt-2">Sign in to continue your learning journey</p>
             </div>
-            <form method="POST" action="{{ url_for('logged_out.login') }}" class="space-y-4">
-                <!-- CSRF token -->
-                {{ form.hidden_tag() }}  <!-- CSRF token is included here -->
-            
-                <!-- Google login button
-                {% if enable_google_login %}
-                    <a href="{{ url_for('google.login') }}">Sign in with Google</a>
-                {% endif %}
-                class="w-full bg-blue-500 hover:bg-blue-600 text-white font-medium py-2 px-4 rounded-md transition duration-200 flex items-center justify-center space-x-2">
-                    <img src="{{ url_for('static', filename='images/google_icon.png') }}" alt="Google Icon" class="w-5 h-5">
-                    <span>Login with Google</span>
-                </a> -->
-                                
-                <!-- OR separator -->
-                <!-- <div class="flex items-center justify-center space-x-2">
-                    <hr class="flex-1 border-gray-300">
-                    <span class="text-gray-500 text-sm">OR</span>
-                    <hr class="flex-1 border-gray-300">
-                </div> -->
-            
+            <form method="POST" action="{{ url_for('logged_out.login') }}" class="space-y-6">
+                {{ form.hidden_tag() }}
+                
                 <!-- Email input field -->
-                <div class="space-y-2">
+                <div class="space-y-2 animate__animated animate__fadeInLeft" style="animation-delay: 0.2s">
                     <label for="email" class="text-gray-700 font-medium block">Email</label>
-                    {{ form.email(class="w-full bg-gray-100 border border-gray-300 rounded-md px-4 py-2 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500") }}
+                    {{ form.email(class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300") }}
                 </div>
             
                 <!-- Password input field -->
-                <div class="space-y-2">
+                <div class="space-y-2 animate__animated animate__fadeInLeft" style="animation-delay: 0.3s">
                     <label for="password" class="text-gray-700 font-medium block">Password</label>
-                    {{ form.password(class="w-full bg-gray-100 border border-gray-300 rounded-md px-4 py-2 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500") }}
+                    {{ form.password(class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300") }}
                 </div>
             
                 <!-- Forgot password link -->
-                <div class="text-right">
-                    <a href="{{ url_for('logged_out.forgot_password') }}" class="text-blue-500 hover:text-blue-600 text-sm">Forgot password?</a>
+                <div class="text-right animate__animated animate__fadeInLeft" style="animation-delay: 0.4s">
+                    <a href="{{ url_for('logged_out.forgot_password') }}" class="text-blue-500 hover:text-blue-600 text-sm font-medium transition-colors duration-300">Forgot password?</a>
                 </div>
                 
                 <!-- Flash Messages Section -->
                 {% with messages = get_flashed_messages(with_categories=true) %}
                     {% if messages %}
-                        <div class="mt-4 flash-message">
+                        <div class="mt-4 flash-message animate__animated animate__fadeIn">
                             {% for category, message in messages %}
-                                <div class="alert alert-{{ category }} p-3 mb-2 text-center text-white {{ 'bg-green-500' if category == 'success' else 'bg-red-500' }}">
+                                <div class="alert alert-{{ category }} p-4 mb-2 rounded-xl text-center text-white {{ 'bg-green-500' if category == 'success' else 'bg-red-500' }} transform transition-all duration-300 hover:scale-[1.02]">
                                     {{ message }}
                                 </div>
                             {% endfor %}
@@ -70,35 +53,35 @@
                         <script>
                             setTimeout(function() {
                                 const flashMessage = document.querySelector('.flash-message');
-                                flashMessage.classList.add('fade-out');
+                                flashMessage.classList.add('animate__fadeOut');
                                 setTimeout(function() {
-                                    flashMessage.remove();  // Remove the flash message from the DOM after it fades out
-                                }, 1000); // Wait for the fade-out transition to finish before removing the element
+                                    flashMessage.remove();
+                                }, 1000);
                             }, 3000);
                         </script>
                     {% endif %}
                 {% endwith %}
                 
                 <!-- Submit login button -->
-                <button type="submit" class="w-full bg-gray-800 hover:bg-gray-900 text-white font-medium py-2 px-4 rounded-md transition duration-200">
+                <button type="submit" class="w-full bg-gradient-to-r from-blue-600 to-blue-800 hover:from-blue-700 hover:to-blue-900 text-white font-bold py-3 px-4 rounded-xl transition-all duration-300 transform hover:scale-[1.02] hover:shadow-lg animate__animated animate__fadeInUp" style="animation-delay: 0.5s">
                     Log In →
                 </button>
             
-                <!-- OR separator for creating an account -->
-                <div class="flex items-center justify-center space-x-2 mt-4">
-                    <hr class="flex-1 border-gray-300">
-                    <span class="text-gray-500 text-sm">OR</span>
-                    <hr class="flex-1 border-gray-300">
+                <!-- OR separator -->
+                <div class="flex items-center justify-center space-x-2 mt-6 animate__animated animate__fadeIn" style="animation-delay: 0.6s">
+                    <hr class="flex-1 border-gray-200">
+                    <span class="text-gray-500 text-sm px-4">OR</span>
+                    <hr class="flex-1 border-gray-200">
                 </div>
             
                 <!-- Create account link -->
-                <div class="text-center">
-                    <p class="text-gray-500 text-sm">You don't have an account yet? <a href="{{ url_for('logged_out.signup') }}" class="text-blue-500 hover:text-blue-600 font-medium">Create an account →</a></p>
+                <div class="text-center animate__animated animate__fadeInUp" style="animation-delay: 0.7s">
+                    <p class="text-gray-500 text-sm">Don't have an account? <a href="{{ url_for('logged_out.signup') }}" class="text-blue-500 hover:text-blue-600 font-medium transition-colors duration-300">Create one →</a></p>
                 </div>
             </form>
-            <div class="mt-6 text-center text-gray-400 text-sm">
-                <p><strong>StudyTrackr</strong> · The Study Tracking App</p>
-                <p>©2025 StudyTrackr</p>
+            <div class="mt-8 text-center text-gray-400 text-sm animate__animated animate__fadeIn" style="animation-delay: 0.8s">
+                <p class="font-medium"><span class="text-blue-600">StudyTrackr</span> · Your Study Companion</p>
+                <p class="mt-1">©2025 StudyTrackr</p>
             </div>
         </div>
     </div>
