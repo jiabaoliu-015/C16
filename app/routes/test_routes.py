@@ -21,6 +21,8 @@ def seed():
     db.session.commit()
     return "Seeded"
 
+
+
 @bp.route('/test-login')
 def test_login():
     user = User.query.filter_by(email='testuser@example.com').first()

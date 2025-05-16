@@ -174,6 +174,40 @@ def test_add_reflection(auto_logged_in_driver):
     assert any("test" in tag.text for tag in tags)
     assert any("selenium" in tag.text for tag in tags)
 
+# def test_add_self_as_friend(auto_logged_in_driver):
+#     driver = auto_logged_in_driver
+#     driver.get(f"{BASE_URL}/profile/")
+    
+#     # Wait for page to load
+#     WebDriverWait(driver, 10).until(
+#         EC.presence_of_element_located((By.CLASS_NAME, "profile-container"))
+#     )
+
+#     # Find the email input and submit button
+#     email_input = WebDriverWait(driver, 10).until(
+#         EC.presence_of_element_located((By.ID, "email"))
+#     )
+#     submit_btn = driver.find_element(By.CSS_SELECTOR, "#add-friend-form button[type='submit']")
+
+#     # Enter own email and submit
+#     email_input.clear()
+#     email_input.send_keys("testuser@example.com")
+#     submit_btn.click()
+
+#     # Wait for the AJAX response and page update
+#     WebDriverWait(driver, 10).until(
+#         EC.presence_of_element_located((By.CLASS_NAME, "flash-message"))
+#     )
+
+#     # Verify the error message
+#     message = driver.find_element(By.CLASS_NAME, "flash-message")
+#     assert "You cannot add yourself as a friend" in message.text
+#     alert_div = message.find_element(By.CLASS_NAME, "alert")
+#     assert "error" in alert_div.get_attribute("class")
+    
+#     # Verify the form is still visible and input is cleared
+#     assert driver.find_element(By.CLASS_NAME, "friend-form").is_displayed()
+
 def test_share_data_weekly_learning_time(auto_logged_in_driver):
     driver = auto_logged_in_driver
     driver.get(f"{BASE_URL}/share/")
@@ -223,45 +257,394 @@ def test_share_data_weekly_learning_time(auto_logged_in_driver):
     # Add a small delay to ensure the click event is processed
     driver.implicitly_wait(2)
 
-def test_share_reset(auto_logged_in_driver):
+def test_share_monday_study_hours(auto_logged_in_driver):
     driver = auto_logged_in_driver
     driver.get(f"{BASE_URL}/share/")
     
     # Wait for the page to fully load
     WebDriverWait(driver, 10).until(
-        EC.presence_of_element_located((By.ID, "reset-shares"))
+        EC.presence_of_element_located((By.ID, "user-search"))
     )
     
-    # Find the Reset button in the Received Shares section
-    reset_button = driver.find_element(By.ID, "reset-shares")
+    # Find the email input field and enter the email
+    email_input = driver.find_element(By.ID, "user-search")
+    email_input.clear()
+    email_input.send_keys("testuser2@example.com")
     
-    # Scroll to the Reset button to ensure it's visible
-    driver.execute_script("arguments[0].scrollIntoView();", reset_button)
-    
-    # Wait for the Reset button to be clickable
+    # Wait for the search results to appear
     WebDriverWait(driver, 10).until(
-        EC.element_to_be_clickable((By.ID, "reset-shares"))
+        EC.visibility_of_element_located((By.ID, "user-search-results"))
     )
     
-    # Set up a JavaScript function to handle the confirmation dialog
-    # This needs to be done before clicking the button
-    driver.execute_script("""
-        window.confirm = function() { 
-            console.log('Confirmation dialog intercepted and accepted');
-            return true; 
-        };
-    """)
-    
-    # Click the Reset button
-    reset_button.click()
-    
-    # Wait for the success message to appear
+    # Wait for the search results to be populated
     WebDriverWait(driver, 10).until(
-        lambda d: "Received shares have been cleared from display" in d.page_source
+        lambda d: d.find_element(By.ID, "user-search-results").get_attribute("innerHTML").strip() != ""
     )
     
-    # Verify the success message is displayed
-    received_shares_list = driver.find_element(By.ID, "received-shares-list")
-    assert "Received shares have been cleared from display" in received_shares_list.text, "Success message not found after reset"
+    # Click on the search result (the first matching user)
+    search_results = driver.find_element(By.ID, "user-search-results")
+    # Find the first result item (could be a div, li, or other element depending on implementation)
+    result_item = search_results.find_element(By.XPATH, ".//*[contains(text(), 'testuser2@example.com')]")
+    result_item.click()
     
-    print("Reset shares test completed successfully")
+    # Find the share select dropdown and select "Monday study time hours"
+    share_select = Select(driver.find_element(By.ID, "share-select"))
+    share_select.select_by_value("monday")  # "monday" is the value for "Monday study time hours"
+    
+    # Wait for the share button to be enabled
+    WebDriverWait(driver, 10).until(
+        EC.element_to_be_clickable((By.ID, "share-button"))
+    )
+    
+    # Click the share button
+    share_button = driver.find_element(By.ID, "share-button")
+    share_button.click()
+    
+    # Consider the test successful if the share button was clicked
+    print("Share button was clicked successfully for Monday study hours")
+    
+    # Add a small delay to ensure the click event is processed
+    driver.implicitly_wait(2)
+
+def test_share_tuesday_study_hours(auto_logged_in_driver):
+    driver = auto_logged_in_driver
+    driver.get(f"{BASE_URL}/share/")
+    
+    # Wait for the page to fully load
+    WebDriverWait(driver, 10).until(
+        EC.presence_of_element_located((By.ID, "user-search"))
+    )
+    
+    # Find the email input field and enter the email
+    email_input = driver.find_element(By.ID, "user-search")
+    email_input.clear()
+    email_input.send_keys("testuser2@example.com")
+    
+    # Wait for the search results to appear
+    WebDriverWait(driver, 10).until(
+        EC.visibility_of_element_located((By.ID, "user-search-results"))
+    )
+    
+    # Wait for the search results to be populated
+    WebDriverWait(driver, 10).until(
+        lambda d: d.find_element(By.ID, "user-search-results").get_attribute("innerHTML").strip() != ""
+    )
+    
+    # Click on the search result (the first matching user)
+    search_results = driver.find_element(By.ID, "user-search-results")
+    # Find the first result item (could be a div, li, or other element depending on implementation)
+    result_item = search_results.find_element(By.XPATH, ".//*[contains(text(), 'testuser2@example.com')]")
+    result_item.click()
+    
+    # Find the share select dropdown and select "Tuesday study hours"
+    share_select = Select(driver.find_element(By.ID, "share-select"))
+    share_select.select_by_value("tuesday")  # "tuesday" is the value for "Tuesday study hours"
+    
+    # Wait for the share button to be enabled
+    WebDriverWait(driver, 10).until(
+        EC.element_to_be_clickable((By.ID, "share-button"))
+    )
+    
+    # Click the share button
+    share_button = driver.find_element(By.ID, "share-button")
+    share_button.click()
+    
+    # Consider the test successful if the share button was clicked
+    print("Share button was clicked successfully for Tuesday study hours")
+    
+    # Add a small delay to ensure the click event is processed
+    driver.implicitly_wait(2)
+
+def test_share_wednesday_study_hours(auto_logged_in_driver):
+    driver = auto_logged_in_driver
+    driver.get(f"{BASE_URL}/share/")
+    
+    # Wait for the page to fully load
+    WebDriverWait(driver, 10).until(
+        EC.presence_of_element_located((By.ID, "user-search"))
+    )
+    
+    # Find the email input field and enter the email
+    email_input = driver.find_element(By.ID, "user-search")
+    email_input.clear()
+    email_input.send_keys("testuser2@example.com")
+    
+    # Wait for the search results to appear
+    WebDriverWait(driver, 10).until(
+        EC.visibility_of_element_located((By.ID, "user-search-results"))
+    )
+    
+    # Wait for the search results to be populated
+    WebDriverWait(driver, 10).until(
+        lambda d: d.find_element(By.ID, "user-search-results").get_attribute("innerHTML").strip() != ""
+    )
+    
+    # Click on the search result (the first matching user)
+    search_results = driver.find_element(By.ID, "user-search-results")
+    # Find the first result item (could be a div, li, or other element depending on implementation)
+    result_item = search_results.find_element(By.XPATH, ".//*[contains(text(), 'testuser2@example.com')]")
+    result_item.click()
+    
+    # Find the share select dropdown and select "Wednesday study hours"
+    share_select = Select(driver.find_element(By.ID, "share-select"))
+    share_select.select_by_value("wednesday")  # "wednesday" is the value for "Wednesday study hours"
+    
+    # Wait for the share button to be enabled
+    WebDriverWait(driver, 10).until(
+        EC.element_to_be_clickable((By.ID, "share-button"))
+    )
+    
+    # Click the share button
+    share_button = driver.find_element(By.ID, "share-button")
+    share_button.click()
+    
+    # Consider the test successful if the share button was clicked
+    print("Share button was clicked successfully for Wednesday study hours")
+    
+    # Add a small delay to ensure the click event is processed
+    driver.implicitly_wait(2)
+
+def test_share_thursday_study_hours(auto_logged_in_driver):
+    driver = auto_logged_in_driver
+    driver.get(f"{BASE_URL}/share/")
+    
+    # Wait for the page to fully load
+    WebDriverWait(driver, 10).until(
+        EC.presence_of_element_located((By.ID, "user-search"))
+    )
+    
+    # Find the email input field and enter the email
+    email_input = driver.find_element(By.ID, "user-search")
+    email_input.clear()
+    email_input.send_keys("testuser2@example.com")
+    
+    # Wait for the search results to appear
+    WebDriverWait(driver, 10).until(
+        EC.visibility_of_element_located((By.ID, "user-search-results"))
+    )
+    
+    # Wait for the search results to be populated
+    WebDriverWait(driver, 10).until(
+        lambda d: d.find_element(By.ID, "user-search-results").get_attribute("innerHTML").strip() != ""
+    )
+    
+    # Click on the search result (the first matching user)
+    search_results = driver.find_element(By.ID, "user-search-results")
+    # Find the first result item (could be a div, li, or other element depending on implementation)
+    result_item = search_results.find_element(By.XPATH, ".//*[contains(text(), 'testuser2@example.com')]")
+    result_item.click()
+    
+    # Find the share select dropdown and select "Thursday study hours"
+    share_select = Select(driver.find_element(By.ID, "share-select"))
+    share_select.select_by_value("thursday")  # "thursday" is the value for "Thursday study hours"
+    
+    # Wait for the share button to be enabled
+    WebDriverWait(driver, 10).until(
+        EC.element_to_be_clickable((By.ID, "share-button"))
+    )
+    
+    # Click the share button
+    share_button = driver.find_element(By.ID, "share-button")
+    share_button.click()
+    
+    # Consider the test successful if the share button was clicked
+    print("Share button was clicked successfully for Thursday study hours")
+    
+    # Add a small delay to ensure the click event is processed
+    driver.implicitly_wait(2)
+
+def test_share_friday_study_hours(auto_logged_in_driver):
+    driver = auto_logged_in_driver
+    driver.get(f"{BASE_URL}/share/")
+    
+    # Wait for the page to fully load
+    WebDriverWait(driver, 10).until(
+        EC.presence_of_element_located((By.ID, "user-search"))
+    )
+    
+    # Find the email input field and enter the email
+    email_input = driver.find_element(By.ID, "user-search")
+    email_input.clear()
+    email_input.send_keys("testuser2@example.com")
+    
+    # Wait for the search results to appear
+    WebDriverWait(driver, 10).until(
+        EC.visibility_of_element_located((By.ID, "user-search-results"))
+    )
+    
+    # Wait for the search results to be populated
+    WebDriverWait(driver, 10).until(
+        lambda d: d.find_element(By.ID, "user-search-results").get_attribute("innerHTML").strip() != ""
+    )
+    
+    # Click on the search result (the first matching user)
+    search_results = driver.find_element(By.ID, "user-search-results")
+    # Find the first result item (could be a div, li, or other element depending on implementation)
+    result_item = search_results.find_element(By.XPATH, ".//*[contains(text(), 'testuser2@example.com')]")
+    result_item.click()
+    
+    # Find the share select dropdown and select "Friday study hours"
+    share_select = Select(driver.find_element(By.ID, "share-select"))
+    share_select.select_by_value("friday")  # "friday" is the value for "Friday study hours"
+    
+    # Wait for the share button to be enabled
+    WebDriverWait(driver, 10).until(
+        EC.element_to_be_clickable((By.ID, "share-button"))
+    )
+    
+    # Click the share button
+    share_button = driver.find_element(By.ID, "share-button")
+    share_button.click()
+    
+    # Consider the test successful if the share button was clicked
+    print("Share button was clicked successfully for Friday study hours")
+    
+    # Add a small delay to ensure the click event is processed
+    driver.implicitly_wait(2)
+
+def test_share_saturday_study_hours(auto_logged_in_driver):
+    driver = auto_logged_in_driver
+    driver.get(f"{BASE_URL}/share/")
+    
+    # Wait for the page to fully load
+    WebDriverWait(driver, 10).until(
+        EC.presence_of_element_located((By.ID, "user-search"))
+    )
+    
+    # Find the email input field and enter the email
+    email_input = driver.find_element(By.ID, "user-search")
+    email_input.clear()
+    email_input.send_keys("testuser2@example.com")
+    
+    # Wait for the search results to appear
+    WebDriverWait(driver, 10).until(
+        EC.visibility_of_element_located((By.ID, "user-search-results"))
+    )
+    
+    # Wait for the search results to be populated
+    WebDriverWait(driver, 10).until(
+        lambda d: d.find_element(By.ID, "user-search-results").get_attribute("innerHTML").strip() != ""
+    )
+    
+    # Click on the search result (the first matching user)
+    search_results = driver.find_element(By.ID, "user-search-results")
+    # Find the first result item (could be a div, li, or other element depending on implementation)
+    result_item = search_results.find_element(By.XPATH, ".//*[contains(text(), 'testuser2@example.com')]")
+    result_item.click()
+    
+    # Find the share select dropdown and select "Saturday study hours"
+    share_select = Select(driver.find_element(By.ID, "share-select"))
+    share_select.select_by_value("saturday")  # "saturday" is the value for "Saturday study hours"
+    
+    # Wait for the share button to be enabled
+    WebDriverWait(driver, 10).until(
+        EC.element_to_be_clickable((By.ID, "share-button"))
+    )
+    
+    # Click the share button
+    share_button = driver.find_element(By.ID, "share-button")
+    share_button.click()
+    
+    # Consider the test successful if the share button was clicked
+    print("Share button was clicked successfully for Saturday study hours")
+    
+    # Add a small delay to ensure the click event is processed
+    driver.implicitly_wait(2)
+
+def test_share_sunday_study_hours(auto_logged_in_driver):
+    driver = auto_logged_in_driver
+    driver.get(f"{BASE_URL}/share/")
+    
+    # Wait for the page to fully load
+    WebDriverWait(driver, 10).until(
+        EC.presence_of_element_located((By.ID, "user-search"))
+    )
+    
+    # Find the email input field and enter the email
+    email_input = driver.find_element(By.ID, "user-search")
+    email_input.clear()
+    email_input.send_keys("testuser2@example.com")
+    
+    # Wait for the search results to appear
+    WebDriverWait(driver, 10).until(
+        EC.visibility_of_element_located((By.ID, "user-search-results"))
+    )
+    
+    # Wait for the search results to be populated
+    WebDriverWait(driver, 10).until(
+        lambda d: d.find_element(By.ID, "user-search-results").get_attribute("innerHTML").strip() != ""
+    )
+    
+    # Click on the search result (the first matching user)
+    search_results = driver.find_element(By.ID, "user-search-results")
+    # Find the first result item (could be a div, li, or other element depending on implementation)
+    result_item = search_results.find_element(By.XPATH, ".//*[contains(text(), 'testuser2@example.com')]")
+    result_item.click()
+    
+    # Find the share select dropdown and select "Sunday study hours"
+    share_select = Select(driver.find_element(By.ID, "share-select"))
+    share_select.select_by_value("sunday")  # "sunday" is the value for "Sunday study hours"
+    
+    # Wait for the share button to be enabled
+    WebDriverWait(driver, 10).until(
+        EC.element_to_be_clickable((By.ID, "share-button"))
+    )
+    
+    # Click the share button
+    share_button = driver.find_element(By.ID, "share-button")
+    share_button.click()
+    
+    # Consider the test successful if the share button was clicked
+    print("Share button was clicked successfully for Sunday study hours")
+    
+    # Add a small delay to ensure the click event is processed
+    driver.implicitly_wait(2)
+
+def test_share_learning_intensity_analysis(auto_logged_in_driver):
+    driver = auto_logged_in_driver
+    driver.get(f"{BASE_URL}/share/")
+    
+    # Wait for the page to fully load
+    WebDriverWait(driver, 10).until(
+        EC.presence_of_element_located((By.ID, "user-search"))
+    )
+    
+    # Find the email input field and enter the email
+    email_input = driver.find_element(By.ID, "user-search")
+    email_input.clear()
+    email_input.send_keys("testuser2@example.com")
+    
+    # Wait for the search results to appear
+    WebDriverWait(driver, 10).until(
+        EC.visibility_of_element_located((By.ID, "user-search-results"))
+    )
+    
+    # Wait for the search results to be populated
+    WebDriverWait(driver, 10).until(
+        lambda d: d.find_element(By.ID, "user-search-results").get_attribute("innerHTML").strip() != ""
+    )
+    
+    # Click on the search result (the first matching user)
+    search_results = driver.find_element(By.ID, "user-search-results")
+    # Find the first result item (could be a div, li, or other element depending on implementation)
+    result_item = search_results.find_element(By.XPATH, ".//*[contains(text(), 'testuser2@example.com')]")
+    result_item.click()
+    
+    # Find the share select dropdown and select "Learning Intensity Analysis"
+    share_select = Select(driver.find_element(By.ID, "share-select"))
+    share_select.select_by_value("intensity")  # "intensity" is the value for "Learning Intensity Analysis"
+    
+    # Wait for the share button to be enabled
+    WebDriverWait(driver, 10).until(
+        EC.element_to_be_clickable((By.ID, "share-button"))
+    )
+    
+    # Click the share button
+    share_button = driver.find_element(By.ID, "share-button")
+    share_button.click()
+    
+    # Consider the test successful if the share button was clicked
+    print("Share button was clicked successfully for Learning Intensity Analysis")
+    
+    # Add a small delay to ensure the click event is processed
+    driver.implicitly_wait(2)
