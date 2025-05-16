@@ -166,7 +166,7 @@ def test_add_reflection(auto_logged_in_driver):
     # Verify the mood emoji is displayed
     mood_emoji = driver.find_element(By.XPATH, "//span[contains(text(), '😊')]")
     assert mood_emoji is not None
-    
+
     # Verify the tags are displayed
     tags = driver.find_elements(By.CLASS_NAME, "bg-blue-100")
     assert any("test" in tag.text for tag in tags)

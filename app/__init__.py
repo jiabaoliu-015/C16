@@ -4,7 +4,7 @@ from app.extensions import db, migrate, csrf, login_manager, mail
 import os
 from flask_cors import CORS
 from instance.config import Config
-from app.templates.auth.forms import LogoutForm
+from app.forms import LogoutForm
 from app.routes import register_blueprints
 # from flask_dance.contrib.google import make_google_blueprint, google
 from app.routes.test_routes import bp
@@ -35,10 +35,6 @@ def create_app(testing=False):
     #     redirect_to="logged_in.home_logged_in"
     # )
     # app.register_blueprint(google_bp, url_prefix="/login")
-
-    @login_manager.user_loader
-    def load_user(user_id):
-        return User.query.get(int(user_id))
 
     # Initialize extensions
     db.init_app(app)

@@ -5,23 +5,19 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import login_user, logout_user, current_user, login_required
 from flask_wtf import FlaskForm
 from wtforms import SubmitField
-from functools import wraps
 from app.static.py.email import send_email
-
-from app.templates.auth.forms import LoginForm, SignupForm, LogoutForm
-from app.tests import sessions_data
-from app.models import *
-from datetime import datetime
-from app.forms import ResetRequestForm, ResetPasswordForm
+from app.models import *  # Import only what you use
+from app.forms import *      # Consider importing only needed forms
 from flask_mail import Message
 from app import db, mail
 from flask_dance.contrib.google import make_google_blueprint, google
 from sqlalchemy import func, extract, and_
 from datetime import datetime, timedelta
-
-# Sample data
-from app.tests.sessions_data import sessions
-from app import db
+from app.models.reflection import Reflection
+from app.models.shared_data import SharedData
+import csv
+from io import TextIOWrapper
+from functools import wraps
 
 # Optional: inline form class definition (if used elsewhere)
 class LogoutForm(FlaskForm):

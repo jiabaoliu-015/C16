@@ -5,6 +5,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const shareButton = document.getElementById('share-button');
     const shareStatus = document.getElementById('share-status');
     const refreshSharesButton = document.getElementById('refresh-shares');
+    const resetSharesButton = document.getElementById('reset-shares');
     const receivedSharesList = document.getElementById('received-shares-list');
     
     // Selected user for sharing
@@ -411,6 +412,33 @@ document.addEventListener('DOMContentLoaded', function() {
     // Load received shares on page load
     loadReceivedShares();
     
+    // Function to reset received shares
+    function resetReceivedShares() {
+        // Show confirmation dialog
+        const confirmation = confirm("Are you sure you want to clear all received shares from display?");
+        
+        if (confirmation) {
+            // Clear the received shares list
+            receivedSharesList.innerHTML = '<p class="text-gray-500 text-sm italic">No shares received yet.</p>';
+            
+            // Show success message
+            const successMessage = document.createElement('div');
+            successMessage.className = 'mt-2 text-green-600 text-sm';
+            successMessage.textContent = 'Received shares have been cleared from display.';
+            receivedSharesList.appendChild(successMessage);
+            
+            // Hide success message after 3 seconds
+            setTimeout(() => {
+                if (successMessage.parentNode === receivedSharesList) {
+                    receivedSharesList.removeChild(successMessage);
+                }
+            }, 3000);
+        }
+    }
+    
     // Refresh button click handler
     refreshSharesButton.addEventListener('click', loadReceivedShares);
+    
+    // Reset button click handler
+    resetSharesButton.addEventListener('click', resetReceivedShares);
 });
