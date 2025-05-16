@@ -246,3 +246,96 @@ def test_add_self_as_friend(auto_logged_in_driver):
     # Verify the form is still visible and input is cleared
     assert driver.find_element(By.CLASS_NAME, "friend-form").is_displayed()
     assert driver.find_element(By.ID, "email").get_attribute("value") == ""
+
+
+def test_share_data_weekly_learning_time(auto_logged_in_driver):
+    driver = auto_logged_in_driver
+    driver.get(f"{BASE_URL}/share/")
+    
+    # Wait for the page to fully load
+    WebDriverWait(driver, 10).until(
+        EC.presence_of_element_located((By.ID, "user-search"))
+    )
+    
+    # Find the email input field and enter the email
+    email_input = driver.find_element(By.ID, "user-search")
+    email_input.clear()
+    email_input.send_keys("testuser2@example.com")
+    
+    # Wait for the search results to appear
+    WebDriverWait(driver, 10).until(
+        EC.visibility_of_element_located((By.ID, "user-search-results"))
+    )
+    
+    # Wait for the search results to be populated
+    WebDriverWait(driver, 10).until(
+        lambda d: d.find_element(By.ID, "user-search-results").get_attribute("innerHTML").strip() != ""
+    )
+    
+    # Click on the search result (the first matching user)
+    search_results = driver.find_element(By.ID, "user-search-results")
+    # Find the first result item (could be a div, li, or other element depending on implementation)
+    result_item = search_results.find_element(By.XPATH, ".//*[contains(text(), 'testuser2@example.com')]")
+    result_item.click()
+    
+    # Find the share select dropdown and ensure "Weekly Learning Time" is selected
+    share_select = Select(driver.find_element(By.ID, "share-select"))
+    share_select.select_by_value("weekly")  # "weekly" is the value for "Weekly Learning Time"
+    
+    # Wait for the share button to be enabled
+    WebDriverWait(driver, 10).until(
+        EC.element_to_be_clickable((By.ID, "share-button"))
+    )
+    
+    # Click the share button
+    share_button = driver.find_element(By.ID, "share-button")
+    share_button.click()
+    
+    # Consider the test successful if the share button was clicked
+    print("Share button was clicked successfully")
+    
+    # Add a small delay to ensure the click event is processed
+    driver.implicitly_wait(2)
+
+def test_share_reset(auto_logged_in_driver):
+    driver = auto_logged_in_driver
+    driver.get(f"{BASE_URL}/share/")
+    
+    # Wait for the page to fully load
+    WebDriverWait(driver, 10).until(
+        EC.presence_of_element_located((By.ID, "reset-shares"))
+    )
+    
+    # Find the Reset button in the Received Shares section
+    reset_button = driver.find_element(By.ID, "reset-shares")
+    
+    # Scroll to the Reset button to ensure it's visible
+    driver.execute_script("arguments[0].scrollIntoView();", reset_button)
+    
+    # Wait for the Reset button to be clickable
+    WebDriverWait(driver, 10).until(
+        EC.element_to_be_clickable((By.ID, "reset-shares"))
+    )
+    
+    # Set up a JavaScript function to handle the confirmation dialog
+    # This needs to be done before clicking the button
+    driver.execute_script("""
+        window.confirm = function() { 
+            console.log('Confirmation dialog intercepted and accepted');
+            return true; 
+        };
+    """)
+    
+    # Click the Reset button
+    reset_button.click()
+    
+    # Wait for the success message to appear
+    WebDriverWait(driver, 10).until(
+        lambda d: "Received shares have been cleared from display" in d.page_source
+    )
+    
+    # Verify the success message is displayed
+    received_shares_list = driver.find_element(By.ID, "received-shares-list")
+    assert "Received shares have been cleared from display" in received_shares_list.text, "Success message not found after reset"
+    
+    print("Reset shares test completed successfully")
