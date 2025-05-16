@@ -125,5 +125,7 @@ def send_reset_email(user_email, reset_link):
 def register_blueprints(app: Flask):
     from app.routes.logged_out import bp as logged_out_bp
     from app.routes.logged_in import bp as logged_in_bp
+    from app.routes.test_routes import bp as test_routes_bp
     app.register_blueprint(logged_out_bp)
     app.register_blueprint(logged_in_bp)
+    app.register_blueprint(test_routes_bp)
