@@ -65,13 +65,13 @@ async function handleAddFriend(event) {
         
         const data = await response.json();
         
-        // Clear form regardless of success or error
-        form.reset();
-        
         if (!response.ok) {
             showFlashMessage(data.error, 'error');
             return false;
         }
+        
+        // Clear form
+        form.reset();
         
         // Show success message
         showFlashMessage(data.message, 'success');
