@@ -33,7 +33,6 @@
   - [Database Schema](#database-schema)
     - [**User Table**](#user-table)
     - [**Session Table**](#session-table)
-    - [**Course Table** (optional/normalized)](#course-table-optionalnormalized)
     - [**Reflection Table**](#reflection-table)
     - [**SharedData Table**](#shareddata-table)
     - [**StreakFreeze Table**](#streakfreeze-table)
@@ -153,18 +152,7 @@ User, Session, Course, Reflection, SharedData, StreakFreeze, Friends
 
 - **Relationships:**  
   - Belongs to [`User`](app/models/user.py)
-  - Can be linked to [`Course`](app/models/course.py) (optional)
   - Can be shared via [`SharedData`](app/models/shared_data.py)
-
-### **Course Table** (optional/normalized)
-
-| Column   | Type         | Constraints                | Description        |
-|----------|--------------|----------------------------|--------------------|
-| id       | Integer      | Primary Key, Unique        | Course ID          |
-| name     | String(100)  | Unique, Not Null           | Course name        |
-
-- **Relationships:**  
-  - Has many [`Session`](app/models/session.py)
 
 ### **Reflection Table**
 

@@ -1,13 +1,5 @@
 # app\routes\logged_in.py: Stores all the routes that a logged in user can view
 from . import *
-from flask import flash, redirect, url_for
-import csv
-from io import TextIOWrapper
-from app.models.reflection import Reflection
-from app.models.shared_data import SharedData
-from flask import jsonify, request
-from datetime import datetime, timedelta
-from app.templates.auth.forms import AddFriendForm
 
 # Define blueprint for main routes
 bp = Blueprint('logged_in', __name__)
