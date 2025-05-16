@@ -1,4 +1,5 @@
 # Project dependencies for Study Habit Tracker & Analysis Tool
+# Python 3.11.9
 
 # Core framework
 flask==2.0.1
@@ -12,7 +13,7 @@ flask-mail
 flask-cors
 
 # OAuth
-flask-dance
+flask-dance==6.2.0
 
 # Forms
 wtforms
@@ -24,7 +25,8 @@ sqlalchemy>=1.4,<2.0
 pytz
 
 # Testing
-pytest
+pytest==8.3.5
+pluggy==1.5.0
 
 # (Optional) For CSV parsing and data analysis if used in backend
 pandas
