@@ -10,6 +10,26 @@
     }
 }
 
+#start-dropdown button,
+#end-dropdown button,
+#break-dropdown button,
+#start-dropdown .btn,
+#end-dropdown .btn,
+#break-dropdown .btn {
+    animation: none !important;
+    opacity: 1 !important;
+    transition: none !important;
+}
+
+
+#start-dropdown > *,
+#end-dropdown > *,
+#break-dropdown > * {
+    animation: none !important;
+    opacity: 1 !important;
+    transition: none !important;
+}
+
 /* Upload page styles */
 .upload-container {
     min-height: 100vh;
