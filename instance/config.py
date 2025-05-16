@@ -24,3 +24,17 @@ class Config:
 
     GOOGLE_OAUTH_CLIENT_ID=os.getenv('GOOGLE_OAUTH_CLIENT_ID')
     GOOGLE_OAUTH_CLIENT_SECRET=os.getenv('GOOGLE_OAUTH_CLIENT_SECRET')
+
+class TestingConfig(Config):
+    TESTING = True
+    SQLALCHEMY_DATABASE_URI = "sqlite:///:memory:"
+    WTF_CSRF_ENABLED = False
+    LOGIN_DISABLED = False
+    MAIL_SUPPRESS_SEND = True
+    # Use dummy secrets for tests
+    SECRET_KEY = "test"
+    MAIL_USERNAME = "test@example.com"
+    MAIL_PASSWORD = "test"
+    MAIL_DEFAULT_SENDER = "test@example.com"
+    GOOGLE_OAUTH_CLIENT_ID = "test"
+    GOOGLE_OAUTH_CLIENT_SECRET = "test"
