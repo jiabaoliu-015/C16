@@ -9,6 +9,7 @@ load_dotenv(dotenv_path)
 class Config:
     # Secret Key for Flask sessions
     SECRET_KEY = os.getenv('SECRET_KEY')
+    TESTING = False
 
     # Database configuration
     SQLALCHEMY_DATABASE_URI = os.getenv('DATABASE_URL')

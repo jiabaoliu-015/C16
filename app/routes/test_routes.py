@@ -10,10 +10,15 @@ bp = Blueprint('test_seed', __name__)
 
 @bp.route('/test-seed')
 def seed():
+    # Create first test user
     if not User.query.filter_by(email='testuser@example.com').first():
         user = User(email='testuser@example.com', password=generate_password_hash('password123'))
         db.session.add(user)
-        db.session.commit()
+    # Create second test user for sharing/friend tests
+    if not User.query.filter_by(email='testuser2@example.com').first():
+        user2 = User(email='testuser2@example.com', password=generate_password_hash('password123'))
+        db.session.add(user2)
+    db.session.commit()
     return "Seeded"
 
 @bp.route('/test-login')

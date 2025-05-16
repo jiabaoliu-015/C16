@@ -18,6 +18,7 @@ from app.models.shared_data import SharedData
 import csv
 from io import TextIOWrapper
 from functools import wraps
+import os
 
 # Optional: inline form class definition (if used elsewhere)
 class LogoutForm(FlaskForm):
@@ -122,7 +123,7 @@ def send_reset_email(user_email, reset_link):
 
 
 # Register all blueprints used in the app
-def register_blueprints(app: Flask):
+def register_blueprints(app):
     from app.routes.logged_out import bp as logged_out_bp
     from app.routes.logged_in import bp as logged_in_bp
     app.register_blueprint(logged_out_bp)
