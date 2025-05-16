@@ -908,3 +908,69 @@ def add_friend(user_to_add):
     if not user_to_add.friends.filter_by(id=current_user.id).first():
         user_to_add.friends.append(current_user)
     db.session.commit()
+
+@bp.route('/api/friends/add', methods=['POST'])
+@login_required
+def api_add_friend():
+    data = request.get_json()
+    friend_email = data.get('email')
+    
+    if not friend_email:
+        return jsonify({'error': 'Email is required'}), 400
+        
+    friend = User.query.filter_by(email=friend_email).first()
+    
+    if not friend:
+        return jsonify({'error': 'User not found'}), 404
+        
+    if friend.id == current_user.id:
+        return jsonify({'error': 'You cannot add yourself as a friend'}), 400
+        
+    # Check if already friends
+    if current_user.friends.filter_by(id=friend.id).first():
+        return jsonify({'error': 'Already friends with this user'}), 400
+        
+    try:
+        add_friend(friend)
+        return jsonify({
+            'success': True,
+            'message': 'Friend added successfully',
+            'friend': {
+                'id': friend.id,
+                'email': friend.email
+            }
+        }), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@bp.route('/api/friends/remove/<int:friend_id>', methods=['POST'])
+@login_required
+def api_remove_friend(friend_id):
+    friend = User.query.get_or_404(friend_id)
+    
+    if friend not in current_user.friends:
+        return jsonify({'error': 'Not friends with this user'}), 400
+        
+    try:
+        if friend in current_user.friends:
+            current_user.friends.remove(friend)
+        if current_user in friend.friends:
+            friend.friends.remove(current_user)
+        
+        db.session.commit()
+        return jsonify({
+            'success': True,
+            'message': 'Friend removed successfully'
+        }), 200
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'error': str(e)}), 500
+
+@bp.route('/api/friends', methods=['GET'])
+@login_required
+def api_get_friends():
+    friends = current_user.friends.all()
+    return jsonify([{
+        'id': friend.id,
+        'email': friend.email
+    } for friend in friends]), 200
