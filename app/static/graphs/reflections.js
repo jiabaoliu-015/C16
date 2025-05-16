@@ -43,7 +43,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 if (data.length === 0) {
                     reflectionsList.innerHTML = `
                         <div class="section-content-center">
-                            <img src="/static/images/empty-reflection.svg" alt="" class="empty-state-image" />
+                            <img src="/static/images/empty-reflection.png" alt="" class="empty-state-image" />
                             <span>No reflections yet. Start by adding your thoughts!</span>
                         </div>
                     `;

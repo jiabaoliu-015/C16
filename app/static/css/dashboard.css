@@ -446,6 +446,13 @@
   display: none;
 }
 
+.range-btn.active {
+  background-color: #3b82f6;
+  color: #fff;
+  font-weight: 600;
+  box-shadow: 0 2px 8px rgba(59, 130, 246, 0.08);
+}
+
 .streak-freeze {
   margin-top: 0.5rem;
   padding: 0.25rem 0.75rem;
@@ -475,6 +482,12 @@
   pointer-events: none;
   transition: opacity 0.3s;
   z-index: 50;
+}
+
+.streak-toast.fade-out {
+  opacity: 0 !important;
+  pointer-events: none;
+  transition: opacity 0.5s;
 }
 
 .progress-container {

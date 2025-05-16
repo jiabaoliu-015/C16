@@ -1,3 +1,8 @@
+"""
+Test cases for the user routes.
+python3 -m unittest discover -s app/tests/unit
+"""
+
 import unittest
 from flask import url_for
 from app import create_app  # adjust if your factory function is named differently
