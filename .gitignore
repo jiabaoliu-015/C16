@@ -21,5 +21,3 @@ instance/.env
 # Ignore any migration files not in 'versions/'
 migrations/env.py
 migrations/script.py.mako
-
-*.png
