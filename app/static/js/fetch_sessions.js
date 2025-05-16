@@ -211,23 +211,36 @@ document.addEventListener("DOMContentLoaded", () => {
         const count = selectedCheckboxes.length;
     
         if (count > 0) {
-            const confirmation = confirm(`Are you sure you want to delete ${count} session(s)?`);
-            if (confirmation) {
+            // Create confirmation flash message
+            const flashContainer = document.querySelector('.flash-container');
+            const flashMessage = document.createElement('div');
+            flashMessage.className = 'flash-message';
+            flashMessage.innerHTML = `
+                <div class="alert bg-violet-100 text-black border border-violet-200 shadow-lg rounded-lg p-4 max-w-md mx-auto" style="color: black !important;">
+                    Are you sure you want to delete ${count} session(s)?
+                    <div class="mt-2 flex justify-end space-x-2">
+                        <button class="px-3 py-1 bg-gray-200 hover:bg-gray-300 rounded text-black font-medium" onclick="this.closest('.flash-message').remove()">Cancel</button>
+                        <button class="px-3 py-1 bg-violet-500 hover:bg-violet-600 text-black font-medium rounded" id="confirm-delete">Delete</button>
+                    </div>
+                </div>
+            `;
+            flashContainer.appendChild(flashMessage);
+
+            // Add event listener to the confirm button
+            document.getElementById('confirm-delete').addEventListener('click', function() {
                 // Get the session IDs from the selected rows
                 const sessionIds = [];
                 selectedCheckboxes.forEach(checkbox => {
-                    // Get the session ID from the data attribute
                     const sessionRow = checkbox.closest('.notes-row');
                     const sessionId = sessionRow.getAttribute('data-session-id');
                     if (sessionId && sessionId !== "null" && sessionId !== "undefined") {
-                        // Make sure we only add valid sessionIds
                         sessionIds.push(parseInt(sessionId));
                     }
                 });
                 
                 // Check if we have valid session IDs
                 if (sessionIds.length === 0) {
-                    alert('No valid session IDs found. Please try again.');
+                    showFlashMessage('No valid session IDs found. Please try again.', 'error');
                     return;
                 }
                 
@@ -238,10 +251,10 @@ document.addEventListener("DOMContentLoaded", () => {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        'X-CSRFToken': csrfToken // Add CSRF token
+                        'X-CSRFToken': csrfToken
                     },
                     body: JSON.stringify({ session_ids: sessionIds }),
-                    credentials: 'same-origin' // Include cookies for authentication
+                    credentials: 'same-origin'
                 })
                 .then(response => {
                     console.log("Response status:", response.status);
@@ -251,11 +264,9 @@ document.addEventListener("DOMContentLoaded", () => {
                             console.error('Server response:', text);
                             
                             try {
-                                // Try to parse as JSON
                                 const data = JSON.parse(text);
                                 throw new Error(data.error || 'Failed to delete sessions');
                             } catch (jsonError) {
-                                // CSRF specific error handling
                                 if (text.includes('CSRF token is missing')) {
                                     throw new Error('CSRF protection error: Make sure CSRF token is included in your request.');
                                 } else if (text.includes('login') || text.includes('sign in')) {
@@ -270,7 +281,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 })
                 .then(data => {
                     console.log("Success response:", data);
-                    alert('Sessions deleted successfully!');
+                    showFlashMessage('Sessions deleted successfully!', 'success');
                     // Refresh the sessions list
                     fetchSessions();
                     // Reset the select all checkbox
@@ -280,10 +291,34 @@ document.addEventListener("DOMContentLoaded", () => {
                 })
                 .catch(error => {
                     console.error('Error deleting sessions:', error);
-                    alert('Failed to delete sessions: ' + error.message);
+                    showFlashMessage('Failed to delete sessions: ' + error.message, 'error');
                 });
-            }
+
+                // Remove the confirmation flash message
+                flashMessage.remove();
+            });
         }
+    }
+
+    // Function to show flash messages
+    function showFlashMessage(message, category) {
+        const flashContainer = document.querySelector('.flash-container');
+        const flashMessage = document.createElement('div');
+        flashMessage.className = 'flash-message';
+        flashMessage.innerHTML = `
+            <div class="alert alert-${category}">
+                ${message}
+            </div>
+        `;
+        flashContainer.appendChild(flashMessage);
+
+        // Remove the message after 3 seconds
+        setTimeout(() => {
+            flashMessage.classList.add('fade-out');
+            setTimeout(() => {
+                flashMessage.remove();
+            }, 500);
+        }, 3000);
     }
 
     // Attach event listeners to checkboxes

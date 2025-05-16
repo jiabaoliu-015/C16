@@ -21,6 +21,7 @@ wtforms
 email_validator
 python-dotenv
 sqlalchemy
+pytz
 
 # Testing
 pytest

@@ -7,7 +7,7 @@
 </div>
 {% endblock %}
 {% block background %}
-<div class="fixed inset-0 -z-10 w-full h-full bg-[url('/static/images/polygon-luminary.svg')] opacity-80 bg-cover bg-fixed"></div>
+<div class="background-polygon"></div>
 {% endblock %}
 {% block content %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/share.css') }}">
@@ -15,39 +15,40 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js" integrity="sha512-CNgIRecGo7nphbeZ04Sc13ka07paqdeTu0WR1IM4kNcpmBAUSHSQX0FslNhTDadL4O5SAGapGt4FodqL8My0mA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="{{ url_for('static', filename='js/utils.js') }}"></script>
 <script src="{{ url_for('static', filename='js/share.js') }}" defer></script>
 <script src="{{ url_for('static', filename='js/fetch_sessions.js') }}" defer></script>
 <script src="{{ url_for('static', filename='js/shared_export.js') }}" defer></script>
 <script src="{{ url_for('static', filename='js/user_sharing.js') }}" defer></script>
 
-<main class="flex-1 p-6 max-w-screen-xl mx-auto w-full">
+<main class="main-container">
     <!-- User Sharing Section -->
-    <div class="user-sharing mb-8 p-6 rounded-xl shadow-lg bg-gradient-to-br from-indigo-50 to-purple-50 border-2 border-indigo-100">
-        <div class="flex items-center mb-4">
-            <div class="flex justify-between items-center w-full">
-                <div class="flex items-center">
-                    <svg class="w-8 h-8 mr-3 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <div class="user-sharing">
+        <div class="user-sharing-header">
+            <div class="user-sharing-header-content">
+                <div class="user-sharing-title">
+                    <svg class="user-sharing-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path>
                     </svg>
-                    <h2 class="text-2xl font-bold text-gray-800">Share With Users</h2>
+                    <h2 class="user-sharing-heading">Share With Users</h2>
                 </div>
             </div>
         </div>
         
         <!-- Share Form -->
-        <div class="share-form bg-white p-4 rounded-lg shadow mb-6">
-            <h3 class="text-lg font-semibold mb-3 text-gray-700">Share Data</h3>
-            <div class="flex flex-col md:flex-row gap-4">
-                <div class="flex-grow">
-                    <label for="user-search" class="block text-sm font-medium text-gray-700 mb-1">Find User by Email</label>
+        <div class="share-form">
+            <h3 class="share-form-title">Share Data</h3>
+            <div class="share-form-content">
+                <div class="share-form-input-group">
+                    <label for="user-search" class="share-form-label">Find User by Email</label>
                     <div class="relative">
-                        <input type="text" id="user-search" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500" placeholder="Enter email address...">
+                        <input type="text" id="user-search" class="share-form-input" placeholder="Enter email address...">
                         <div id="user-search-results" class="absolute z-10 w-full mt-1 bg-white shadow-lg rounded-md hidden"></div>
                     </div>
                 </div>
                 <div class="w-full md:w-1/4">
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Select to share</label>
-                    <select id="share-select" class="w-full px-4 py-2 border border-gray-300 rounded-md">
+                    <label class="share-form-label">Select to share</label>
+                    <select id="share-select" class="share-form-select">
                         <option value="weekly" selected>Weekly Learning Time</option>
                         <option value="monday">Monday study time hours</option>
                         <option value="tuesday">Tuesday study hours</option>
@@ -60,17 +61,17 @@
                     </select>
                 </div>
                 <div class="flex items-end">
-                    <button id="share-button" class="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition-colors disabled:bg-gray-400" disabled>Share</button>
+                    <button id="share-button" class="share-button" disabled>Share</button>
                 </div>
             </div>
             <div id="share-status" class="mt-2 text-sm"></div>
         </div>
         
         <!-- Received Shares -->
-        <div class="received-shares bg-white p-4 rounded-lg shadow">
-            <h3 class="text-lg font-semibold mb-3 text-gray-700">Received Shares</h3>
-            <button id="refresh-shares" class="mb-3 px-3 py-1 bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 transition-colors text-sm">
-                <svg class="w-4 h-4 inline-block mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <div class="received-shares">
+            <h3 class="received-shares-title">Received Shares</h3>
+            <button id="refresh-shares" class="refresh-button">
+                <svg class="refresh-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
                 </svg>
                 Refresh
@@ -82,20 +83,20 @@
     </div>
 
     <!-- Export All Button -->
-    <div class="export-controls mb-8 p-4 bg-gray-50 rounded-lg shadow-md border border-gray-200">
+    <div class="export-controls">
         <div class="flex items-center gap-4">
             <button 
                 id="export-all"
-                class="btn-export-all bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors"
+                class="export-button"
             >
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg class="export-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
                 </svg>
                 Export All Data
             </button>
-            <span class="text-sm text-gray-600">
+            <span class="export-description">
                 Download the complete analysis report that includes the following contents:
-                <ul class="list-disc list-inside mt-1">
+                <ul class="export-list">
                     <li>Weekly Learning Intensity Analysis</li>
                     <li>Course Learning Proportion</li>
                     <li>Sessions </li>
@@ -111,53 +112,49 @@
     </div>
 
     <!-- Study Performance Section -->
-    <div class="study-performance mb-6 p-6 rounded-xl shadow-lg bg-gradient-to-br from-blue-50 to-purple-50 border-2 border-purple-100">
-        <div class="flex items-center mb-4">
-            <div class="flex justify-between items-center w-full">
-                <div class="flex items-center">
-                    <svg class="w-8 h-8 mr-3 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path>
-                    </svg>
-                    <h2 class="text-2xl font-bold text-gray-800">Weekly Learning Intensity Analysis</h2>
-                </div>
-                <button id="export-intensity" class="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm font-semibold hover:bg-blue-200 transition flex items-center gap-1 focus:outline-none focus:ring-2 focus:ring-blue-400" aria-label="Download chart as image">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 4v12m0 0l-4-4m4 4l4-4M4 20h16" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                    Export
-                </button>
+    <div class="study-performance">
+        <div class="performance-header">
+            <div class="performance-title">
+                <svg class="performance-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path>
+                </svg>
+                <h2 class="performance-heading">Weekly Learning Intensity Analysis</h2>
             </div>
+            <button id="export-intensity" class="export-intensity-button" aria-label="Download chart as image">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 4v12m0 0l-4-4m4 4l4-4M4 20h16" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                Export
+            </button>
         </div>
         <div id="performance-message" class="message-container text-lg leading-relaxed p-4 bg-white rounded-lg"></div>
     </div>
 
     <!-- Course Learning Analytics Section -->
-    <div class="bg-white rounded-lg shadow-xl p-6 mb-6 transition-transform duration-200 hover:shadow-md">
+    <div class="course-analytics">
         <!-- Header -->
-        <div class="flex justify-between items-center mb-4">
-            <div class="flex justify-between items-center w-full">
-                <h2 class="text-2xl font-bold text-gray-900">
-                    Course Learning Proportion
-                </h2>
-                <button id="export-course" class="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm font-semibold hover:bg-blue-200 transition flex items-center gap-1 focus:outline-none focus:ring-2 focus:ring-blue-400" aria-label="Download chart as image">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 4v12m0 0l-4-4m4 4l4-4M4 20h16" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                    Export
-                </button>
-            </div>
+        <div class="course-header">
+            <h2 class="course-heading">
+                Course Learning Proportion
+            </h2>
+            <button id="export-course" class="export-intensity-button" aria-label="Download chart as image">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 4v12m0 0l-4-4m4 4l4-4M4 20h16" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                Export
+            </button>
         </div>
         
         <!-- Charts Container -->
-        <div class="flex flex-col lg:flex-row">
+        <div class="charts-container">
             <!-- Pie Chart -->
-            <div class="w-full lg:w-1/3 mb-4 lg:mb-0">
+            <div class="chart-wrapper">
                 <canvas id="course-pie-chart" height="220"></canvas>
             </div>
             
             <!-- Bar Chart -->
-            <div class="w-full lg:w-1/3 mb-4 lg:mb-0">
+            <div class="chart-wrapper">
                 <canvas id="weekly-bar-chart" height="220"></canvas>
             </div>
             
             <!-- Course Legend -->
-            <div id="course-legend" class="w-full lg:w-1/3 pl-0 lg:pl-4"></div>
+            <div id="course-legend" class="course-legend"></div>
         </div>
     </div>
 
@@ -166,73 +163,67 @@
     <script src="{{ url_for('static', filename='js/session_charts.js') }}" defer></script>
 
     <!-- Sessions Section -->
-    <div class="bg-white rounded-lg shadow-xl p-6 mb-6 transition-transform duration-200 hover:shadow-md">
-        <div class="sessions-container">
-            <div class="bg-white rounded-lg shadow-xl p-6 flex flex-col justify-start space-y-8">
-            <!-- Header -->
-            <div class="flex justify-between items-center mb-4">
-                <div class="flex items-center">
-                    <h2 class="text-2xl font-bold text-gray-900">
-                        Sessions <span id="session-count" class="text-gray-500 font-medium">• 0</span>
-                    </h2>
-                </div>
-                <div class="flex items-center gap-2">
-                    <button id="export-sessions" class="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm font-semibold hover:bg-blue-200 transition flex items-center gap-1 focus:outline-none focus:ring-2 focus:ring-blue-400" aria-label="Download sessions as image">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 4v12m0 0l-4-4m4 4l4-4M4 20h16" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                        Export
-                    </button>
-                    <button id="delete-selected" class="bg-red-500 text-white px-4 py-2 rounded-full shadow-md hover:bg-red-600 transition duration-300 hidden">
-                        Delete Selected
-                    </button>
-                </div>
+    <div class="sessions-container">
+        <div class="sessions-header">
+            <div class="sessions-title">
+                <h2 class="sessions-heading">
+                    Sessions <span id="session-count" class="sessions-count">• 0</span>
+                </h2>
             </div>
-
-            <!-- Table Header -->
-            <div class="flex items-center text-gray-700 font-bold text-sm border-b border-gray-300 pb-2 justify-center">
-                <div class="flex items-center w-44 justify-center space-x-1">
-                    <span class="font-extrabold">Date</span>
-                    <button class="text-gray-500 sort-active" id="date-toggle" data-sort="desc" aria-label="Sort by date">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                        </svg>
-                    </button>
-                </div>
-                <div class="flex items-center w-48 justify-center">
-                    <span>Time</span>
-                </div>
-                <div class="flex items-center w-20 justify-center">
-                    <span>Duration</span>
-                </div>
-                <div class="flex items-center w-28 justify-center">
-                    <span>Course</span>
-                </div>
-                <div class="flex items-center w-20 justify-center">
-                    <span>Productivity</span>
-                </div>
-                <div class="flex items-center w-48 justify-center">
-                    <span>Notes</span>
-                </div>
-            </div>
-            
-            <div id="session-list" class="mt-4 w-full overflow-x-hidden"></div>
-            
-            <!-- Pagination -->
-            <div class="flex justify-between items-center mt-4">
-                <button id="prev-page" class="bg-blue-500 text-white px-4 py-2 rounded-full shadow-md hover:bg-blue-600 transition duration-300" aria-label="Previous page" disabled>
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-                    </svg>
+            <div class="sessions-actions">
+                <button id="export-sessions" class="export-sessions-button" aria-label="Download sessions as image">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 4v12m0 0l-4-4m4 4l4-4M4 20h16" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    Export
                 </button>
-                <div id="page-info" class="text-gray-700 font-medium">Page 1 (1-10)</div>
-                <button id="next-page" class="bg-blue-500 text-white px-4 py-2 rounded-full shadow-md hover:bg-blue-600 transition duration-300" aria-label="Next page" disabled>
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-                    </svg>
+                <button id="delete-selected" class="delete-selected-button">
+                    Delete Selected
                 </button>
             </div>
         </div>
-    </div>
 
-</div>
+        <!-- Table Header -->
+        <div class="table-header">
+            <div class="table-column table-column-date w-24">
+                <span class="font-extrabold">Date</span>
+                <button class="sort-button sort-active" id="date-toggle" data-sort="desc" aria-label="Sort by date">
+                    <svg class="sort-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                    </svg>
+                </button>
+            </div>
+            <div class="table-column table-column-time w-48">
+                <span>Time</span>
+            </div>
+            <div class="table-column table-column-duration w-20">
+                <span>Duration</span>
+            </div>
+            <div class="table-column table-column-course w-28">
+                <span>Course</span>
+            </div>
+            <div class="table-column table-column-productivity w-20">
+                <span>Productivity</span>
+            </div>
+            <div class="table-column table-column-notes w-48">
+                <span>Notes</span>
+            </div>
+        </div>
+        
+        <div id="session-list" class="mt-4 w-full overflow-x-hidden"></div>
+        
+        <!-- Pagination -->
+        <div class="pagination">
+            <button id="prev-page" class="pagination-button" aria-label="Previous page" disabled>
+                <svg class="pagination-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                </svg>
+            </button>
+            <div id="page-info" class="pagination-info">Page 1 (1-10)</div>
+            <button id="next-page" class="pagination-button" aria-label="Next page" disabled>
+                <svg class="pagination-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                </svg>
+            </button>
+        </div>
+    </div>
 </main>
 {% endblock %}

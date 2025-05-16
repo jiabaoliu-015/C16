@@ -105,14 +105,14 @@ function generateShareUrl() {
         if (selectedSessions.length > 0) {
             selectedItems.push('sessions=' + selectedSessions.join(','));
         } else {
-            alert('Please select at least one session to share');
+            showFlashMessage('Please select at least one session to share', 'error');
             return;
         }
     }
     
-    // If nothing is selected, show an alert
+    // If nothing is selected, show a flash message
     if (selectedItems.length === 0) {
-        alert('Please select content to share');
+        showFlashMessage('Please select content to share', 'error');
         return;
     }
     

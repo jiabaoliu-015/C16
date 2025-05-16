@@ -65,11 +65,13 @@ def share_data():
     shared_content3 = data.get('shared_content3', 'YOU RECEIVE A SHARE')
 
     if not recipient_id or not session_id:
+        flash('Recipient ID and session ID are required', 'error')
         return jsonify({'error': 'Recipient ID and session ID are required'}), 400
 
     # check recipient
     recipient = User.query.get(recipient_id)
     if not recipient:
+        flash('Recipient not found', 'error')
         return jsonify({'error': 'Recipient not found'}), 404
     
     # Skip session validation for now
@@ -90,9 +92,11 @@ def share_data():
     try:
         db.session.add(shared_data)
         db.session.commit()
+        flash(f'Data shared with {recipient.email}', 'success')
         return jsonify({'success': True, 'message': f'Data shared with {recipient.email}'}), 201
     except Exception as e:
         db.session.rollback()
+        flash(f'Error sharing data: {str(e)}', 'error')
         return jsonify({'error': str(e)}), 500
 
 # API endpoint for getting received shares
@@ -122,18 +126,21 @@ def accept_share(share_id):
     
     # Verify the share is for the current user
     if share.shared_with_user_id != current_user.id:
+        flash('Unauthorized access', 'error')
         return jsonify({'error': 'Unauthorized'}), 403
     
     share.status = 'accepted'
     
     try:
         db.session.commit()
+        flash('Share accepted successfully', 'success')
         return jsonify({
             'success': True,
             'message': 'Share accepted'
         }), 200
     except Exception as e:
         db.session.rollback()
+        flash(f'Error accepting share: {str(e)}', 'error')
         return jsonify({'error': str(e)}), 500
 
 @bp.route('/api/study-distribution')
@@ -769,8 +776,14 @@ def upload_data():
                 flash(f"Error processing CSV: {str(e)}", "error")
                 return redirect(url_for("logged_in.upload_data"))
         else:
-            # Manual form entry (existing logic)
+            # Manual form entry
             form_data = request.form.to_dict()
+            
+            # Check for flash message from frontend validation
+            if 'flash_message' in form_data:
+                flash(form_data['flash_message'], "error")
+                return redirect(url_for("logged_in.upload_data"))
+
             session_data = {
                 'date': form_data.get('date'),
                 'start_time': form_data.get('start_time'),
@@ -882,7 +895,7 @@ def profile():
             else:
                 flash('You cannot add yourself as a friend.', 'warning')
         else:
-            flash('User not found.', 'danger')
+            flash('User not found.', 'error')
 
         return redirect(url_for('logged_in.profile'))
 
@@ -894,3 +907,4 @@ def add_friend(user_to_add):
         current_user.friends.append(user_to_add)
     if not user_to_add.friends.filter_by(id=current_user.id).first():
         user_to_add.friends.append(current_user)
+    db.session.commit()

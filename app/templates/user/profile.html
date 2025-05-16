@@ -1,88 +1,72 @@
 {% extends "base_user.html" %}
 {% block title %}Profile | StudyTrackr{% endblock %}
 {% block subtitle %}Profile{% endblock %}
+{% block tooltip %}
+<div class="absolute top-full left-0 mt-2 w-64 bg-white p-3 rounded-lg shadow-lg text-sm text-gray-800 hidden group-hover:block z-10">
+    Manage your profile settings, add friends, and view your account information.
+</div>
+{% endblock %}
 {% block content %}
-<div class="max-w-xl mx-auto mt-10 p-6 bg-white rounded-xl shadow-lg">
-  <h2 class="text-3xl font-bold text-center mb-4 text-gray-800">👤 Your Profile</h2>
-  <p class="text-center text-gray-600">Welcome to your profile page!</p>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/profile.css') }}">
 
-  <!-- Flash Messages Section -->
-  {% with messages = get_flashed_messages(with_categories=true) %}
-    {% if messages %}
-        <div class="mt-4 flash-message">
-            {% for category, message in messages %}
-                <div class="alert alert-{{ category }} p-3 mb-2 text-center text-white {{ 'bg-green-500' if category == 'success' else 'bg-red-500' }}">
-                    {{ message }}
-                </div>
-            {% endfor %}
-        </div>
-        <script>
-            setTimeout(function() {
-                const flashMessage = document.querySelector('.flash-message');
-                flashMessage.classList.add('fade-out');
-                setTimeout(function() {
-                    flashMessage.remove();  // Remove the flash message from the DOM after it fades out
-                }, 1000); // Wait for the fade-out transition to finish before removing the element
-            }, 3000);
-        </script>
-    {% endif %}
-  {% endwith %}
+<div class="profile-container">
+    <div class="profile-header">
+        <h2 class="profile-title">👤 Your Profile</h2>
+        <p class="profile-subtitle">Welcome to your profile page!</p>
+    </div>
 
-  <!-- Account Creation Date -->
-  <div class="mt-6">
-    <h3 class="text-xl font-semibold text-gray-800">Account Created</h3>
-    <p class="text-gray-600">
-      {{ current_user.created_at.strftime('%B %d, %Y') }} <!-- Format the date -->
-    </p>
-  </div>
+    <!-- Account Creation Date -->
+    <div class="account-info">
+        <h3 class="section-title">Account Created</h3>
+        <p class="section-text">
+            {{ current_user.created_at.strftime('%B %d, %Y') }}
+        </p>
+    </div>
 
-  <!-- Add Friend Form -->
-  <div class="mt-6">
-    <h3 class="text-2xl font-semibold text-gray-800 mb-6 text-center">Add a Friend</h3>
-    <form action="{{ url_for('logged_in.profile') }}" method="POST">
-      {{ form.hidden_tag() }}
-      
-      <!-- Email Field -->
-      <div class="mb-6">
-        <label for="email" class="block text-lg font-medium text-gray-700 mb-2">{{ form.email.label }}</label>
-        <input type="email" name="email" id="email" class="w-full p-4 border border-gray-300 rounded-md text-gray-700 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-300 ease-in-out" placeholder="Enter friend's email">
-        {% if form.email.errors %}
-          <div class="text-red-500 mt-2">
-            {% for error in form.email.errors %}
-              <p>{{ error }}</p>
-            {% endfor %}
-          </div>
+    <!-- Add Friend Form -->
+    <div class="friend-form">
+        <h3 class="form-title">Add a Friend</h3>
+        <form action="{{ url_for('logged_in.profile') }}" method="POST">
+            {{ form.hidden_tag() }}
+            
+            <!-- Email Field -->
+            <div class="form-group">
+                <label for="email" class="form-label">{{ form.email.label }}</label>
+                <input type="email" name="email" id="email" class="form-input" placeholder="Enter friend's email">
+                {% if form.email.errors %}
+                    <div class="error-message">
+                        {% for error in form.email.errors %}
+                            <p>{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+            
+            <!-- Submit Button -->
+            <button type="submit" class="submit-button">
+                Add Friend
+            </button>
+        </form>
+    </div>
+
+    <!-- Friends List -->
+    <div class="friends-list">
+        <h3 class="friends-title">Your Friends</h3>
+        {% if current_user.friends.count() > 0 %}
+            <ul class="friends-list-items">
+                {% for friend in current_user.friends.all() %}
+                    <li class="friend-item">
+                        <span>{{ friend.email }}</span>
+                        <form action="{{ url_for('logged_in.logged_in_remove_friend', friend_id=friend.id) }}" method="POST" class="inline">
+                            {{ form.hidden_tag() }}
+                            <button type="submit" class="remove-friend-button">Remove</button>
+                        </form>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p class="friends-empty">You have no friends yet.</p>
         {% endif %}
-      </div>
-      
-      <!-- Submit Button -->
-      <div>
-        <button type="submit" class="w-full py-3 bg-gradient-to-r from-blue-500 to-purple-600 text-white font-bold rounded-lg shadow-md hover:from-blue-600 hover:to-purple-700 focus:outline-none focus:ring-4 focus:ring-blue-400 transition-all duration-300 ease-in-out">
-          Add Friend
-        </button>
-      </div>
-    </form>
-  </div>
-
-
-  <!-- Friends List -->
-  <div class="mt-6">
-    <h3 class="text-xl font-semibold text-gray-800">Your Friends</h3>
-    {% if current_user.friends.count() > 0 %}
-      <ul class="list-disc pl-5">
-        {% for friend in current_user.friends.all() %}
-          <li class="text-gray-600 flex justify-between items-center">
-            <span>{{ friend.email }}</span>
-            <form action="{{ url_for('logged_in.logged_in_remove_friend', friend_id=friend.id) }}" method="POST" class="inline">
-              {{ form.hidden_tag() }}
-              <button type="submit" class="text-red-500 hover:text-red-700">Remove</button>
-            </form>
-          </li>
-        {% endfor %}
-      </ul>
-    {% else %}
-      <p class="text-gray-600">You have no friends yet.</p>
-    {% endif %}
-  </div>
+    </div>
 </div>
 {% endblock %}
