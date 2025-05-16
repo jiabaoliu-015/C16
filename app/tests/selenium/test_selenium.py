@@ -166,7 +166,7 @@ def test_add_reflection(auto_logged_in_driver):
     # Verify the mood emoji is displayed
     mood_emoji = driver.find_element(By.XPATH, "//span[contains(text(), '😊')]")
     assert mood_emoji is not None
-    
+
     # Verify the tags are displayed
     tags = driver.find_elements(By.CLASS_NAME, "bg-blue-100")
     assert any("test" in tag.text for tag in tags)
@@ -180,29 +180,29 @@ def test_add_self_as_friend(auto_logged_in_driver):
     WebDriverWait(driver, 10).until(
         EC.presence_of_element_located((By.CLASS_NAME, "profile-container"))
     )
-    
+
     # Find the email input and submit button
     email_input = WebDriverWait(driver, 10).until(
-        EC.presence_of_element_located((By.ID, "friend-email"))
+        EC.presence_of_element_located((By.ID, "email"))
     )
     submit_btn = driver.find_element(By.CSS_SELECTOR, "#add-friend-form button[type='submit']")
-    
+
     # Enter own email and submit
     email_input.clear()
     email_input.send_keys("testuser@example.com")
     submit_btn.click()
-    
+
     # Wait for the AJAX response and page update
     WebDriverWait(driver, 10).until(
-        EC.presence_of_element_located((By.CLASS_NAME, "message"))
+        EC.presence_of_element_located((By.CLASS_NAME, "flash-message"))
     )
-    
+
     # Verify the error message
-    message = driver.find_element(By.CLASS_NAME, "message")
+    message = driver.find_element(By.CLASS_NAME, "flash-message")
     assert "You cannot add yourself as a friend" in message.text
-    assert "error" in message.get_attribute("class")
+    alert_div = message.find_element(By.CLASS_NAME, "alert")
+    assert "error" in alert_div.get_attribute("class")
     
     # Verify the form is still visible and input is cleared
     assert driver.find_element(By.CLASS_NAME, "friend-form").is_displayed()
-    assert driver.find_element(By.ID, "friend-email").get_attribute("value") == ""
-
+    assert driver.find_element(By.ID, "email").get_attribute("value") == ""
