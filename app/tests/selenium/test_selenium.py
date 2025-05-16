@@ -229,7 +229,7 @@ def test_add_self_as_friend(auto_logged_in_driver):
 
     # Enter own email and submit
     email_input.clear()
-    email_input.send_keys("test@gmail.com")
+    email_input.send_keys("testuser@example.com")
     submit_btn.click()
 
     # Wait for the AJAX response and page update
