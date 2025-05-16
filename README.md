@@ -27,6 +27,11 @@
   - [Table of Contents](#table-of-contents)
   - [Overview](#overview)
   - [Screenshots \& Demo](#screenshots--demo)
+    - [Dashboard](#dashboard)
+    - [Upload Sessions](#upload-sessions)
+    - [Share Progress](#share-progress)
+    - [Login](#login)
+    - [Home](#home)
   - [Feature Highlights](#feature-highlights)
   - [Quick Start (60 Seconds)](#quick-start-60-seconds)
   - [System Architecture](#system-architecture)
@@ -38,6 +43,10 @@
     - [**StreakFreeze Table**](#streakfreeze-table)
     - [**Friends Table** (association table for User ↔ User)](#friends-table-association-table-for-user--user)
   - [Setup \& Installation](#setup--installation)
+  - [Testing](#testing)
+    - [1. Set Up the Test Environment](#1-set-up-the-test-environment)
+    - [2. Run Unit Tests](#2-run-unit-tests)
+    - [3. Run Selenium (End-to-End) Tests](#3-run-selenium-end-to-end-tests)
   - [Usage Examples](#usage-examples)
     - [1. Uploading Study Sessions](#1-uploading-study-sessions)
     - [2. Viewing Analytics](#2-viewing-analytics)
@@ -59,12 +68,30 @@ It helps you build better study habits, track productivity, and collaborate with
 
 ## Screenshots & Demo
 
-| Dashboard | Upload Sessions | Share Progress | Login | Home |
-|-----------|----------------|---------------|-------|------|
-| ![Dashboard](screenshots/dashboard.png) | ![Upload](screenshots/upload.png) | ![Share](screenshots/share.png) | ![Login](screenshots/login.png) | ![Home](screenshots/home.png) |
+### Dashboard
+<p align="center">
+  <img src="screenshots/dashboard.png" alt="Screenshot of the Dashboard showing study analytics and charts" width="700"/>
+</p>
 
-**See it in action:**  
-![Demo GIF](screenshots/demo.gif)
+### Upload Sessions
+<p align="center">
+  <img src="screenshots/upload.png" alt="Screenshot of the Upload Sessions page with CSV import option" width="700"/>
+</p>
+
+### Share Progress
+<p align="center">
+  <img src="screenshots/share.png" alt="Screenshot of the Share Progress feature with QR code" width="700"/>
+</p>
+
+### Login
+<p align="center">
+  <img src="screenshots/login.png" alt="Screenshot of the Login page" width="700"/>
+</p>
+
+### Home
+<p align="center">
+  <img src="screenshots/home.png" alt="Screenshot of the Home page with navigation options" width="700"/>
+</p>
 
 ---
 
@@ -225,16 +252,50 @@ User, Session, Course, Reflection, SharedData, StreakFreeze, Friends
     ```
 4. **Initialise the Database**
     ```bash
-    flask db upgrade
+    python db_init.py         # Only run this once
+    python create_tables.py   # Only run this once
+    flask db upgrade          # Verify database is up to date
     ```
 5. **Run the Application**
     ```bash
     flask run
     ```
-6. **Run Tests**
-    ```bash
-    pytest
-    ```
+</details>
+
+## Testing
+
+To run tests, follow these steps in the root directory.
+
+<details>
+<summary><strong>Show detailed testing instructions</strong></summary>
+
+### 1. Set Up the Test Environment
+
+- **Windows:**  
+  ```bash
+  set APP_TESTING=1
+  ```
+- **macOS/Linux:**  
+  ```bash
+  export APP_TESTING=1
+  ```
+
+> **Note:**  
+> Setting `APP_TESTING=1` ensures the app uses the test database and disables email sending.  
+> Remember to unset this variable after testing.
+
+### 2. Run Unit Tests
+
+```bash
+python -m unittest discover -s app/tests/unit
+```
+
+### 3. Run Selenium (End-to-End) Tests
+
+```bash
+pytest app/tests/selenium
+```
+
 </details>
 
 ---
@@ -243,22 +304,16 @@ User, Session, Course, Reflection, SharedData, StreakFreeze, Friends
 
 ### 1. Uploading Study Sessions
 
-![Upload GIF](screenshots/upload_demo.gif)
-
 - Go to **Upload**.
 - Fill out the form or upload a CSV.
 - Click **Create** to add sessions.
 
 ### 2. Viewing Analytics
 
-![Dashboard GIF](screenshots/dashboard_demo.gif)
-
 - Visit **Dashboard** for charts and insights.
 - Filter by day, week, or course.
 
 ### 3. Sharing Progress
-
-![Share GIF](screenshots/share_demo.gif)
 
 - Go to **Share**.
 - Search for a friend or generate a QR code.
