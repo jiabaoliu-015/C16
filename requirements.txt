@@ -42,6 +42,7 @@ pytz
 
 # (Optional) For advanced date/time parsing if used
 python-dateutil
+email_validator
 
 # (Optional) For frontend development (not installed via pip, but used in templates)
 # - tailwindcss (CDN)
