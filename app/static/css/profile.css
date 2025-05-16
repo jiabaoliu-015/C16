@@ -1,6 +1,10 @@
 /* Global Background */
+/* Tiled SVG fingerprint background */
 body {
-    background: linear-gradient(135deg, #fff5f5 0%, #fff0f6 100%);
+    background-color: #f8fafc; /* fallback color */
+    background-image: url('/static/images/wavey-fingerprint.svg');
+    background-repeat: repeat;
+    background-size: auto;
     min-height: 100vh;
 }
 
@@ -9,7 +13,6 @@ body {
     max-width: 36rem;
     margin: 2.5rem auto 0;
     padding: 1.5rem;
-    background-color: rgba(255, 255, 255, 0.95);
     border-radius: 0.75rem;
     box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
     backdrop-filter: blur(10px);
@@ -104,6 +107,31 @@ body {
     border: 1px solid rgba(251, 191, 191, 0.2);
 }
 
+.friend-form-ui {
+    gap: 1rem;
+    align-items: flex-end;
+}
+
+.friend-form-ui .form-input {
+    min-width: 220px;
+    font-size: 1rem;
+    padding: 1rem 1.25rem;
+    border-radius: 0.75rem;
+    height: 48px;
+}
+
+.add-friend-btn {
+    min-width: 140px;
+    height: 48px;
+    font-size: 1rem;
+    padding: 0 2rem;
+    margin-top: 1.7rem;
+    border-radius: 0.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
 .form-title {
     font-size: 1.5rem;
     font-weight: 600;
@@ -145,6 +173,13 @@ body {
     background-color: #f9fafb;
 }
 
+#email.form-input {
+    font-size: 1.1rem;
+    padding: 1.25rem 1rem;
+    border-radius: 0.75rem;
+    min-width: 260px;
+}
+
 .form-input:focus {
     outline: none;
     border-color: #6366f1;
@@ -174,6 +209,11 @@ body {
     transition: all 0.3s ease-in-out;
     position: relative;
     overflow: hidden;
+    font-size: 1.1rem;
+    padding: 1.1rem 2.5rem;
+    border-radius: 0.75rem;
+    min-width: 140px;
+    margin-top: 0 !important;
 }
 
 .submit-button::before {
@@ -312,6 +352,41 @@ body {
     animation: fadeIn 0.5s ease-out;
 }
 
+/* Make profile cards more solid */
+.bg-white\/90,
+.bg-white\/90.rounded-3xl,
+.bg-white\/90.rounded-2xl {
+    background-color: #fff !important;
+    /* Remove transparency for clarity */
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.08);
+}
+
+.bg-white\/90.rounded-3xl,
+.bg-white\/90.rounded-2xl {
+    border: 1.5px solid #e0e7ef;
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.08);
+}
+
+.flex.items-center.bg-gradient-to-tr {
+    transition: transform 0.15s, box-shadow 0.15s;
+}
+.flex.items-center.bg-gradient-to-tr:hover {
+    transform: scale(1.03) translateY(-2px);
+    box-shadow: 0 8px 24px 0 rgba(99, 102, 241, 0.12);
+}
+
+.w-28.h-28.rounded-full {
+    border: 4px solid #a5b4fc;
+    box-shadow: 0 6px 24px 0 rgba(99, 102, 241, 0.10);
+}
+
+/* Section divider */
+.max-w-3xl.mx-auto > div:not(:last-child) {
+    border-bottom: 1.5px solid #f1f5f9;
+    margin-bottom: 2.5rem;
+    padding-bottom: 2.5rem;
+}
+
 /* Responsive Design */
 @media (max-width: 640px) {
     .profile-container {
@@ -332,4 +407,24 @@ body {
         gap: 0.5rem;
         text-align: center;
     }
-} 
+
+    #email.form-input, .submit-button {
+        min-width: 0;
+        width: 100%;
+        font-size: 1rem;
+        padding: 1rem;
+    }
+
+    .friend-form-ui {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    .add-friend-btn {
+        width: 100%;
+        margin-top: 0.5rem;
+    }
+    .friend-form-ui .form-input {
+        width: 100%;
+        min-width: 0;
+    }
+}
