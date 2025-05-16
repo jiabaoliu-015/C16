@@ -10,10 +10,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function showToast(msg, color = "bg-green-600") {
     toast.textContent = msg;
-    toast.className = `fixed bottom-6 right-6 ${color} text-white px-4 py-2 rounded-lg shadow-lg opacity-100 z-50`;
+    toast.className = `streak-toast fixed bottom-6 right-6 ${color} text-white px-4 py-2 rounded-lg shadow-lg opacity-100 z-50`;
+    // Remove fade-out if present
+    toast.classList.remove("fade-out");
     setTimeout(() => {
-      toast.className += " opacity-0 pointer-events-none";
-    }, 2500); // Change 2500 to your desired duration in ms
+      toast.classList.add("fade-out");
+    }, 2500);
   }
 
   async function loadStreak() {

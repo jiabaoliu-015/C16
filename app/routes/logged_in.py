@@ -218,9 +218,9 @@ def study_streak():
     freeze_available = freeze_this_month is None
 
     if request.method == 'POST':
-        # Use a freeze if available and streak was broken yesterday
+        # Use a freeze if available and streak was broken yesterday and today is also missed
         yesterday = today - timedelta(days=1)
-        if freeze_available and yesterday not in dates and today in dates:
+        if freeze_available and yesterday not in dates and today not in dates:
             # Grant freeze
             new_freeze = StreakFreeze(user_id=current_user.id, month=today.month, year=today.year, used_on=today)
             db.session.add(new_freeze)

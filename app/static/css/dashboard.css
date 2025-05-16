@@ -477,6 +477,12 @@
   z-index: 50;
 }
 
+.streak-toast.fade-out {
+  opacity: 0 !important;
+  pointer-events: none;
+  transition: opacity 0.5s;
+}
+
 .progress-container {
   margin-top: 0.5rem;
   animation: fadeIn 0.5s ease-out;
