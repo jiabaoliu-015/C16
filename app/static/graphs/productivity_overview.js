@@ -132,22 +132,15 @@ async function renderProductivityChart(range = 'week') {
 
 // Modern toggle logic
 function setupProdRangeToggle() {
-    const buttons = document.querySelectorAll('.prod-range-btn');
+    const buttons = document.querySelectorAll('.range-btn'); // FIXED selector
     let current = 'week';
     buttons.forEach(btn => {
-        btn.classList.toggle('bg-blue-500', btn.dataset.range === current);
-        btn.classList.toggle('text-white', btn.dataset.range === current);
-        btn.classList.toggle('bg-gray-200', btn.dataset.range !== current);
-        btn.classList.toggle('text-blue-500', btn.dataset.range !== current);
-
+        btn.classList.toggle('active', btn.dataset.range === current); // Use .active class
         btn.addEventListener('click', () => {
             if (btn.dataset.range === current) return;
             current = btn.dataset.range;
             buttons.forEach(b => {
-                b.classList.toggle('bg-blue-500', b.dataset.range === current);
-                b.classList.toggle('text-white', b.dataset.range === current);
-                b.classList.toggle('bg-gray-200', b.dataset.range !== current);
-                b.classList.toggle('text-blue-500', b.dataset.range !== current);
+                b.classList.toggle('active', b.dataset.range === current);
             });
             renderProductivityChart(current);
         });
