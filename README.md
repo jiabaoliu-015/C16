@@ -281,7 +281,7 @@ To run tests, follow these steps in the root directory.
   ```
 
 > **Note:**  
-> Setting `APP_TESTING=1` ensures the app uses the test database and disables email sending.  
+> Setting `APP_TESTING=0` ensures the app uses the test database and disables email sending.  
 > Remember to unset this variable after testing.
 
 ### 2. Run Unit Tests
@@ -293,6 +293,7 @@ python -m unittest discover -s app/tests/unit
 ### 3. Run Selenium (End-to-End) Tests
 
 ```bash
+export APP_TESTING=0
 pytest app/tests/selenium
 ```
 
