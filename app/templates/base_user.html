@@ -7,13 +7,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}{% endblock %}</title>
     <link rel="icon" href="{{ url_for('static', filename='images/logo.png') }}" type="image/x-icon">
-    <script src="{{ url_for('static', filename='js/date-adjust.js') }}" defer></script>
-    <script src="{{ url_for('static', filename='js/renderStats.js') }}" defer></script>
+    <script src="{{ url_for('static', filename='js/date-adjust.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/renderStats.js') }}"></script>
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com" defer></script>
+    <script src="https://cdn.tailwindcss.com"></script>
     <!-- Updated Lucide Icons CDN -->
-    <script src="https://cdn.jsdelivr.net/npm/lucide@latest/dist/umd/lucide.min.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/lucide@latest/dist/umd/lucide.min.js"></script>
     <!-- Base User CSS -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/base_user.css') }}">
     <!-- Flash Messages CSS -->
